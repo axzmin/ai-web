@@ -8,65 +8,73 @@ export default function Hero() {
     <section className="hero">
       <ParticleCanvas />
       
-      {/* Gradient orbs for depth */}
+      {/* Gradient Orbs */}
       <div className="orb orb-1" />
       <div className="orb orb-2" />
       <div className="orb orb-3" />
-      
+
       {/* Badge */}
-      <div className="badge badge-blue mb-3" style={{ animation: 'floating 3s ease-in-out infinite' }}>
-        ✨ Powered by Flux.1
+      <div className="hero-badge">
+        <span style={{ fontSize: '1rem' }}>✨</span>
+        <span>Powered by Flux.1 — State-of-the-art AI</span>
       </div>
-      
+
       {/* Main Title */}
       <h1 className="hero-title">
-        Create Stunning
+        Transform Your Ideas Into
         <br />
-        <span style={{ 
-          background: 'linear-gradient(135deg, #0a72ef, #de1d8d, #ff5b4f)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text'
-        }}>
-          AI Images
-        </span>
+        <span className="text-gradient">Stunning Artwork</span>
       </h1>
-      
+
       {/* Subtitle */}
       <p className="hero-subtitle">
-        Transform your ideas into stunning visuals with state-of-the-art AI. 
-        Text to image, image remix, and more.
+        Create professional-quality images in seconds. Text-to-image, image remix, 
+        and endless creative possibilities — all in your browser.
       </p>
-      
+
       {/* CTA Buttons */}
       <div className="hero-cta">
         <Link href="/generate" className="btn btn-primary btn-large">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M10 2L12.5 7.5L18 8L14 12L15 18L10 15L5 18L6 12L2 8L7.5 7.5L10 2Z" fill="currentColor"/>
           </svg>
-          Start Creating
+          Start Creating Free
         </Link>
-        <Link href="/gallery" className="btn btn-secondary btn-large">
+        <Link href="#gallery" className="btn btn-secondary btn-large">
           View Gallery
         </Link>
       </div>
-      
-      {/* Feature Pills */}
-      <div className="flex-center gap-2 mt-4" style={{ flexWrap: 'wrap' }}>
-        <span className="badge">🎨 Text to Image</span>
-        <span className="badge">🔄 Image Remix</span>
-        <span className="badge">⚡ Flux.1 Model</span>
-        <span className="badge">🌍 English First</span>
+
+      {/* Stats */}
+      <div className="hero-stats">
+        <div className="hero-stat">
+          <div className="hero-stat-value">1M+</div>
+          <div className="hero-stat-label">Images Created</div>
+        </div>
+        <div className="hero-stat">
+          <div className="hero-stat-value">50K+</div>
+          <div className="hero-stat-label">Happy Creators</div>
+        </div>
+        <div className="hero-stat">
+          <div className="hero-stat-value">4.9</div>
+          <div className="hero-stat-label">User Rating</div>
+        </div>
       </div>
-      
-      {/* Scroll indicator */}
-      <div style={{ 
-        position: 'absolute', 
+
+      {/* Scroll Indicator */}
+      <div style={{
+        position: 'absolute',
         bottom: '2rem',
-        animation: 'floating 2s ease-in-out infinite'
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.5rem',
+        color: 'var(--vercel-gray-400)',
+        animation: 'float 2s ease-in-out infinite'
       }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--vercel-gray-400)">
-          <path d="M12 5v14M5 12l7 7 7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <span style={{ fontSize: '0.75rem' }}>Scroll to explore</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M10 5v10M5 12l5 5 5-5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
     </section>
