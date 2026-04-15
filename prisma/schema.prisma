@@ -1,0 +1,57 @@
+// AI Web Prisma Schema
+// Neon PostgreSQL + Prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  generations Generation[]
+}
+
+model Generation {
+  id          String   @id @default(cuid())
+  prompt      String
+  imageUrl    String
+  thumbnailUrl String?
+  model       String   @default("flux-dev")
+  aspectRatio String   @default("1:1")
+  quality     String   @default("standard")
+  seed        Int?
+  steps       Int?
+  status      String   @default("completed")
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isPublic    Boolean  @default(false)
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model GalleryItem {
+  id          String   @id @default(cuid())
+  title       String?
+  description String?
+  imageUrl    String
+  prompt      String
+  seed        Int?
+  tags        String[]
+  generationId String? @unique
+  generation   Generation? @relation(fields: [generationId], references: [id])
+  createdAt   DateTime @default(now())
+  @@index([tags])
+  @@index([createdAt])
+}
