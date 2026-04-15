@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 
-// Sample gallery data (in production, this would come from API)
 const SAMPLE_IMAGES = [
   { id: 1, title: 'Cyberpunk City', prompt: 'Futuristic cyberpunk city with neon lights', seed: 1234 },
   { id: 2, title: 'Mountain Sunset', prompt: 'Majestic mountain landscape at golden hour', seed: 2345 },
@@ -12,36 +11,32 @@ const SAMPLE_IMAGES = [
   { id: 6, title: 'Ocean Dreams', prompt: 'Underwater scene with bioluminescent creatures', seed: 6789 },
   { id: 7, title: 'Steampunk Machine', prompt: 'Intricate steampunk mechanical device', seed: 7890 },
   { id: 8, title: 'Japanese Garden', prompt: 'Traditional Japanese garden with cherry blossoms', seed: 8901 },
-  { id: 9, title: 'Dragon Rider', prompt: 'Epic fantasy scene with dragon and rider', seed: 9012 },
-  { id: 10, title: 'Desert Oasis', prompt: 'Hidden oasis in vast desert landscape', seed: 1011 },
-  { id: 11, title: 'Neon Portrait', prompt: 'Portrait with neon lighting effects', seed: 1122 },
-  { id: 12, title: 'Floating Islands', prompt: 'Fantasy floating islands in the sky', seed: 2233 },
 ];
 
-const CATEGORIES = ['All', 'Fantasy', 'Sci-Fi', 'Nature', 'Abstract', 'Architecture'];
+const CATEGORIES = ['All', 'Fantasy', 'Sci-Fi', 'Nature', 'Abstract'];
 
 export default function GalleryPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedImage, setSelectedImage] = useState<typeof SAMPLE_IMAGES[0] | null>(null);
 
-  // For demo, we'll use placeholder images from picsum
   const getImageUrl = (id: number, seed: number) => 
     `https://picsum.photos/seed/${seed}/600/600`;
 
   return (
-    <div className="gallery-page">
-      <div className="container">
+    <div style={{ minHeight: '100vh', padding: '6rem 2rem 4rem', background: '#09090b' }}>
+      <div className="container" style={{ maxWidth: '1200px' }}>
         {/* Header */}
-        <div className="gallery-header">
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h1 style={{ 
             fontSize: 'clamp(2rem, 4vw, 3rem)', 
-            fontWeight: 600, 
+            fontWeight: 700, 
             letterSpacing: '-2px',
+            color: '#fafafa',
             marginBottom: '0.5rem'
           }}>
             Gallery
           </h1>
-          <p style={{ color: 'var(--vercel-gray-600)', fontSize: '1.125rem' }}>
+          <p style={{ color: '#71717a', fontSize: '1.125rem' }}>
             Explore creations made with AI Studio
           </p>
         </div>
@@ -58,15 +53,16 @@ export default function GalleryPage() {
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`badge ${selectedCategory === category ? 'badge-blue' : ''}`}
               style={{
                 padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                border: 'none',
+                background: selectedCategory === category ? '#7c3aed' : 'rgba(255,255,255,0.05)',
+                border: '1px solid',
+                borderColor: selectedCategory === category ? '#7c3aed' : 'rgba(255,255,255,0.1)',
+                borderRadius: '9999px',
+                color: selectedCategory === category ? '#fff' : '#a1a1aa',
                 fontSize: '0.875rem',
-                transition: 'all 0.2s ease',
-                background: selectedCategory === category ? '#ebf5ff' : 'var(--vercel-gray-100)',
-                color: selectedCategory === category ? '#0068d6' : 'var(--vercel-gray-600)'
+                cursor: 'pointer',
+                transition: 'all 0.2s'
               }}
             >
               {category}
@@ -75,28 +71,50 @@ export default function GalleryPage() {
         </div>
 
         {/* Gallery Grid */}
-        <div className="gallery-grid">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: '1rem'
+        }}>
           {SAMPLE_IMAGES.map((image, index) => (
             <div
               key={image.id}
-              className="gallery-item"
               onClick={() => setSelectedImage(image)}
               style={{ 
                 cursor: 'pointer',
-                animationDelay: `${index * 100}ms`
+                borderRadius: '16px',
+                overflow: 'hidden',
+                position: 'relative',
+                aspectRatio: '1',
+                animation: `fadeInUp 0.4s ease ${index * 0.05}s both`
               }}
             >
               <img
                 src={getImageUrl(image.id, image.seed)}
                 alt={image.title}
                 loading="lazy"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  transition: 'transform 0.3s ease'
+                }}
               />
-              <div className="gallery-item-overlay">
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%)',
+                opacity: 0,
+                transition: 'opacity 0.3s ease',
+                display: 'flex',
+                alignItems: 'flex-end',
+                padding: '1rem'
+              }}
+              onMouseOver={(e) => (e.currentTarget as HTMLElement).style.opacity = '1'}
+              onMouseOut={(e) => (e.currentTarget as HTMLElement).style.opacity = '0'}
+              >
                 <div style={{ color: 'white' }}>
-                  <p style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{image.title}</p>
-                  <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>
-                    {image.prompt.substring(0, 50)}...
-                  </p>
+                  <p style={{ fontWeight: 600 }}>{image.title}</p>
                 </div>
               </div>
             </div>
@@ -104,89 +122,78 @@ export default function GalleryPage() {
         </div>
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox */}
       {selectedImage && (
         <div
           onClick={() => setSelectedImage(null)}
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.9)',
+            background: 'rgba(0, 0, 0, 0.95)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 1000,
             padding: '2rem',
-            cursor: 'pointer',
             animation: 'fadeIn 0.2s ease'
           }}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              maxWidth: '800px',
+              maxWidth: '700px',
               width: '100%',
-              background: 'var(--vercel-black)',
-              borderRadius: '16px',
-              overflow: 'hidden',
-              animation: 'scaleIn 0.3s var(--ease-out-back)'
+              animation: 'scaleIn 0.3s ease'
             }}
           >
             <img
               src={getImageUrl(selectedImage.id, selectedImage.seed)}
               alt={selectedImage.title}
-              style={{ width: '100%', height: 'auto', display: 'block' }}
+              style={{ 
+                width: '100%', 
+                borderRadius: '16px',
+                display: 'block'
+              }}
             />
-            <div style={{ padding: '1.5rem' }}>
-              <h3 style={{ 
-                fontSize: '1.25rem', 
-                fontWeight: 600,
-                color: 'var(--vercel-white)',
-                marginBottom: '0.5rem'
-              }}>
-                {selectedImage.title}
-              </h3>
-              <p style={{ 
-                color: 'var(--vercel-gray-400)', 
-                fontSize: '0.875rem',
-                marginBottom: '1rem'
-              }}>
-                {selectedImage.prompt}
-              </p>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div style={{ 
+              textAlign: 'center',
+              marginTop: '1.5rem',
+              color: 'white'
+            }}>
+              <h3 style={{ fontWeight: 600, marginBottom: '0.5rem' }}>{selectedImage.title}</h3>
+              <p style={{ color: '#a1a1aa', fontSize: '0.875rem' }}>{selectedImage.prompt}</p>
+              <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
                 <button
                   onClick={() => setSelectedImage(null)}
-                  className="btn btn-secondary"
-                  style={{ flex: 1 }}
+                  style={{
+                    padding: '0.625rem 1.25rem',
+                    background: 'rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '10px',
+                    color: '#fff',
+                    cursor: 'pointer'
+                  }}
                 >
                   Close
                 </button>
                 <button
-                  className="btn btn-primary"
-                  style={{ flex: 1 }}
-                  onClick={() => {
-                    // In production, this would open the remix page with this image
-                    window.location.href = `/generate/remix`;
+                  onClick={() => window.location.href = '/generate'}
+                  style={{
+                    padding: '0.625rem 1.25rem',
+                    background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                    border: 'none',
+                    borderRadius: '10px',
+                    color: '#fff',
+                    cursor: 'pointer'
                   }}
                 >
-                  Remix This
+                  Create Similar
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
-
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes scaleIn {
-          from { transform: scale(0.95); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-      `}</style>
     </div>
   );
 }

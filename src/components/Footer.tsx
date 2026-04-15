@@ -1,83 +1,143 @@
+'use client';
+
 import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="container">
-        <div className="footer-grid">
+    <footer style={{
+      padding: '4rem 2rem 2rem',
+      background: 'var(--bg-secondary, #0a0a0a)',
+      borderTop: '1px solid var(--border-subtle, rgba(255,255,255,0.1))'
+    }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '3rem',
+          marginBottom: '3rem'
+        }}>
           {/* Brand */}
-          <div className="footer-brand">
-            <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="8" fill="#171717"/>
-                <path d="M8 16L14 10L20 16L14 22L8 16Z" fill="#fff"/>
-                <path d="M14 16L20 10L26 16L20 22L14 16Z" fill="#737373"/>
-              </svg>
-              <span style={{ fontSize: '1.125rem', fontWeight: 600, color: '#fff' }}>AI Studio</span>
-            </Link>
-            <p>
-              Transform your ideas into stunning visuals with state-of-the-art AI. 
-              Built for creators, artists, and businesses worldwide.
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1rem'
+              }}>
+                ✨
+              </div>
+              <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary, #fff)' }}>
+                AI Studio
+              </span>
+            </div>
+            <p style={{ color: 'var(--text-muted, #888)', fontSize: '0.875rem', lineHeight: 1.6 }}>
+              Transform your ideas into stunning visuals with state-of-the-art AI.
             </p>
           </div>
 
           {/* Product */}
           <div>
-            <h4 className="footer-title">Product</h4>
-            <ul className="footer-links">
-              <li><Link href="/#generator">Text to Image</Link></li>
-              <li><Link href="/#generator">Image Remix</Link></li>
-              <li><Link href="/#features">Features</Link></li>
-              <li><Link href="/#pricing">Pricing</Link></li>
-              <li><Link href="/gallery">Gallery</Link></li>
+            <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary, #fff)', marginBottom: '1rem' }}>
+              Product
+            </h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <Link href="/generate" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  Text to Image
+                </Link>
+              </li>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <Link href="/generate/remix" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  Image Remix
+                </Link>
+              </li>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <Link href="/#features" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  Features
+                </Link>
+              </li>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <Link href="/#pricing" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  Pricing
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Resources */}
           <div>
-            <h4 className="footer-title">Resources</h4>
-            <ul className="footer-links">
-              <li><Link href="/#faq">FAQ</Link></li>
-              <li><a href="#">API Documentation</a></li>
-              <li><a href="#">Tutorials</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Community</a></li>
+            <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary, #fff)', marginBottom: '1rem' }}>
+              Resources
+            </h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <Link href="/#faq" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  FAQ
+                </Link>
+              </li>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <a href="#" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  API Documentation
+                </a>
+              </li>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <a href="#" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  Tutorials
+                </a>
+              </li>
             </ul>
           </div>
 
           {/* Company */}
           <div>
-            <h4 className="footer-title">Company</h4>
-            <ul className="footer-links">
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Careers</a></li>
-              <li><a href="#">Press Kit</a></li>
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Privacy Policy</a></li>
+            <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary, #fff)', marginBottom: '1rem' }}>
+              Company
+            </h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <a href="#" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  About
+                </a>
+              </li>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <a href="#" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  Blog
+                </a>
+              </li>
+              <li style={{ marginBottom: '0.5rem' }}>
+                <a href="#" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.875rem' }}>
+                  Contact
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
-        <div className="footer-bottom">
-          <p className="footer-copyright">
+        {/* Bottom */}
+        <div style={{
+          paddingTop: '2rem',
+          borderTop: '1px solid var(--border-subtle, rgba(255,255,255,0.1))',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '1rem'
+        }}>
+          <p style={{ color: 'var(--text-muted, #888)', fontSize: '0.8125rem' }}>
             © 2026 AI Studio. All rights reserved.
           </p>
-          <div className="footer-social">
-            <a href="#" aria-label="Twitter">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-              </svg>
-            </a>
-            <a href="#" aria-label="GitHub">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-              </svg>
-            </a>
-            <a href="#" aria-label="Discord">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
-              </svg>
-            </a>
+          <div style={{ display: 'flex', gap: '1.5rem' }}>
+            <Link href="/privacy" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.8125rem' }}>
+              Privacy
+            </Link>
+            <Link href="/terms" style={{ color: 'var(--text-muted, #888)', textDecoration: 'none', fontSize: '0.8125rem' }}>
+              Terms
+            </Link>
           </div>
         </div>
       </div>

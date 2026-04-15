@@ -5,76 +5,162 @@ import ParticleCanvas from './ParticleCanvas';
 
 export default function Hero() {
   return (
-    <section className="hero">
+    <section style={{
+      position: 'relative',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '6rem 2rem',
+      background: 'var(--bg-primary)',
+      overflow: 'hidden'
+    }}>
       <ParticleCanvas />
       
       {/* Gradient Orbs */}
-      <div className="orb orb-1" />
-      <div className="orb orb-2" />
-      <div className="orb orb-3" />
-
-      {/* Badge */}
-      <div className="hero-badge">
-        <span style={{ fontSize: '1rem' }}>✨</span>
-        <span>Powered by Flux.1 — State-of-the-art AI</span>
-      </div>
-
-      {/* Main Title */}
-      <h1 className="hero-title">
-        Transform Your Ideas Into
-        <br />
-        <span className="text-gradient">Stunning Artwork</span>
-      </h1>
-
-      {/* Subtitle */}
-      <p className="hero-subtitle">
-        Create professional-quality images in seconds. Text-to-image, image remix, 
-        and endless creative possibilities — all in your browser.
-      </p>
-
-      {/* CTA Buttons */}
-      <div className="hero-cta">
-        <Link href="/generate" className="btn btn-primary btn-large">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M10 2L12.5 7.5L18 8L14 12L15 18L10 15L5 18L6 12L2 8L7.5 7.5L10 2Z" fill="currentColor"/>
-          </svg>
-          Start Creating Free
-        </Link>
-        <Link href="#gallery" className="btn btn-secondary btn-large">
-          View Gallery
-        </Link>
-      </div>
-
-      {/* Stats */}
-      <div className="hero-stats">
-        <div className="hero-stat">
-          <div className="hero-stat-value">1M+</div>
-          <div className="hero-stat-label">Images Created</div>
+      <div style={{
+        position: 'absolute',
+        top: '20%',
+        left: '10%',
+        width: '500px',
+        height: '500px',
+        background: 'radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%)',
+        filter: 'blur(80px)',
+        pointerEvents: 'none'
+      }} />
+      <div style={{
+        position: 'absolute',
+        bottom: '30%',
+        right: '15%',
+        width: '400px',
+        height: '400px',
+        background: 'radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, transparent 70%)',
+        filter: 'blur(80px)',
+        pointerEvents: 'none'
+      }} />
+      
+      {/* Content */}
+      <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', maxWidth: '900px' }}>
+        {/* Badge */}
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          padding: '0.5rem 1rem',
+          background: 'rgba(124, 58, 237, 0.15)',
+          border: '1px solid rgba(124, 58, 237, 0.3)',
+          borderRadius: 'var(--radius-full)',
+          marginBottom: '1.5rem',
+          animation: 'float 3s ease-in-out infinite'
+        }}>
+          <span style={{ fontSize: '1rem' }}>✨</span>
+          <span style={{ 
+            fontSize: '0.875rem', 
+            fontWeight: 600,
+            background: 'var(--gradient-primary)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            Powered by Flux.1 Dev
+          </span>
         </div>
-        <div className="hero-stat">
-          <div className="hero-stat-value">50K+</div>
-          <div className="hero-stat-label">Happy Creators</div>
+        
+        {/* Main Title */}
+        <h1 style={{
+          fontSize: 'clamp(3rem, 8vw, 5rem)',
+          fontWeight: 700,
+          letterSpacing: '-0.03em',
+          lineHeight: 1.1,
+          marginBottom: '1.5rem',
+          color: 'var(--text-primary)'
+        }}>
+          Create Stunning{' '}
+          <span style={{
+            background: 'var(--gradient-primary)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            AI Images
+          </span>
+          <br />
+          in Seconds
+        </h1>
+        
+        {/* Subtitle */}
+        <p style={{
+          fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
+          color: 'var(--text-secondary)',
+          maxWidth: '600px',
+          margin: '0 auto 2.5rem',
+          lineHeight: 1.7
+        }}>
+          Transform your ideas into breathtaking visuals with state-of-the-art AI. 
+          Text to image, image remix, and unlimited creativity.
+        </p>
+        
+        {/* CTA Buttons */}
+        <div style={{ 
+          display: 'flex', 
+          gap: '1rem', 
+          justifyContent: 'center',
+          flexWrap: 'wrap'
+        }}>
+          <Link href="/generate" className="btn btn-primary btn-large">
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              ✨ Start Creating Free
+            </span>
+          </Link>
+          <Link href="/gallery" className="btn btn-secondary btn-large">
+            View Gallery
+          </Link>
         </div>
-        <div className="hero-stat">
-          <div className="hero-stat-value">4.9</div>
-          <div className="hero-stat-label">User Rating</div>
+        
+        {/* Feature Pills */}
+        <div style={{ 
+          display: 'flex', 
+          gap: '0.75rem', 
+          justifyContent: 'center',
+          marginTop: '2.5rem',
+          flexWrap: 'wrap'
+        }}>
+          {[
+            { icon: '🎨', text: 'Text to Image' },
+            { icon: '🔄', text: 'Image Remix' },
+            { icon: '⚡', text: '10s Generation' },
+            { icon: '🌍', text: '4K Resolution' }
+          ].map((item, i) => (
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.5rem 1rem',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-full)',
+                fontSize: '0.875rem',
+                color: 'var(--text-secondary)'
+              }}
+            >
+              <span>{item.icon}</span>
+              <span>{item.text}</span>
+            </div>
+          ))}
         </div>
       </div>
-
+      
       {/* Scroll Indicator */}
       <div style={{
         position: 'absolute',
         bottom: '2rem',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '0.5rem',
-        color: 'var(--vercel-gray-400)',
+        left: '50%',
+        transform: 'translateX(-50%)',
         animation: 'float 2s ease-in-out infinite'
       }}>
-        <span style={{ fontSize: '0.75rem' }}>Scroll to explore</span>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M10 5v10M5 12l5 5 5-5" strokeLinecap="round" strokeLinejoin="round"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)">
+          <path d="M12 5v14M5 12l7 7 7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
     </section>
