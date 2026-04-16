@@ -633,6 +633,25 @@ Cloudflare Workers: $5/月 + $0.50/百万请求
 Groq API: 免费额度用完再付费
 ```
 
+### Q5: 安全补丁升级时 npm install 超时怎么办？
+
+本地 `npm install` 超时时（网络慢），可直接修改 `package.json` 并推送到 GitHub，Vercel 会自动重新构建：
+
+```bash
+# 1. 直接编辑 package.json（不改 node_modules）
+# 例如升级 Next.js：把 "next": "15.1.0" 改成 "next": "15.5.15"
+
+# 2. 提交推送
+git add package.json
+git commit -m "fix: upgrade next.js to 15.5.15 (patch CVE-2025-66478)"
+git push
+
+# 3. Vercel 自动检测到新提交 → 重新部署
+# 本地 node_modules 等下次有空再 npm install
+```
+
+**原理**：Vercel 的 CI 构建完全在云端进行，不依赖本地 `node_modules`。只要 `package.json` 改对，Vercel 就会用新版本构建。
+
 ---
 
 ## 八、部署清单
