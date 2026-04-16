@@ -1,38 +1,45 @@
 /* ============================================
-   AI Studio - Premium Dark Design System
+   AI Studio - Warm Minimal Design System
+   Inspired by Claude.com's clean aesthetic
    ============================================ */
 
 /* CSS Variables */
 :root {
-  /* Colors - Premium Dark */
-  --bg-primary: #09090b;
-  --bg-secondary: #111113;
-  --bg-tertiary: #18181b;
-  --bg-card: #1c1c21;
-  --bg-elevated: #242429;
+  /* Colors - Warm Light Theme */
+  --bg-primary: #faf9f5;
+  --bg-secondary: #f5f4f0;
+  --bg-tertiary: #efefeb;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
   
-  --text-primary: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-  --text-disabled: #52525b;
+  --text-primary: #141413;
+  --text-secondary: #6b6b68;
+  --text-muted: #9c9c99;
+  --text-disabled: #c5c5c2;
   
-  /* Accent Gradients */
-  --gradient-primary: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899);
-  --gradient-secondary: linear-gradient(135deg, #0ea5e9, #06b6d4);
-  --gradient-warm: linear-gradient(135deg, #f97316, #fb923c);
-  --gradient-success: linear-gradient(135deg, #22c55e, #16a34a);
+  /* Accent Colors - Warm Blue/Cyan (no purple) */
+  --accent-primary: #2563eb;
+  --accent-primary-hover: #1d4ed8;
+  --accent-secondary: #0891b2;
+  --accent-tertiary: #0d9488;
+  
+  /* Gradients - Subtle and Warm */
+  --gradient-primary: linear-gradient(135deg, #2563eb, #0891b2);
+  --gradient-secondary: linear-gradient(135deg, #0d9488, #2563eb);
+  --gradient-warm: linear-gradient(135deg, #ea580c, #ea7c0a);
+  --gradient-success: linear-gradient(135deg, #16a34a, #15803d);
   
   /* Borders */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(255, 255, 255, 0.15);
+  --border-subtle: rgba(20, 20, 19, 0.06);
+  --border-default: rgba(20, 20, 19, 0.1);
+  --border-hover: rgba(20, 20, 19, 0.15);
   
-  /* Shadows with Glow */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow-purple: 0 0 40px rgba(124, 58, 237, 0.3);
-  --shadow-glow-pink: 0 0 40px rgba(236, 72, 153, 0.2);
+  /* Shadows - Soft and Natural */
+  --shadow-sm: 0 1px 2px rgba(20, 20, 19, 0.05);
+  --shadow-md: 0 4px 12px rgba(20, 20, 19, 0.08);
+  --shadow-lg: 0 8px 24px rgba(20, 20, 19, 0.1);
+  --shadow-xl: 0 16px 48px rgba(20, 20, 19, 0.12);
+  --shadow-glow-blue: 0 4px 20px rgba(37, 99, 235, 0.2);
   
   /* Spacing */
   --space-1: 0.25rem;
@@ -114,24 +121,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background: var(--gradient-primary);
+  background: var(--accent-primary);
   color: white;
-  box-shadow: var(--shadow-glow-purple);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .btn-primary:hover {
+  background: var(--accent-primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 0 60px rgba(124, 58, 237, 0.5);
+  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.3);
 }
 
 .btn-secondary {
-  background: var(--bg-tertiary);
+  background: var(--bg-card);
   color: var(--text-primary);
   border: 1px solid var(--border-default);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-elevated);
+  background: var(--bg-tertiary);
   border-color: var(--border-hover);
 }
 
@@ -202,8 +210,8 @@ h1, h2, h3, h4, h5, h6 {
 .spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 2px solid rgba(20, 20, 19, 0.2);
+  border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

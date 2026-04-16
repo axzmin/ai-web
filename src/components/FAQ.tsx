@@ -43,21 +43,40 @@ export default function FAQ() {
   return (
     <section id="faq" style={{
       padding: '6rem 2rem',
-      background: 'var(--vercel-gray-50)'
+      background: 'var(--bg-secondary)'
     }}>
       <div className="container">
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <span className="badge badge-purple mb-3">❓ FAQ</span>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.5rem 1rem',
+            background: 'rgba(37, 99, 235, 0.08)',
+            border: '1px solid rgba(37, 99, 235, 0.15)',
+            borderRadius: 'var(--radius-full)',
+            marginBottom: '1rem'
+          }}>
+            <span style={{ fontSize: '1rem' }}>❓</span>
+            <span style={{
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              color: 'var(--accent-primary)'
+            }}>
+              FAQ
+            </span>
+          </div>
           <h2 style={{ 
             fontSize: 'clamp(2rem, 4vw, 3rem)',
             fontWeight: 600,
             letterSpacing: '-2px',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            color: 'var(--text-primary)'
           }}>
             Frequently Asked Questions
           </h2>
-          <p style={{ color: 'var(--vercel-gray-600)', fontSize: '1.125rem', maxWidth: '600px', margin: '0 auto' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1.125rem', maxWidth: '600px', margin: '0 auto' }}>
             Got questions? We've got answers.
           </p>
         </div>
@@ -71,10 +90,10 @@ export default function FAQ() {
             <div
               key={index}
               style={{
-                background: 'white',
+                background: 'var(--bg-card)',
                 borderRadius: '12px',
                 marginBottom: '0.75rem',
-                border: '1px solid var(--vercel-gray-200)',
+                border: '1px solid var(--border-subtle)',
                 overflow: 'hidden',
                 animation: `fadeInUp 0.5s ease ${index * 0.05}s both`
               }}
@@ -94,13 +113,13 @@ export default function FAQ() {
                   alignItems: 'center',
                   fontSize: '1rem',
                   fontWeight: 500,
-                  color: 'var(--vercel-black)'
+                  color: 'var(--text-primary)'
                 }}
               >
                 {faq.question}
                 <span style={{
                   fontSize: '1.25rem',
-                  color: 'var(--vercel-gray-400)',
+                  color: 'var(--text-muted)',
                   transition: 'transform 0.2s',
                   transform: openIndex === index ? 'rotate(45deg)' : 'rotate(0deg)'
                 }}>
@@ -116,7 +135,7 @@ export default function FAQ() {
               }}>
                 <p style={{
                   padding: '0 1.5rem 1.5rem',
-                  color: 'var(--vercel-gray-600)',
+                  color: 'var(--text-secondary)',
                   lineHeight: 1.7
                 }}>
                   {faq.answer}
@@ -130,10 +149,10 @@ export default function FAQ() {
         <p style={{
           textAlign: 'center',
           marginTop: '2rem',
-          color: 'var(--vercel-gray-500)',
+          color: 'var(--text-muted)',
           fontSize: '0.875rem'
         }}>
-          Still have questions? <a href="/contact" style={{ color: 'var(--develop-blue)' }}>Contact our support team</a>
+          Still have questions? <a href="/contact" style={{ color: 'var(--accent-primary)' }}>Contact our support team</a>
         </p>
       </div>
     </section>

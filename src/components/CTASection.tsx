@@ -4,11 +4,11 @@ export default function CTASection() {
   return (
     <section style={{
       padding: '8rem 2rem',
-      background: 'var(--bg-primary)',
+      background: 'var(--bg-tertiary)',
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Gradient Background Effects */}
+      {/* Warm Gradient Background Effects - Blue instead of Purple */}
       <div style={{
         position: 'absolute',
         top: '50%',
@@ -16,7 +16,7 @@ export default function CTASection() {
         transform: 'translate(-50%, -50%)',
         width: '800px',
         height: '600px',
-        background: 'radial-gradient(ellipse, rgba(124, 58, 237, 0.2) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse, rgba(37, 99, 235, 0.15) 0%, transparent 70%)',
         filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
@@ -26,7 +26,7 @@ export default function CTASection() {
         right: '20%',
         width: '400px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(8, 145, 178, 0.12) 0%, transparent 70%)',
         filter: 'blur(80px)',
         pointerEvents: 'none'
       }} />
@@ -39,8 +39,8 @@ export default function CTASection() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(34, 197, 94, 0.1)',
-            border: '1px solid rgba(34, 197, 94, 0.3)',
+            background: 'rgba(37, 99, 235, 0.08)',
+            border: '1px solid rgba(37, 99, 235, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1.5rem',
             animation: 'float 3s ease-in-out infinite'
@@ -49,7 +49,7 @@ export default function CTASection() {
             <span style={{
               fontSize: '0.875rem',
               fontWeight: 600,
-              color: '#22c55e'
+              color: 'var(--accent-primary)'
             }}>
               Get Started Free
             </span>
@@ -66,9 +66,7 @@ export default function CTASection() {
           }}>
             Ready to Create{' '}
             <span style={{
-              background: 'var(--gradient-primary)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              color: 'var(--accent-primary)'
             }}>
               Amazing Images
             </span>
@@ -117,7 +115,7 @@ export default function CTASection() {
               { check: '✓', text: 'Cancel anytime' }
             ].map((item, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)' }}>
-                <span style={{ color: '#22c55e', fontWeight: 600 }}>{item.check}</span>
+                <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>{item.check}</span>
                 <span style={{ fontSize: '0.875rem' }}>{item.text}</span>
               </div>
             ))}

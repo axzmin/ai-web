@@ -61,21 +61,40 @@ export default function Pricing() {
   return (
     <section id="pricing" style={{
       padding: '6rem 2rem',
-      background: 'var(--vercel-white)'
+      background: 'var(--bg-primary)'
     }}>
       <div className="container">
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <span className="badge badge-orange mb-3">💰 Pricing</span>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.5rem 1rem',
+            background: 'rgba(37, 99, 235, 0.08)',
+            border: '1px solid rgba(37, 99, 235, 0.15)',
+            borderRadius: 'var(--radius-full)',
+            marginBottom: '1rem'
+          }}>
+            <span style={{ fontSize: '1rem' }}>💰</span>
+            <span style={{
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              color: 'var(--accent-primary)'
+            }}>
+              Pricing
+            </span>
+          </div>
           <h2 style={{ 
             fontSize: 'clamp(2rem, 4vw, 3rem)',
             fontWeight: 600,
             letterSpacing: '-2px',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            color: 'var(--text-primary)'
           }}>
             Simple, Transparent Pricing
           </h2>
-          <p style={{ color: 'var(--vercel-gray-600)', fontSize: '1.125rem', maxWidth: '600px', margin: '0 auto' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1.125rem', maxWidth: '600px', margin: '0 auto' }}>
             Start for free, upgrade when you need more. No hidden fees.
           </p>
         </div>
@@ -89,8 +108,9 @@ export default function Pricing() {
           marginBottom: '3rem'
         }}>
           <span style={{ 
-            color: !annual ? 'var(--vercel-gray-400)' : 'var(--vercel-black)',
-            fontSize: '0.875rem'
+            color: !annual ? 'var(--text-muted)' : 'var(--text-primary)',
+            fontSize: '0.875rem',
+            fontWeight: !annual ? 400 : 600
           }}>
             Monthly
           </span>
@@ -100,7 +120,7 @@ export default function Pricing() {
               width: '48px',
               height: '24px',
               borderRadius: '12px',
-              background: annual ? 'var(--develop-blue)' : 'var(--vercel-gray-300)',
+              background: annual ? 'var(--accent-primary)' : 'var(--text-disabled)',
               border: 'none',
               cursor: 'pointer',
               position: 'relative',
@@ -119,10 +139,11 @@ export default function Pricing() {
             }} />
           </button>
           <span style={{ 
-            color: annual ? 'var(--vercel-black)' : 'var(--vercel-gray-400)',
-            fontSize: '0.875rem'
+            color: annual ? 'var(--text-primary)' : 'var(--text-muted)',
+            fontSize: '0.875rem',
+            fontWeight: annual ? 600 : 400
           }}>
-            Annual <span style={{ color: 'var(--develop-blue)', fontWeight: 600 }}>(Save 20%)</span>
+            Annual <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>(Save 20%)</span>
           </span>
         </div>
 
@@ -141,7 +162,7 @@ export default function Pricing() {
               style={{
                 padding: '2rem',
                 textAlign: 'left',
-                border: plan.highlighted ? '2px solid var(--develop-blue)' : '1px solid var(--vercel-gray-200)',
+                border: plan.highlighted ? '2px solid var(--accent-primary)' : '1px solid var(--border-default)',
                 position: 'relative',
                 animation: `fadeInUp 0.5s ease ${index * 0.1}s both`
               }}
@@ -152,7 +173,7 @@ export default function Pricing() {
                   top: '-12px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  background: 'var(--develop-blue)',
+                  background: 'var(--accent-primary)',
                   color: 'white',
                   padding: '0.25rem 1rem',
                   borderRadius: '9999px',
@@ -167,7 +188,8 @@ export default function Pricing() {
               <h3 style={{
                 fontSize: '1.25rem',
                 fontWeight: 600,
-                marginBottom: '0.5rem'
+                marginBottom: '0.5rem',
+                color: 'var(--text-primary)'
               }}>
                 {plan.name}
               </h3>
@@ -177,12 +199,13 @@ export default function Pricing() {
                 <span style={{
                   fontSize: '2.5rem',
                   fontWeight: 700,
-                  letterSpacing: '-1px'
+                  letterSpacing: '-1px',
+                  color: 'var(--text-primary)'
                 }}>
                   {plan.price}
                 </span>
                 <span style={{
-                  color: 'var(--vercel-gray-500)',
+                  color: 'var(--text-muted)',
                   fontSize: '0.875rem'
                 }}>
                   {plan.period}
@@ -191,7 +214,7 @@ export default function Pricing() {
 
               {/* Description */}
               <p style={{
-                color: 'var(--vercel-gray-600)',
+                color: 'var(--text-secondary)',
                 fontSize: '0.875rem',
                 marginBottom: '1.5rem'
               }}>
@@ -209,10 +232,10 @@ export default function Pricing() {
                       gap: '0.5rem',
                       marginBottom: '0.5rem',
                       fontSize: '0.875rem',
-                      color: 'var(--vercel-gray-700)'
+                      color: 'var(--text-secondary)'
                     }}
                   >
-                    <span style={{ color: 'var(--develop-blue)' }}>✓</span>
+                    <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>✓</span>
                     {feature}
                   </li>
                 ))}
@@ -233,7 +256,7 @@ export default function Pricing() {
         <p style={{
           textAlign: 'center',
           marginTop: '2rem',
-          color: 'var(--vercel-gray-500)',
+          color: 'var(--text-muted)',
           fontSize: '0.875rem'
         }}>
           🔒 30-day money back guarantee. Cancel anytime.

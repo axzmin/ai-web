@@ -26,21 +26,40 @@ export default function GalleryPreview() {
   return (
     <section id="gallery" style={{
       padding: '6rem 2rem',
-      background: 'var(--vercel-gray-50)'
+      background: 'var(--bg-tertiary)'
     }}>
       <div className="container">
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <span className="badge badge-purple mb-3">🖼️ Gallery</span>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.5rem 1rem',
+            background: 'rgba(37, 99, 235, 0.08)',
+            border: '1px solid rgba(37, 99, 235, 0.15)',
+            borderRadius: 'var(--radius-full)',
+            marginBottom: '1rem'
+          }}>
+            <span style={{ fontSize: '1rem' }}>🖼️</span>
+            <span style={{
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              color: 'var(--accent-primary)'
+            }}>
+              Gallery
+            </span>
+          </div>
           <h2 style={{ 
             fontSize: 'clamp(2rem, 4vw, 3rem)',
             fontWeight: 600,
             letterSpacing: '-2px',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            color: 'var(--text-primary)'
           }}>
             Created by Our Community
           </h2>
-          <p style={{ color: 'var(--vercel-gray-600)', fontSize: '1.125rem', maxWidth: '600px', margin: '0 auto' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1.125rem', maxWidth: '600px', margin: '0 auto' }}>
             See what artists and creators are making with AI Studio every day.
           </p>
         </div>
@@ -59,10 +78,10 @@ export default function GalleryPreview() {
               onClick={() => setActiveCategory(category)}
               style={{
                 padding: '0.5rem 1rem',
-                background: activeCategory === category ? 'var(--vercel-black)' : 'white',
-                border: '1px solid var(--vercel-gray-200)',
+                background: activeCategory === category ? 'var(--accent-primary)' : 'var(--bg-card)',
+                border: '1px solid var(--border-default)',
                 borderRadius: '9999px',
-                color: activeCategory === category ? 'white' : 'var(--vercel-gray-600)',
+                color: activeCategory === category ? 'white' : 'var(--text-secondary)',
                 fontSize: '0.875rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s'
@@ -91,7 +110,9 @@ export default function GalleryPreview() {
                 borderRadius: '12px',
                 overflow: 'hidden',
                 cursor: 'pointer',
-                animation: `fadeInUp 0.5s ease ${index * 0.1}s both`
+                animation: `fadeInUp 0.5s ease ${index * 0.1}s both`,
+                background: 'var(--bg-card)',
+                boxShadow: 'var(--shadow-sm)'
               }}
             >
               <img
@@ -111,7 +132,7 @@ export default function GalleryPreview() {
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%)',
+                background: 'linear-gradient(to top, rgba(20,20,19,0.8) 0%, transparent 50%)',
                 opacity: 0,
                 transition: 'opacity 0.3s ease',
                 display: 'flex',
@@ -145,7 +166,7 @@ export default function GalleryPreview() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.9)',
+            background: 'rgba(20, 20, 19, 0.9)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

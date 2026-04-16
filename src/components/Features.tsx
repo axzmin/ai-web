@@ -1,42 +1,42 @@
 const FEATURES = [
   {
     icon: '🎨',
-    gradient: 'linear-gradient(135deg, #a78bfa, #8b5cf6)',
+    gradient: 'linear-gradient(135deg, #2563eb, #0891b2)',
     title: 'Text to Image',
     description: 'Transform your words into stunning visuals. Our AI understands context, lighting, composition, and style.',
     details: ['Natural language understanding', 'Professional quality output', 'Custom aspect ratios']
   },
   {
     icon: '🔄',
-    gradient: 'linear-gradient(135deg, #ec4899, #db2777)',
+    gradient: 'linear-gradient(135deg, #0d9488, #0891b2)',
     title: 'Image to Image',
     description: 'Upload any image and transform it with AI. Change styles, enhance quality, or reimagine completely.',
     details: ['Style transfer', 'Quality enhancement', 'Creative remix']
   },
   {
     icon: '⚡',
-    gradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
+    gradient: 'linear-gradient(135deg, #ea7c0a, #ea580c)',
     title: 'Lightning Fast',
     description: 'Optimized infrastructure delivers results in seconds. Start creating immediately with no delays.',
     details: ['10-30 second generation', 'Real-time previews', 'Instant downloads']
   },
   {
     icon: '🌍',
-    gradient: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+    gradient: 'linear-gradient(135deg, #0891b2, #0d9488)',
     title: 'Global CDN',
     description: 'Deploy worldwide with our global infrastructure. Your images are generated close to your users.',
     details: ['200+ edge locations', '99.9% uptime', 'Automatic scaling']
   },
   {
     icon: '🔒',
-    gradient: 'linear-gradient(135deg, #22c55e, #16a34a)',
+    gradient: 'linear-gradient(135deg, #16a34a, #15803d)',
     title: 'Privacy First',
     description: 'Your creations are private by default. No data collection, no watermarks. You own what you create.',
     details: ['No data retention', 'No watermarks', 'Full ownership']
   },
   {
     icon: '🎯',
-    gradient: 'linear-gradient(135deg, #f97316, #ea580c)',
+    gradient: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
     title: 'API Access',
     description: 'Integrate AI image generation directly into your apps with our developer-friendly API.',
     details: ['REST API', 'SDK libraries', 'Webhooks support']
@@ -54,7 +54,7 @@ export default function Features() {
       <div style={{
         position: 'absolute',
         inset: 0,
-        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
+        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(20,20,19,0.04) 1px, transparent 0)',
         backgroundSize: '32px 32px'
       }} />
 
@@ -66,8 +66,8 @@ export default function Features() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(124, 58, 237, 0.1)',
-            border: '1px solid rgba(124, 58, 237, 0.2)',
+            background: 'rgba(37, 99, 235, 0.08)',
+            border: '1px solid rgba(37, 99, 235, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1rem'
           }}>
@@ -75,7 +75,7 @@ export default function Features() {
             <span style={{
               fontSize: '0.875rem',
               fontWeight: 600,
-              color: '#a78bfa'
+              color: 'var(--accent-primary)'
             }}>
               Features
             </span>
@@ -129,7 +129,7 @@ export default function Features() {
                 justifyContent: 'center',
                 fontSize: '1.75rem',
                 marginBottom: '1.25rem',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
+                boxShadow: 'var(--shadow-md)'
               }}>
                 {feature.icon}
               </div>

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import ParticleCanvas from './ParticleCanvas';
 
 export default function Hero() {
   return (
@@ -16,27 +15,25 @@ export default function Hero() {
       background: 'var(--bg-primary)',
       overflow: 'hidden'
     }}>
-      <ParticleCanvas />
-      
-      {/* Gradient Orbs */}
+      {/* Warm Gradient Orbs - Blue/Teal instead of Purple */}
       <div style={{
         position: 'absolute',
-        top: '20%',
-        left: '10%',
-        width: '500px',
-        height: '500px',
-        background: 'radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%)',
-        filter: 'blur(80px)',
+        top: '15%',
+        left: '5%',
+        width: '600px',
+        height: '600px',
+        background: 'radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%)',
+        filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
       <div style={{
         position: 'absolute',
-        bottom: '30%',
-        right: '15%',
-        width: '400px',
-        height: '400px',
-        background: 'radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, transparent 70%)',
-        filter: 'blur(80px)',
+        bottom: '20%',
+        right: '10%',
+        width: '500px',
+        height: '500px',
+        background: 'radial-gradient(circle, rgba(8, 145, 178, 0.1) 0%, transparent 70%)',
+        filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
       
@@ -48,8 +45,8 @@ export default function Hero() {
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.5rem 1rem',
-          background: 'rgba(124, 58, 237, 0.15)',
-          border: '1px solid rgba(124, 58, 237, 0.3)',
+          background: 'rgba(37, 99, 235, 0.08)',
+          border: '1px solid rgba(37, 99, 235, 0.2)',
           borderRadius: 'var(--radius-full)',
           marginBottom: '1.5rem',
           animation: 'float 3s ease-in-out infinite'
@@ -58,9 +55,7 @@ export default function Hero() {
           <span style={{ 
             fontSize: '0.875rem', 
             fontWeight: 600,
-            background: 'var(--gradient-primary)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
+            color: 'var(--accent-primary)'
           }}>
             Powered by Flux.1 Dev
           </span>
@@ -77,9 +72,7 @@ export default function Hero() {
         }}>
           Create Stunning{' '}
           <span style={{
-            background: 'var(--gradient-primary)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
+            color: 'var(--accent-primary)'
           }}>
             AI Images
           </span>
@@ -137,7 +130,7 @@ export default function Hero() {
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '0.5rem 1rem',
-                background: 'rgba(255, 255, 255, 0.05)',
+                background: 'var(--bg-card)',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: 'var(--radius-full)',
                 fontSize: '0.875rem',

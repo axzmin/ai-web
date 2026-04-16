@@ -21,9 +21,9 @@ export default function Navbar() {
       right: 0,
       zIndex: 100,
       padding: '0.75rem 1.5rem',
-      background: scrolled ? 'rgba(9, 9, 11, 0.9)' : 'transparent',
+      background: scrolled ? 'rgba(250, 249, 245, 0.9)' : 'transparent',
       backdropFilter: scrolled ? 'blur(20px)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.06)' : 'none',
+      borderBottom: scrolled ? '1px solid var(--border-subtle)' : 'none',
       transition: 'all 0.3s ease'
     }}>
       <div style={{
@@ -44,7 +44,7 @@ export default function Navbar() {
             width: '36px',
             height: '36px',
             borderRadius: '10px',
-            background: 'var(--gradient-primary)',
+            background: 'var(--accent-primary)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -88,7 +88,7 @@ export default function Navbar() {
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.color = 'var(--text-primary)';
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                e.currentTarget.style.background = 'var(--bg-tertiary)';
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.color = 'var(--text-secondary)';

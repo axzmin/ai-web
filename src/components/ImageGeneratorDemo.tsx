@@ -54,18 +54,18 @@ export default function ImageGeneratorDemo() {
   return (
     <section id="generator" style={{
       padding: '5rem 2rem',
-      background: 'linear-gradient(180deg, #09090b 0%, #0f0f12 50%, #17171a 100%)',
+      background: 'var(--bg-tertiary)',
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Ambient Glow Effects */}
+      {/* Warm Ambient Glow Effects - Blue instead of Purple */}
       <div style={{
         position: 'absolute',
         top: '10%',
         left: '5%',
         width: '400px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%)',
         filter: 'blur(60px)',
         pointerEvents: 'none'
       }} />
@@ -75,7 +75,7 @@ export default function ImageGeneratorDemo() {
         right: '10%',
         width: '350px',
         height: '350px',
-        background: 'radial-gradient(circle, rgba(14, 165, 233, 0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(8, 145, 178, 0.1) 0%, transparent 70%)',
         filter: 'blur(60px)',
         pointerEvents: 'none'
       }} />
@@ -88,8 +88,8 @@ export default function ImageGeneratorDemo() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(124, 58, 237, 0.15)',
-            border: '1px solid rgba(124, 58, 237, 0.3)',
+            background: 'rgba(37, 99, 235, 0.08)',
+            border: '1px solid rgba(37, 99, 235, 0.15)',
             borderRadius: '9999px',
             marginBottom: '1rem'
           }}>
@@ -97,9 +97,7 @@ export default function ImageGeneratorDemo() {
             <span style={{ 
               fontSize: '0.875rem', 
               fontWeight: 600,
-              background: 'linear-gradient(135deg, #a78bfa, #0ea5e9)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              color: 'var(--accent-primary)'
             }}>
               AI Image Generator
             </span>
@@ -109,22 +107,20 @@ export default function ImageGeneratorDemo() {
             fontSize: 'clamp(2rem, 4vw, 2.75rem)',
             fontWeight: 700,
             letterSpacing: '-0.02em',
-            color: '#fafafa',
+            color: 'var(--text-primary)',
             marginBottom: '0.75rem',
             lineHeight: 1.2
           }}>
             Create Stunning Images{' '}
             <span style={{
-              background: 'linear-gradient(135deg, #a78bfa, #ec4899, #f97316)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              color: 'var(--accent-primary)'
             }}>
               in Seconds
             </span>
           </h2>
           
           <p style={{ 
-            color: '#a1a1aa', 
+            color: 'var(--text-secondary)', 
             fontSize: '1.0625rem', 
             maxWidth: '500px', 
             margin: '0 auto',
@@ -136,17 +132,17 @@ export default function ImageGeneratorDemo() {
 
         {/* Main Generator Card */}
         <div style={{
-          background: 'linear-gradient(180deg, #1c1c21 0%, #15151a 100%)',
+          background: 'var(--bg-card)',
           borderRadius: '24px',
           padding: '1.5rem',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 0 80px rgba(124, 58, 237, 0.1), 0 0 40px rgba(14, 165, 233, 0.05)'
+          border: '1px solid var(--border-default)',
+          boxShadow: 'var(--shadow-lg)'
         }}>
           {/* Tabs */}
           <div style={{
             display: 'flex',
             gap: '0.25rem',
-            background: '#0a0a0d',
+            background: 'var(--bg-tertiary)',
             borderRadius: '12px',
             padding: '0.25rem',
             marginBottom: '1.5rem'
@@ -156,10 +152,10 @@ export default function ImageGeneratorDemo() {
               style={{
                 flex: 1,
                 padding: '0.75rem 1rem',
-                background: activeTab === 'text' ? 'linear-gradient(135deg, #7c3aed, #6d28d9)' : 'transparent',
+                background: activeTab === 'text' ? 'var(--accent-primary)' : 'transparent',
                 border: 'none',
                 borderRadius: '8px',
-                color: activeTab === 'text' ? '#fff' : '#71717a',
+                color: activeTab === 'text' ? '#fff' : 'var(--text-secondary)',
                 fontSize: '0.9375rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -177,10 +173,10 @@ export default function ImageGeneratorDemo() {
               style={{
                 flex: 1,
                 padding: '0.75rem 1rem',
-                background: activeTab === 'image' ? 'linear-gradient(135deg, #ec4899, #db2777)' : 'transparent',
+                background: activeTab === 'image' ? 'var(--accent-secondary)' : 'transparent',
                 border: 'none',
                 borderRadius: '8px',
-                color: activeTab === 'image' ? '#fff' : '#71717a',
+                color: activeTab === 'image' ? '#fff' : 'var(--text-secondary)',
                 fontSize: '0.9375rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -208,25 +204,25 @@ export default function ImageGeneratorDemo() {
                     width: '100%',
                     minHeight: '120px',
                     padding: '1rem 1rem 2.5rem 1rem',
-                    background: '#0a0a0d',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    background: 'var(--bg-tertiary)',
+                    border: '1px solid var(--border-default)',
                     borderRadius: '16px',
-                    color: '#fafafa',
+                    color: 'var(--text-primary)',
                     fontSize: '0.9375rem',
                     lineHeight: 1.6,
                     resize: 'none',
                     outline: 'none',
                     transition: 'border-color 0.2s'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = 'rgba(124, 58, 237, 0.5)'}
-                  onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--accent-primary)'}
+                  onBlur={(e) => e.target.style.borderColor = 'var(--border-default)'}
                 />
                 <span style={{
                   position: 'absolute',
                   bottom: '0.75rem',
                   right: '0.75rem',
                   fontSize: '0.75rem',
-                  color: '#52525b'
+                  color: 'var(--text-muted)'
                 }}>
                   {prompt.length}/500
                 </span>
@@ -234,7 +230,7 @@ export default function ImageGeneratorDemo() {
 
               {/* Sample Prompts */}
               <div style={{ marginBottom: '1.25rem' }}>
-                <p style={{ color: '#52525b', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
                   Try these prompts:
                 </p>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -244,21 +240,21 @@ export default function ImageGeneratorDemo() {
                       onClick={() => setPrompt(p)}
                       style={{
                         padding: '0.375rem 0.75rem',
-                        background: 'rgba(124, 58, 237, 0.1)',
-                        border: '1px solid rgba(124, 58, 237, 0.2)',
+                        background: 'rgba(37, 99, 235, 0.08)',
+                        border: '1px solid rgba(37, 99, 235, 0.15)',
                         borderRadius: '9999px',
-                        color: '#a78bfa',
+                        color: 'var(--accent-primary)',
                         fontSize: '0.75rem',
                         cursor: 'pointer',
                         transition: 'all 0.2s'
                       }}
                       onMouseOver={(e) => {
-                        e.currentTarget.style.background = 'rgba(124, 58, 237, 0.2)';
-                        e.currentTarget.style.borderColor = 'rgba(124, 58, 237, 0.4)';
+                        e.currentTarget.style.background = 'rgba(37, 99, 235, 0.15)';
+                        e.currentTarget.style.borderColor = 'rgba(37, 99, 235, 0.25)';
                       }}
                       onMouseOut={(e) => {
-                        e.currentTarget.style.background = 'rgba(124, 58, 237, 0.1)';
-                        e.currentTarget.style.borderColor = 'rgba(124, 58, 237, 0.2)';
+                        e.currentTarget.style.background = 'rgba(37, 99, 235, 0.08)';
+                        e.currentTarget.style.borderColor = 'rgba(37, 99, 235, 0.15)';
                       }}
                     >
                       {p.substring(0, 30)}...
@@ -269,7 +265,7 @@ export default function ImageGeneratorDemo() {
 
               {/* Aspect Ratio Selector */}
               <div style={{ marginBottom: '1.25rem' }}>
-                <label style={{ display: 'block', color: '#71717a', fontSize: '0.8125rem', marginBottom: '0.5rem' }}>
+                <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.8125rem', marginBottom: '0.5rem' }}>
                   Aspect Ratio
                 </label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
@@ -279,10 +275,10 @@ export default function ImageGeneratorDemo() {
                       onClick={() => setAspectRatio(ratio.value)}
                       style={{
                         padding: '0.625rem',
-                        background: aspectRatio === ratio.value ? 'linear-gradient(135deg, #7c3aed, #6d28d9)' : '#0a0a0d',
-                        border: aspectRatio === ratio.value ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
+                        background: aspectRatio === ratio.value ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
+                        border: aspectRatio === ratio.value ? 'none' : '1px solid var(--border-default)',
                         borderRadius: '10px',
-                        color: aspectRatio === ratio.value ? '#fff' : '#a1a1aa',
+                        color: aspectRatio === ratio.value ? '#fff' : 'var(--text-secondary)',
                         fontSize: '0.8125rem',
                         cursor: 'pointer',
                         transition: 'all 0.2s',
@@ -313,13 +309,13 @@ export default function ImageGeneratorDemo() {
                 }}
                 onClick={() => fileInputRef.current?.click()}
                 style={{
-                  border: `2px dashed ${isDragging ? '#a78bfa' : uploadedImage ? '#22c55e' : 'rgba(255, 255, 255, 0.15)'}`,
+                  border: `2px dashed ${isDragging ? 'var(--accent-primary)' : uploadedImage ? '#22c55e' : 'var(--border-default)'}`,
                   borderRadius: '16px',
                   padding: '2rem',
                   textAlign: 'center',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  background: uploadedImage ? 'rgba(34, 197, 94, 0.05)' : 'rgba(255, 255, 255, 0.02)',
+                  background: uploadedImage ? 'rgba(34, 197, 94, 0.05)' : 'var(--bg-tertiary)',
                   marginBottom: '1rem'
                 }}
               >
@@ -356,7 +352,8 @@ export default function ImageGeneratorDemo() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '0.75rem'
+                      fontSize: '0.75rem',
+                      color: 'white'
                     }}>
                       ✓
                     </div>
@@ -364,10 +361,10 @@ export default function ImageGeneratorDemo() {
                 ) : (
                   <>
                     <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🖼️</div>
-                    <p style={{ color: '#a1a1aa', fontSize: '0.9375rem', marginBottom: '0.25rem' }}>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginBottom: '0.25rem' }}>
                       Drag & drop an image here
                     </p>
-                    <p style={{ color: '#52525b', fontSize: '0.75rem' }}>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
                       or click to browse • JPG, PNG, WebP
                     </p>
                   </>
@@ -384,10 +381,10 @@ export default function ImageGeneratorDemo() {
                     width: '100%',
                     minHeight: '80px',
                     padding: '0.875rem 1rem 2rem 1rem',
-                    background: '#0a0a0d',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    background: 'var(--bg-tertiary)',
+                    border: '1px solid var(--border-default)',
                     borderRadius: '12px',
-                    color: '#fafafa',
+                    color: 'var(--text-primary)',
                     fontSize: '0.9375rem',
                     lineHeight: 1.6,
                     resize: 'none',
@@ -399,10 +396,10 @@ export default function ImageGeneratorDemo() {
               {/* Strength Slider */}
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <label style={{ color: '#71717a', fontSize: '0.8125rem' }}>
+                  <label style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>
                     Transformation Strength
                   </label>
-                  <span style={{ color: '#ec4899', fontSize: '0.8125rem', fontWeight: 600 }}>
+                  <span style={{ color: 'var(--accent-secondary)', fontSize: '0.8125rem', fontWeight: 600 }}>
                     {Math.round(strength * 100)}%
                   </span>
                 </div>
@@ -411,14 +408,14 @@ export default function ImageGeneratorDemo() {
                     position: 'absolute',
                     width: '100%',
                     height: '100%',
-                    background: '#27272a',
+                    background: 'var(--bg-tertiary)',
                     borderRadius: '3px'
                   }} />
                   <div style={{
                     position: 'absolute',
                     width: `${strength * 100}%`,
                     height: '100%',
-                    background: 'linear-gradient(90deg, #ec4899, #f472b6)',
+                    background: 'var(--accent-secondary)',
                     borderRadius: '3px',
                     transition: 'width 0.1s'
                   }} />
@@ -440,8 +437,8 @@ export default function ImageGeneratorDemo() {
                   />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem' }}>
-                  <span style={{ color: '#52525b', fontSize: '0.6875rem' }}>Keep Original</span>
-                  <span style={{ color: '#52525b', fontSize: '0.6875rem' }}>Full Transform</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>Keep Original</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>Full Transform</span>
                 </div>
               </div>
             </div>
@@ -459,8 +456,7 @@ export default function ImageGeneratorDemo() {
               width: '100%',
               padding: '1rem',
               marginTop: '1.25rem',
-              background: isGenerating ? '#3f3f46' : 'linear-gradient(135deg, #7c3aed 0%, #ec4899 50%, #f97316 100%)',
-              backgroundSize: '200% 100%',
+              background: isGenerating ? 'var(--text-disabled)' : 'var(--accent-primary)',
               border: 'none',
               borderRadius: '14px',
               color: '#fff',
@@ -472,7 +468,7 @@ export default function ImageGeneratorDemo() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.5rem',
-              boxShadow: isGenerating ? 'none' : '0 0 30px rgba(124, 58, 237, 0.4)'
+              boxShadow: isGenerating ? 'none' : 'var(--shadow-glow-blue)'
             }}
           >
             {isGenerating ? (
@@ -501,7 +497,7 @@ export default function ImageGeneratorDemo() {
               marginTop: '1.5rem',
               borderRadius: '16px',
               overflow: 'hidden',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              border: '1px solid var(--border-default)',
               animation: 'fadeIn 0.5s ease'
             }}>
               <img
@@ -515,12 +511,12 @@ export default function ImageGeneratorDemo() {
               />
               <div style={{
                 padding: '0.75rem 1rem',
-                background: '#0a0a0d',
+                background: 'var(--bg-tertiary)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'
               }}>
-                <span style={{ color: '#71717a', fontSize: '0.8125rem' }}>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
                   Generated with Flux.1 Dev
                 </span>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -537,10 +533,10 @@ export default function ImageGeneratorDemo() {
                   </button>
                   <button style={{
                     padding: '0.375rem 0.75rem',
-                    background: 'rgba(124, 58, 237, 0.1)',
-                    border: '1px solid rgba(124, 58, 237, 0.3)',
+                    background: 'rgba(37, 99, 235, 0.1)',
+                    border: '1px solid rgba(37, 99, 235, 0.2)',
                     borderRadius: '8px',
-                    color: '#a78bfa',
+                    color: 'var(--accent-primary)',
                     fontSize: '0.75rem',
                     cursor: 'pointer'
                   }}>
@@ -569,29 +565,17 @@ export default function ImageGeneratorDemo() {
               <div style={{
                 fontSize: '1.5rem',
                 fontWeight: 700,
-                background: 'linear-gradient(135deg, #a78bfa, #ec4899)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
+                color: 'var(--accent-primary)'
               }}>
                 {stat.value}
               </div>
-              <div style={{ color: '#52525b', fontSize: '0.8125rem' }}>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
                 {stat.label}
               </div>
             </div>
           ))}
         </div>
       </div>
-
-      <style jsx global>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </section>
   );
 }
