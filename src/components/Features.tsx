@@ -156,7 +156,7 @@ export default function Features() {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
           gap: '1.5rem',
-          maxWidth: '1200px',
+          maxWidth: '1300px',
           margin: '0 auto'
         }}>
           {FEATURES.map((feature, index) => (
