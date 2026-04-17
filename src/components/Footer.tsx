@@ -5,11 +5,11 @@ import Link from 'next/link';
 export default function Footer() {
   return (
     <footer style={{
-      padding: '4rem 2rem 2rem',
+      padding: '4rem 0 2rem',
       background: 'var(--bg-secondary)',
       borderTop: '1px solid var(--border-subtle)'
     }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '0 2rem' }}>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',

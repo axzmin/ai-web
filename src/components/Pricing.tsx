@@ -84,8 +84,7 @@ export default function Pricing() {
   const [annual, setAnnual] = useState(true);
 
   return (
-    <section id="pricing" style={{
-      padding: '6rem 2rem',
+    <section id="pricing" className="section-padded" style={{
       background: 'var(--bg-primary)'
     }}>
       <div className="container">

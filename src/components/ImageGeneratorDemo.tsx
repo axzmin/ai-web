@@ -100,8 +100,7 @@ export default function ImageGeneratorDemo() {
   ];
 
   return (
-    <section id="generator" style={{
-      padding: '5rem 2rem',
+    <section id="generator" className="section-padded" style={{
       background: 'var(--bg-tertiary)',
       position: 'relative',
       overflow: 'hidden'

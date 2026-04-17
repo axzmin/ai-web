@@ -45,14 +45,13 @@ const Icons = {
 
 export default function Hero() {
   return (
-    <section style={{
+    <section className="section-padded" style={{
       position: 'relative',
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '6rem 2rem',
       background: 'var(--bg-primary)',
       overflow: 'hidden'
     }}>

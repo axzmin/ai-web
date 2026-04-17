@@ -2,8 +2,7 @@
 
 export default function CTASection() {
   return (
-    <section style={{
-      padding: '8rem 2rem',
+    <section className="section-padded" style={{
       background: 'var(--bg-tertiary)',
       position: 'relative',
       overflow: 'hidden'

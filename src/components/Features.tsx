@@ -94,8 +94,7 @@ const FEATURES = [
 
 export default function Features() {
   return (
-    <section id="features" style={{
-      padding: '6rem 2rem',
+    <section id="features" className="section-padded" style={{
       background: 'var(--bg-secondary)',
       position: 'relative'
     }}>

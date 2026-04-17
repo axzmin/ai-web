@@ -41,8 +41,7 @@ export default function GalleryPreview() {
     : GALLERY_ITEMS.filter(item => item.category === activeCategory);
 
   return (
-    <section id="gallery" style={{
-      padding: '6rem 2rem',
+    <section id="gallery" className="section-padded" style={{
       background: 'var(--bg-tertiary)'
     }}>
       <div className="container">

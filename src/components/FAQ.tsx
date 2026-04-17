@@ -41,8 +41,7 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" style={{
-      padding: '6rem 2rem',
+    <section id="faq" className="section-padded" style={{
       background: 'var(--bg-secondary)'
     }}>
       <div className="container">
