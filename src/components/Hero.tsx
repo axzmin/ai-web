@@ -62,7 +62,7 @@ export default function Hero() {
         left: '5%',
         width: '600px',
         height: '600px',
-        background: 'radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 70%)',
         filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
@@ -72,21 +72,22 @@ export default function Hero() {
         right: '10%',
         width: '500px',
         height: '500px',
-        background: 'radial-gradient(circle, rgba(8, 145, 178, 0.1) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.1) 0%, transparent 70%)',
         filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
       
       {/* Content */}
-      <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', maxWidth: '900px' }}>
+      <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+      <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', maxWidth: '900px', margin: '0 auto' }}>
         {/* Badge */}
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.5rem 1rem',
-          background: 'rgba(37, 99, 235, 0.08)',
-          border: '1px solid rgba(37, 99, 235, 0.2)',
+          background: 'rgba(255, 140, 66, 0.08)',
+          border: '1px solid rgba(255, 140, 66, 0.2)',
           borderRadius: 'var(--radius-full)',
           marginBottom: '1.5rem',
           animation: 'float 3s ease-in-out infinite',
@@ -184,6 +185,7 @@ export default function Hero() {
             </div>
           ))}
         </div>
+      </div>
       </div>
       
       {/* Scroll Indicator */}

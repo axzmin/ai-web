@@ -5,42 +5,42 @@
 
 /* CSS Variables */
 :root {
-  /* Colors - Warm Light Theme */
-  --bg-primary: #faf9f5;
-  --bg-secondary: #f5f4f0;
-  --bg-tertiary: #efefeb;
+  /* Colors - Warm Tan/Beige Light Theme */
+  --bg-primary: #F5F0E6;
+  --bg-secondary: #EBE6DA;
+  --bg-tertiary: #E1DCD0;
   --bg-card: #ffffff;
   --bg-elevated: #ffffff;
-  
-  --text-primary: #141413;
-  --text-secondary: #6b6b68;
-  --text-muted: #9c9c99;
-  --text-disabled: #c5c5c2;
-  
-  /* Accent Colors - Warm Blue/Cyan (no purple) */
-  --accent-primary: #2563eb;
-  --accent-primary-hover: #1d4ed8;
-  --accent-secondary: #0891b2;
-  --accent-tertiary: #0d9488;
-  
-  /* Gradients - Subtle and Warm */
-  --gradient-primary: linear-gradient(135deg, #2563eb, #0891b2);
-  --gradient-secondary: linear-gradient(135deg, #0d9488, #2563eb);
-  --gradient-warm: linear-gradient(135deg, #ea580c, #ea7c0a);
+
+  --text-primary: #1a1614;
+  --text-secondary: #5c534a;
+  --text-muted: #8a8279;
+  --text-disabled: #c2bdb6;
+
+  /* Accent Colors - Warm Orange */
+  --accent-primary: #FF8C42;
+  --accent-primary-hover: #E67A35;
+  --accent-secondary: #FFB380;
+  --accent-tertiary: #FF6B1A;
+
+  /* Gradients - Warm Orange */
+  --gradient-primary: linear-gradient(135deg, #FF8C42, #FF6B1A);
+  --gradient-secondary: linear-gradient(135deg, #FFB380, #FF8C42);
+  --gradient-warm: linear-gradient(135deg, #FF8C42, #FFB380);
   --gradient-success: linear-gradient(135deg, #16a34a, #15803d);
-  
+
   /* Borders */
-  --border-subtle: rgba(20, 20, 19, 0.06);
-  --border-default: rgba(20, 20, 19, 0.1);
-  --border-hover: rgba(20, 20, 19, 0.15);
-  
+  --border-subtle: rgba(26, 22, 20, 0.06);
+  --border-default: rgba(26, 22, 20, 0.1);
+  --border-hover: rgba(26, 22, 20, 0.15);
+
   /* Shadows - Soft and Natural */
-  --shadow-sm: 0 1px 2px rgba(20, 20, 19, 0.05);
-  --shadow-md: 0 4px 12px rgba(20, 20, 19, 0.08);
-  --shadow-lg: 0 8px 24px rgba(20, 20, 19, 0.1);
-  --shadow-xl: 0 16px 48px rgba(20, 20, 19, 0.12);
-  --shadow-glow-blue: 0 4px 20px rgba(37, 99, 235, 0.2);
-  
+  --shadow-sm: 0 1px 2px rgba(26, 22, 20, 0.05);
+  --shadow-md: 0 4px 12px rgba(26, 22, 20, 0.08);
+  --shadow-lg: 0 8px 24px rgba(26, 22, 20, 0.1);
+  --shadow-xl: 0 16px 48px rgba(26, 22, 20, 0.12);
+  --shadow-glow-orange: 0 4px 20px rgba(255, 140, 66, 0.25);
+
   /* Spacing */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -54,7 +54,7 @@
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
-  
+
   /* Border Radius */
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -62,7 +62,7 @@
   --radius-xl: 24px;
   --radius-2xl: 32px;
   --radius-full: 9999px;
-  
+
   /* Typography */
   --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;

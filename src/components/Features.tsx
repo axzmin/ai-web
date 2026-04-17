@@ -50,14 +50,14 @@ const Icons = {
 const FEATURES = [
   {
     icon: 'paintbrush',
-    gradient: 'linear-gradient(135deg, #2563eb, #0891b2)',
+    gradient: 'linear-gradient(135deg, #FF8C42, #FF6B1A)',
     title: 'Text to Image',
     description: 'Transform your words into stunning visuals. Our AI understands context, lighting, composition, and style.',
     details: ['Natural language understanding', 'Professional quality output', 'Custom aspect ratios']
   },
   {
     icon: 'refresh',
-    gradient: 'linear-gradient(135deg, #0d9488, #0891b2)',
+    gradient: 'linear-gradient(135deg, #FFB380, #FF8C42)',
     title: 'Image to Image',
     description: 'Upload any image and transform it with AI. Change styles, enhance quality, or reimagine completely.',
     details: ['Style transfer', 'Quality enhancement', 'Creative remix']
@@ -71,7 +71,7 @@ const FEATURES = [
   },
   {
     icon: 'globe',
-    gradient: 'linear-gradient(135deg, #0891b2, #0d9488)',
+    gradient: 'linear-gradient(135deg, #FF8C42, #FFB380)',
     title: 'Global CDN',
     description: 'Deploy worldwide with our global infrastructure. Your images are generated close to your users.',
     details: ['200+ edge locations', '99.9% uptime', 'Automatic scaling']
@@ -85,7 +85,7 @@ const FEATURES = [
   },
   {
     icon: 'target',
-    gradient: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+    gradient: 'linear-gradient(135deg, #FF8C42, #E67A35)',
     title: 'API Access',
     description: 'Integrate AI image generation directly into your apps with our developer-friendly API.',
     details: ['REST API', 'SDK libraries', 'Webhooks support']
@@ -114,8 +114,8 @@ export default function Features() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(37, 99, 235, 0.08)',
-            border: '1px solid rgba(37, 99, 235, 0.15)',
+            background: 'rgba(255, 140, 66, 0.08)',
+            border: '1px solid rgba(255, 140, 66, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1rem'
           }}>

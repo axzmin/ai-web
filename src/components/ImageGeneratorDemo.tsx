@@ -112,7 +112,7 @@ export default function ImageGeneratorDemo() {
         left: '5%',
         width: '400px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 70%)',
         filter: 'blur(60px)',
         pointerEvents: 'none'
       }} />
@@ -122,7 +122,7 @@ export default function ImageGeneratorDemo() {
         right: '10%',
         width: '350px',
         height: '350px',
-        background: 'radial-gradient(circle, rgba(8, 145, 178, 0.1) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.1) 0%, transparent 70%)',
         filter: 'blur(60px)',
         pointerEvents: 'none'
       }} />
@@ -135,8 +135,8 @@ export default function ImageGeneratorDemo() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(37, 99, 235, 0.08)',
-            border: '1px solid rgba(37, 99, 235, 0.15)',
+            background: 'rgba(255, 140, 66, 0.08)',
+            border: '1px solid rgba(255, 140, 66, 0.15)',
             borderRadius: '9999px',
             marginBottom: '1rem',
             color: 'var(--accent-primary)'
@@ -302,8 +302,8 @@ export default function ImageGeneratorDemo() {
                       onClick={() => setPrompt(p)}
                       style={{
                         padding: '0.5rem 0.875rem',
-                        background: 'rgba(37, 99, 235, 0.08)',
-                        border: '1px solid rgba(37, 99, 235, 0.15)',
+                        background: 'rgba(255, 140, 66, 0.08)',
+                        border: '1px solid rgba(255, 140, 66, 0.15)',
                         borderRadius: '9999px',
                         color: 'var(--accent-primary)',
                         fontSize: '0.75rem',
@@ -311,12 +311,12 @@ export default function ImageGeneratorDemo() {
                         transition: 'all 0.2s'
                       }}
                       onMouseOver={(e) => {
-                        e.currentTarget.style.background = 'rgba(37, 99, 235, 0.15)';
-                        e.currentTarget.style.borderColor = 'rgba(37, 99, 235, 0.25)';
+                        e.currentTarget.style.background = 'rgba(255, 140, 66, 0.15)';
+                        e.currentTarget.style.borderColor = 'rgba(255, 140, 66, 0.25)';
                       }}
                       onMouseOut={(e) => {
-                        e.currentTarget.style.background = 'rgba(37, 99, 235, 0.08)';
-                        e.currentTarget.style.borderColor = 'rgba(37, 99, 235, 0.15)';
+                        e.currentTarget.style.background = 'rgba(255, 140, 66, 0.08)';
+                        e.currentTarget.style.borderColor = 'rgba(255, 140, 66, 0.15)';
                       }}
                     >
                       {p.substring(0, 35)}...
@@ -526,7 +526,7 @@ export default function ImageGeneratorDemo() {
               marginTop: '1.5rem',
               background: isGenerating 
                 ? 'var(--text-disabled)' 
-                : 'linear-gradient(135deg, var(--accent-primary) 0%, #1d4ed8 100%)',
+                : 'linear-gradient(135deg, var(--accent-primary) 0%, #E67A35 100%)',
               border: 'none',
               borderRadius: '14px',
               color: '#fff',
@@ -538,7 +538,7 @@ export default function ImageGeneratorDemo() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.5rem',
-              boxShadow: isGenerating ? 'none' : '0 10px 25px -5px rgba(37, 99, 235, 0.4)',
+              boxShadow: isGenerating ? 'none' : '0 10px 25px -5px rgba(255, 140, 66, 0.4)',
               transform: isGenerating ? 'none' : 'translateY(0)'
             }}
           >
@@ -608,8 +608,8 @@ export default function ImageGeneratorDemo() {
                   </button>
                   <button style={{
                     padding: '0.5rem 1rem',
-                    background: 'rgba(37, 99, 235, 0.1)',
-                    border: '1px solid rgba(37, 99, 235, 0.2)',
+                    background: 'rgba(255, 140, 66, 0.1)',
+                    border: '1px solid rgba(255, 140, 66, 0.2)',
                     borderRadius: '10px',
                     color: 'var(--accent-primary)',
                     fontSize: '0.8125rem',

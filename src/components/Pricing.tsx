@@ -95,8 +95,8 @@ export default function Pricing() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(37, 99, 235, 0.08)',
-            border: '1px solid rgba(37, 99, 235, 0.15)',
+            background: 'rgba(255, 140, 66, 0.08)',
+            border: '1px solid rgba(255, 140, 66, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1rem',
             color: 'var(--accent-primary)'
@@ -199,13 +199,13 @@ export default function Pricing() {
                   top: '-12px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  background: 'linear-gradient(135deg, var(--accent-primary), #1d4ed8)',
+                  background: 'linear-gradient(135deg, var(--accent-primary), #E67A35)',
                   color: 'white',
                   padding: '0.375rem 1rem',
                   borderRadius: '9999px',
                   fontSize: '0.75rem',
                   fontWeight: 600,
-                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
+                  boxShadow: '0 4px 12px rgba(255, 140, 66, 0.3)'
                 }}>
                   Most Popular
                 </div>

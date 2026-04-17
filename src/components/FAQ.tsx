@@ -52,8 +52,8 @@ export default function FAQ() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(37, 99, 235, 0.08)',
-            border: '1px solid rgba(37, 99, 235, 0.15)',
+            background: 'rgba(255, 140, 66, 0.08)',
+            border: '1px solid rgba(255, 140, 66, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1rem'
           }}>

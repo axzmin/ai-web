@@ -15,7 +15,7 @@ export default function CTASection() {
         transform: 'translate(-50%, -50%)',
         width: '800px',
         height: '600px',
-        background: 'radial-gradient(ellipse, rgba(37, 99, 235, 0.15) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.15) 0%, transparent 70%)',
         filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
@@ -25,7 +25,7 @@ export default function CTASection() {
         right: '20%',
         width: '400px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(8, 145, 178, 0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 70%)',
         filter: 'blur(80px)',
         pointerEvents: 'none'
       }} />
@@ -38,8 +38,8 @@ export default function CTASection() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(37, 99, 235, 0.08)',
-            border: '1px solid rgba(37, 99, 235, 0.15)',
+            background: 'rgba(255, 140, 66, 0.08)',
+            border: '1px solid rgba(255, 140, 66, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1.5rem',
             animation: 'float 3s ease-in-out infinite'
