@@ -2,6 +2,54 @@
 
 import { useState, useRef } from 'react';
 
+const ICONS = {
+  sparkles: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+      <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+    </svg>
+  ),
+  paintbrush: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"/>
+      <path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"/>
+      <path d="M14.5 17.5 4.5 15"/>
+    </svg>
+  ),
+  refresh: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+      <path d="M21 3v5h-5"/>
+      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+      <path d="M8 16H3v5"/>
+    </svg>
+  ),
+  image: (
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+      <circle cx="9" cy="9" r="2"/>
+      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+    </svg>
+  ),
+  upload: (
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="17 8 12 3 7 8"/>
+      <line x1="12" x2="12" y1="3" y2="15"/>
+    </svg>
+  ),
+  check: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  ),
+  arrow: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  ),
+};
+
 export default function ImageGeneratorDemo() {
   const [activeTab, setActiveTab] = useState<'text' | 'image'>('text');
   const [prompt, setPrompt] = useState('');
@@ -15,10 +63,10 @@ export default function ImageGeneratorDemo() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const aspectRatios = [
-    { label: 'Square', value: '1:1', icon: '◻️' },
-    { label: 'Portrait', value: '3:4', icon: '📱' },
-    { label: 'Landscape', value: '4:3', icon: '🖼️' },
-    { label: 'Wide', value: '16:9', icon: '🎬' },
+    { label: 'Square', value: '1:1' },
+    { label: 'Portrait', value: '3:4' },
+    { label: 'Landscape', value: '4:3' },
+    { label: 'Wide', value: '16:9' },
   ];
 
   const handleFileSelect = (file: File) => {
@@ -58,7 +106,7 @@ export default function ImageGeneratorDemo() {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Warm Ambient Glow Effects - Blue instead of Purple */}
+      {/* Ambient Glow Effects */}
       <div style={{
         position: 'absolute',
         top: '10%',
@@ -80,7 +128,7 @@ export default function ImageGeneratorDemo() {
         pointerEvents: 'none'
       }} />
 
-      <div className="container" style={{ position: 'relative', zIndex: 1, maxWidth: '1000px' }}>
+      <div className="container" style={{ position: 'relative', zIndex: 1, maxWidth: '1100px' }}>
         {/* Section Header */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{
@@ -91,9 +139,10 @@ export default function ImageGeneratorDemo() {
             background: 'rgba(37, 99, 235, 0.08)',
             border: '1px solid rgba(37, 99, 235, 0.15)',
             borderRadius: '9999px',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            color: 'var(--accent-primary)'
           }}>
-            <span style={{ fontSize: '1rem' }}>✨</span>
+            <span style={{ display: 'flex' }}>{ICONS.sparkles}</span>
             <span style={{ 
               fontSize: '0.875rem', 
               fontWeight: 600,
@@ -130,31 +179,43 @@ export default function ImageGeneratorDemo() {
           </p>
         </div>
 
-        {/* Main Generator Card */}
+        {/* Main Generator Card - Premium UI */}
         <div style={{
           background: 'var(--bg-card)',
           borderRadius: '24px',
-          padding: '1.5rem',
+          padding: '2rem',
           border: '1px solid var(--border-default)',
-          boxShadow: 'var(--shadow-lg)'
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05)',
+          position: 'relative',
+          overflow: 'hidden'
         }}>
+          {/* Subtle top gradient line */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '2px',
+            background: 'linear-gradient(90deg, transparent, var(--accent-primary), transparent)'
+          }} />
+
           {/* Tabs */}
           <div style={{
             display: 'flex',
             gap: '0.25rem',
             background: 'var(--bg-tertiary)',
-            borderRadius: '12px',
+            borderRadius: '14px',
             padding: '0.25rem',
-            marginBottom: '1.5rem'
+            marginBottom: '1.75rem'
           }}>
             <button
               onClick={() => setActiveTab('text')}
               style={{
                 flex: 1,
-                padding: '0.75rem 1rem',
+                padding: '0.875rem 1rem',
                 background: activeTab === 'text' ? 'var(--accent-primary)' : 'transparent',
                 border: 'none',
-                borderRadius: '8px',
+                borderRadius: '10px',
                 color: activeTab === 'text' ? '#fff' : 'var(--text-secondary)',
                 fontSize: '0.9375rem',
                 fontWeight: 600,
@@ -166,16 +227,17 @@ export default function ImageGeneratorDemo() {
                 gap: '0.5rem'
               }}
             >
-              <span>🎨</span> Text to Image
+              <span style={{ display: 'flex' }}>{ICONS.paintbrush}</span>
+              Text to Image
             </button>
             <button
               onClick={() => setActiveTab('image')}
               style={{
                 flex: 1,
-                padding: '0.75rem 1rem',
+                padding: '0.875rem 1rem',
                 background: activeTab === 'image' ? 'var(--accent-secondary)' : 'transparent',
                 border: 'none',
-                borderRadius: '8px',
+                borderRadius: '10px',
                 color: activeTab === 'image' ? '#fff' : 'var(--text-secondary)',
                 fontSize: '0.9375rem',
                 fontWeight: 600,
@@ -187,7 +249,8 @@ export default function ImageGeneratorDemo() {
                 gap: '0.5rem'
               }}
             >
-              <span>🔄</span> Image to Image
+              <span style={{ display: 'flex' }}>{ICONS.refresh}</span>
+              Image to Image
             </button>
           </div>
 
@@ -195,7 +258,7 @@ export default function ImageGeneratorDemo() {
           {activeTab === 'text' ? (
             <div>
               {/* Prompt Input */}
-              <div style={{ position: 'relative', marginBottom: '1rem' }}>
+              <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
                 <textarea
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
@@ -203,7 +266,7 @@ export default function ImageGeneratorDemo() {
                   style={{
                     width: '100%',
                     minHeight: '120px',
-                    padding: '1rem 1rem 2.5rem 1rem',
+                    padding: '1.25rem 1rem 2.5rem 1rem',
                     background: 'var(--bg-tertiary)',
                     border: '1px solid var(--border-default)',
                     borderRadius: '16px',
@@ -229,8 +292,8 @@ export default function ImageGeneratorDemo() {
               </div>
 
               {/* Sample Prompts */}
-              <div style={{ marginBottom: '1.25rem' }}>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginBottom: '0.625rem' }}>
                   Try these prompts:
                 </p>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -239,7 +302,7 @@ export default function ImageGeneratorDemo() {
                       key={i}
                       onClick={() => setPrompt(p)}
                       style={{
-                        padding: '0.375rem 0.75rem',
+                        padding: '0.5rem 0.875rem',
                         background: 'rgba(37, 99, 235, 0.08)',
                         border: '1px solid rgba(37, 99, 235, 0.15)',
                         borderRadius: '9999px',
@@ -257,38 +320,45 @@ export default function ImageGeneratorDemo() {
                         e.currentTarget.style.borderColor = 'rgba(37, 99, 235, 0.15)';
                       }}
                     >
-                      {p.substring(0, 30)}...
+                      {p.substring(0, 35)}...
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Aspect Ratio Selector */}
-              <div style={{ marginBottom: '1.25rem' }}>
-                <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.8125rem', marginBottom: '0.5rem' }}>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.8125rem', marginBottom: '0.625rem' }}>
                   Aspect Ratio
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.625rem' }}>
                   {aspectRatios.map((ratio) => (
                     <button
                       key={ratio.value}
                       onClick={() => setAspectRatio(ratio.value)}
                       style={{
-                        padding: '0.625rem',
+                        padding: '0.75rem 0.5rem',
                         background: aspectRatio === ratio.value ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
                         border: aspectRatio === ratio.value ? 'none' : '1px solid var(--border-default)',
-                        borderRadius: '10px',
+                        borderRadius: '12px',
                         color: aspectRatio === ratio.value ? '#fff' : 'var(--text-secondary)',
                         fontSize: '0.8125rem',
+                        fontWeight: 500,
                         cursor: 'pointer',
                         transition: 'all 0.2s',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        gap: '0.25rem'
+                        gap: '0.375rem'
                       }}
                     >
-                      <span style={{ fontSize: '1.25rem' }}>{ratio.icon}</span>
+                      <span style={{ 
+                        fontSize: '1.25rem', 
+                        fontWeight: 700,
+                        fontFamily: 'Georgia, serif'
+                      }}>
+                        {ratio.value}
+                      </span>
                       <span>{ratio.label}</span>
                     </button>
                   ))}
@@ -310,13 +380,13 @@ export default function ImageGeneratorDemo() {
                 onClick={() => fileInputRef.current?.click()}
                 style={{
                   border: `2px dashed ${isDragging ? 'var(--accent-primary)' : uploadedImage ? '#22c55e' : 'var(--border-default)'}`,
-                  borderRadius: '16px',
-                  padding: '2rem',
+                  borderRadius: '18px',
+                  padding: '2.5rem 2rem',
                   textAlign: 'center',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
                   background: uploadedImage ? 'rgba(34, 197, 94, 0.05)' : 'var(--bg-tertiary)',
-                  marginBottom: '1rem'
+                  marginBottom: '1.25rem'
                 }}
               >
                 <input
@@ -343,36 +413,35 @@ export default function ImageGeneratorDemo() {
                     />
                     <div style={{
                       position: 'absolute',
-                      top: '-8px',
-                      right: '-8px',
-                      width: '24px',
-                      height: '24px',
+                      top: '-10px',
+                      right: '-10px',
+                      width: '28px',
+                      height: '28px',
                       borderRadius: '50%',
                       background: '#22c55e',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '0.75rem',
                       color: 'white'
                     }}>
-                      ✓
+                      {ICONS.check}
                     </div>
                   </div>
                 ) : (
                   <>
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🖼️</div>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginBottom: '0.25rem' }}>
+                    <div style={{ color: 'var(--text-muted)', marginBottom: '0.75rem', display: 'flex', justifyContent: 'center' }}>{ICONS.upload}</div>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginBottom: '0.375rem', fontWeight: 500 }}>
                       Drag & drop an image here
                     </p>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                      or click to browse • JPG, PNG, WebP
+                      or click to browse — JPG, PNG, WebP
                     </p>
                   </>
                 )}
               </div>
 
               {/* Remix Prompt */}
-              <div style={{ position: 'relative', marginBottom: '1rem' }}>
+              <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
                 <textarea
                   value={remixPrompt}
                   onChange={(e) => setRemixPrompt(e.target.value)}
@@ -380,10 +449,10 @@ export default function ImageGeneratorDemo() {
                   style={{
                     width: '100%',
                     minHeight: '80px',
-                    padding: '0.875rem 1rem 2rem 1rem',
+                    padding: '1rem 1rem 2rem 1rem',
                     background: 'var(--bg-tertiary)',
                     border: '1px solid var(--border-default)',
-                    borderRadius: '12px',
+                    borderRadius: '14px',
                     color: 'var(--text-primary)',
                     fontSize: '0.9375rem',
                     lineHeight: 1.6,
@@ -396,27 +465,27 @@ export default function ImageGeneratorDemo() {
               {/* Strength Slider */}
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <label style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>
+                  <label style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', fontWeight: 500 }}>
                     Transformation Strength
                   </label>
                   <span style={{ color: 'var(--accent-secondary)', fontSize: '0.8125rem', fontWeight: 600 }}>
                     {Math.round(strength * 100)}%
                   </span>
                 </div>
-                <div style={{ position: 'relative', height: '6px' }}>
+                <div style={{ position: 'relative', height: '8px' }}>
                   <div style={{
                     position: 'absolute',
                     width: '100%',
                     height: '100%',
                     background: 'var(--bg-tertiary)',
-                    borderRadius: '3px'
+                    borderRadius: '4px'
                   }} />
                   <div style={{
                     position: 'absolute',
                     width: `${strength * 100}%`,
                     height: '100%',
                     background: 'var(--accent-secondary)',
-                    borderRadius: '3px',
+                    borderRadius: '4px',
                     transition: 'width 0.1s'
                   }} />
                   <input
@@ -436,7 +505,7 @@ export default function ImageGeneratorDemo() {
                     }}
                   />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.375rem' }}>
                   <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>Keep Original</span>
                   <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>Full Transform</span>
                 </div>
@@ -444,7 +513,7 @@ export default function ImageGeneratorDemo() {
             </div>
           )}
 
-          {/* Generate Button */}
+          {/* Generate Button - Premium */}
           <button
             onClick={handleGenerate}
             disabled={
@@ -454,9 +523,11 @@ export default function ImageGeneratorDemo() {
             }
             style={{
               width: '100%',
-              padding: '1rem',
-              marginTop: '1.25rem',
-              background: isGenerating ? 'var(--text-disabled)' : 'var(--accent-primary)',
+              padding: '1.125rem',
+              marginTop: '1.5rem',
+              background: isGenerating 
+                ? 'var(--text-disabled)' 
+                : 'linear-gradient(135deg, var(--accent-primary) 0%, #1d4ed8 100%)',
               border: 'none',
               borderRadius: '14px',
               color: '#fff',
@@ -468,7 +539,8 @@ export default function ImageGeneratorDemo() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.5rem',
-              boxShadow: isGenerating ? 'none' : 'var(--shadow-glow-blue)'
+              boxShadow: isGenerating ? 'none' : '0 10px 25px -5px rgba(37, 99, 235, 0.4)',
+              transform: isGenerating ? 'none' : 'translateY(0)'
             }}
           >
             {isGenerating ? (
@@ -485,7 +557,7 @@ export default function ImageGeneratorDemo() {
               </>
             ) : (
               <>
-                <span>✨</span>
+                <span style={{ display: 'flex' }}>{ICONS.sparkles}</span>
                 Generate Image
               </>
             )}
@@ -494,8 +566,8 @@ export default function ImageGeneratorDemo() {
           {/* Result */}
           {resultImage && (
             <div style={{
-              marginTop: '1.5rem',
-              borderRadius: '16px',
+              marginTop: '1.75rem',
+              borderRadius: '18px',
               overflow: 'hidden',
               border: '1px solid var(--border-default)',
               animation: 'fadeIn 0.5s ease'
@@ -510,7 +582,7 @@ export default function ImageGeneratorDemo() {
                 }}
               />
               <div style={{
-                padding: '0.75rem 1rem',
+                padding: '1rem 1.25rem',
                 background: 'var(--bg-tertiary)',
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -521,24 +593,32 @@ export default function ImageGeneratorDemo() {
                 </span>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <button style={{
-                    padding: '0.375rem 0.75rem',
+                    padding: '0.5rem 1rem',
                     background: 'rgba(34, 197, 94, 0.1)',
                     border: '1px solid rgba(34, 197, 94, 0.3)',
-                    borderRadius: '8px',
+                    borderRadius: '10px',
                     color: '#22c55e',
-                    fontSize: '0.75rem',
-                    cursor: 'pointer'
+                    fontSize: '0.8125rem',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.375rem'
                   }}>
                     Download
                   </button>
                   <button style={{
-                    padding: '0.375rem 0.75rem',
+                    padding: '0.5rem 1rem',
                     background: 'rgba(37, 99, 235, 0.1)',
                     border: '1px solid rgba(37, 99, 235, 0.2)',
-                    borderRadius: '8px',
+                    borderRadius: '10px',
                     color: 'var(--accent-primary)',
-                    fontSize: '0.75rem',
-                    cursor: 'pointer'
+                    fontSize: '0.8125rem',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.375rem'
                   }}>
                     Remix
                   </button>
@@ -552,8 +632,8 @@ export default function ImageGeneratorDemo() {
         <div style={{
           display: 'flex',
           justifyContent: 'center',
-          gap: '3rem',
-          marginTop: '2rem',
+          gap: '3.5rem',
+          marginTop: '2.5rem',
           flexWrap: 'wrap'
         }}>
           {[
@@ -563,13 +643,14 @@ export default function ImageGeneratorDemo() {
           ].map((stat, i) => (
             <div key={i} style={{ textAlign: 'center' }}>
               <div style={{
-                fontSize: '1.5rem',
+                fontSize: '1.75rem',
                 fontWeight: 700,
-                color: 'var(--accent-primary)'
+                color: 'var(--accent-primary)',
+                letterSpacing: '-0.02em'
               }}>
                 {stat.value}
               </div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.8125rem', marginTop: '0.25rem' }}>
                 {stat.label}
               </div>
             </div>

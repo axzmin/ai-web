@@ -10,11 +10,40 @@ interface GenerationState {
   error: string | null;
 }
 
+const ICONS = {
+  sparkles: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+      <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+    </svg>
+  ),
+  check: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  ),
+  download: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" x2="12" y1="15" y2="3"/>
+    </svg>
+  ),
+  refresh: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+      <path d="M21 3v5h-5"/>
+      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+      <path d="M8 16H3v5"/>
+    </svg>
+  ),
+};
+
 const ASPECT_RATIOS = [
-  { label: 'Square (1:1)', value: '1:1', icon: '◻️' },
-  { label: 'Portrait (3:4)', value: '3:4', icon: '📱' },
-  { label: 'Landscape (4:3)', value: '4:3', icon: '🖼️' },
-  { label: 'Wide (16:9)', value: '16:9', icon: '🎬' },
+  { label: 'Square (1:1)', value: '1:1' },
+  { label: 'Portrait (3:4)', value: '3:4' },
+  { label: 'Landscape (4:3)', value: '4:3' },
+  { label: 'Wide (16:9)', value: '16:9' },
 ];
 
 const QUALITY_PRESETS = [
@@ -126,26 +155,25 @@ export default function GeneratePage() {
               {/* Aspect Ratio */}
               <div className="settings-group">
                 <label className="settings-label">Aspect Ratio</label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.625rem' }}>
                   {ASPECT_RATIOS.map((ratio) => (
                     <button
                       key={ratio.value}
                       onClick={() => setAspectRatio(ratio.value)}
                       style={{
-                        padding: '0.75rem',
+                        padding: '0.875rem 0.75rem',
                         background: aspectRatio === ratio.value ? 'var(--vercel-gray-700)' : 'var(--vercel-gray-800)',
                         border: aspectRatio === ratio.value ? '2px solid var(--develop-blue)' : '1px solid var(--vercel-gray-700)',
-                        borderRadius: '8px',
+                        borderRadius: '10px',
                         color: 'var(--vercel-white)',
                         cursor: 'pointer',
-                        textAlign: 'left',
-                        transition: 'all 0.2s ease'
+                        textAlign: 'center',
+                        transition: 'all 0.2s ease',
+                        fontWeight: aspectRatio === ratio.value ? 600 : 400
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span>{ratio.icon}</span>
-                        <span style={{ fontSize: '0.875rem' }}>{ratio.label}</span>
-                      </div>
+                      <div style={{ fontSize: '1rem', marginBottom: '0.25rem', fontFamily: 'Georgia, serif' }}>{ratio.value}</div>
+                      <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>{ratio.label.split(' ')[0]}</div>
                     </button>
                   ))}
                 </div>
@@ -186,9 +214,7 @@ export default function GeneratePage() {
                 </span>
               ) : (
                 <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M10 2L12.5 7.5L18 8L14 12L15 18L10 15L5 18L6 12L2 8L7.5 7.5L10 2Z" fill="currentColor"/>
-                  </svg>
+                  {ICONS.sparkles}
                   Generate Image
                 </span>
               )}
@@ -233,9 +259,7 @@ export default function GeneratePage() {
                 </div>
                 <div className="result-actions">
                   <button onClick={handleDownload} className="btn btn-secondary">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M8 12V2M4 8l4 4 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    {ICONS.download}
                     Download
                   </button>
                   <button
@@ -243,9 +267,7 @@ export default function GeneratePage() {
                     className="btn btn-ghost"
                     style={{ color: 'var(--vercel-white)' }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M2 8a6 6 0 1112 0A6 6 0 012 8zM8 4v4l2 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    {ICONS.refresh}
                     Create Another
                   </button>
                 </div>
@@ -278,31 +300,31 @@ export default function GeneratePage() {
               <div style={{
                 aspectRatio: aspectRatio.replace(':', '/'),
                 background: 'var(--vercel-gray-900)',
-                borderRadius: '12px',
+                borderRadius: '16px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '2rem',
+                padding: '2.5rem',
                 border: '1px dashed var(--vercel-gray-700)'
               }}>
                 <div style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '16px',
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '18px',
                   background: 'var(--vercel-gray-800)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: '1rem'
+                  marginBottom: '1.25rem'
                 }}>
-                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="var(--vercel-gray-500)">
-                    <rect x="4" y="4" width="24" height="24" rx="4" strokeWidth="2"/>
-                    <circle cx="12" cy="12" r="3" strokeWidth="2"/>
-                    <path d="M28 20l-6-6-10 10" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--vercel-gray-500)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="9" cy="9" r="2"/>
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
                   </svg>
                 </div>
-                <p style={{ color: 'var(--vercel-gray-500)', textAlign: 'center' }}>
+                <p style={{ color: 'var(--vercel-gray-500)', textAlign: 'center', fontSize: '0.9375rem' }}>
                   Your generated image will appear here
                 </p>
               </div>

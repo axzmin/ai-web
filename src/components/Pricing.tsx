@@ -2,6 +2,31 @@
 
 import { useState } from 'react';
 
+const ICONS = {
+  dollar: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" x2="12" y1="2" y2="22"/>
+      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>
+  ),
+  lock: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+  ),
+  check: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  ),
+  sparkles: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+    </svg>
+  ),
+};
+
 const PLANS = [
   {
     name: 'Free',
@@ -74,9 +99,10 @@ export default function Pricing() {
             background: 'rgba(37, 99, 235, 0.08)',
             border: '1px solid rgba(37, 99, 235, 0.15)',
             borderRadius: 'var(--radius-full)',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            color: 'var(--accent-primary)'
           }}>
-            <span style={{ fontSize: '1rem' }}>💰</span>
+            <span style={{ display: 'flex' }}>{ICONS.dollar}</span>
             <span style={{
               fontSize: '0.875rem',
               fontWeight: 600,
@@ -147,12 +173,12 @@ export default function Pricing() {
           </span>
         </div>
 
-        {/* Pricing Cards */}
+        {/* Pricing Cards - Wider */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
           gap: '1.5rem',
-          maxWidth: '1100px',
+          maxWidth: '1200px',
           margin: '0 auto'
         }}>
           {PLANS.map((plan, index) => (
@@ -164,7 +190,8 @@ export default function Pricing() {
                 textAlign: 'left',
                 border: plan.highlighted ? '2px solid var(--accent-primary)' : '1px solid var(--border-default)',
                 position: 'relative',
-                animation: `fadeInUp 0.5s ease ${index * 0.1}s both`
+                animation: `fadeInUp 0.5s ease ${index * 0.1}s both`,
+                background: plan.highlighted ? 'var(--bg-card)' : 'var(--bg-card)'
               }}
             >
               {plan.highlighted && (
@@ -173,12 +200,13 @@ export default function Pricing() {
                   top: '-12px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  background: 'var(--accent-primary)',
+                  background: 'linear-gradient(135deg, var(--accent-primary), #1d4ed8)',
                   color: 'white',
-                  padding: '0.25rem 1rem',
+                  padding: '0.375rem 1rem',
                   borderRadius: '9999px',
                   fontSize: '0.75rem',
-                  fontWeight: 600
+                  fontWeight: 600,
+                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
                 }}>
                   Most Popular
                 </div>
@@ -197,10 +225,11 @@ export default function Pricing() {
               {/* Price */}
               <div style={{ marginBottom: '0.5rem' }}>
                 <span style={{
-                  fontSize: '2.5rem',
+                  fontSize: '3rem',
                   fontWeight: 700,
                   letterSpacing: '-1px',
-                  color: 'var(--text-primary)'
+                  color: 'var(--text-primary)',
+                  lineHeight: 1
                 }}>
                   {plan.price}
                 </span>
@@ -222,20 +251,20 @@ export default function Pricing() {
               </p>
 
               {/* Features */}
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.5rem 0' }}>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.75rem 0' }}>
                 {plan.features.map((feature, i) => (
                   <li
                     key={i}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.5rem',
-                      marginBottom: '0.5rem',
+                      gap: '0.625rem',
+                      marginBottom: '0.625rem',
                       fontSize: '0.875rem',
                       color: 'var(--text-secondary)'
                     }}
                   >
-                    <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>✓</span>
+                    <span style={{ color: 'var(--accent-primary)', flexShrink: 0, display: 'flex' }}>{ICONS.check}</span>
                     {feature}
                   </li>
                 ))}
@@ -255,11 +284,16 @@ export default function Pricing() {
         {/* Money Back Guarantee */}
         <p style={{
           textAlign: 'center',
-          marginTop: '2rem',
+          marginTop: '2.5rem',
           color: 'var(--text-muted)',
-          fontSize: '0.875rem'
+          fontSize: '0.875rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '0.5rem'
         }}>
-          🔒 30-day money back guarantee. Cancel anytime.
+          <span style={{ display: 'flex', color: 'var(--accent-primary)' }}>{ICONS.lock}</span>
+          30-day money back guarantee. Cancel anytime.
         </p>
       </div>
     </section>

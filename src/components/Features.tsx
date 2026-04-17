@@ -1,41 +1,90 @@
+// SVG Icons (Lucide-style stroke icons)
+const Icons = {
+  paintbrush: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"/>
+      <path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"/>
+      <path d="M14.5 17.5 4.5 15"/>
+    </svg>
+  ),
+  refresh: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+      <path d="M21 3v5h-5"/>
+      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+      <path d="M8 16H3v5"/>
+    </svg>
+  ),
+  zap: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </svg>
+  ),
+  globe: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+      <path d="M2 12h20"/>
+    </svg>
+  ),
+  lock: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+  ),
+  target: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <circle cx="12" cy="12" r="6"/>
+      <circle cx="12" cy="12" r="2"/>
+    </svg>
+  ),
+  bolt: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </svg>
+  ),
+};
+
 const FEATURES = [
   {
-    icon: '🎨',
+    icon: 'paintbrush',
     gradient: 'linear-gradient(135deg, #2563eb, #0891b2)',
     title: 'Text to Image',
     description: 'Transform your words into stunning visuals. Our AI understands context, lighting, composition, and style.',
     details: ['Natural language understanding', 'Professional quality output', 'Custom aspect ratios']
   },
   {
-    icon: '🔄',
+    icon: 'refresh',
     gradient: 'linear-gradient(135deg, #0d9488, #0891b2)',
     title: 'Image to Image',
     description: 'Upload any image and transform it with AI. Change styles, enhance quality, or reimagine completely.',
     details: ['Style transfer', 'Quality enhancement', 'Creative remix']
   },
   {
-    icon: '⚡',
+    icon: 'zap',
     gradient: 'linear-gradient(135deg, #ea7c0a, #ea580c)',
     title: 'Lightning Fast',
     description: 'Optimized infrastructure delivers results in seconds. Start creating immediately with no delays.',
     details: ['10-30 second generation', 'Real-time previews', 'Instant downloads']
   },
   {
-    icon: '🌍',
+    icon: 'globe',
     gradient: 'linear-gradient(135deg, #0891b2, #0d9488)',
     title: 'Global CDN',
     description: 'Deploy worldwide with our global infrastructure. Your images are generated close to your users.',
     details: ['200+ edge locations', '99.9% uptime', 'Automatic scaling']
   },
   {
-    icon: '🔒',
+    icon: 'lock',
     gradient: 'linear-gradient(135deg, #16a34a, #15803d)',
     title: 'Privacy First',
     description: 'Your creations are private by default. No data collection, no watermarks. You own what you create.',
     details: ['No data retention', 'No watermarks', 'Full ownership']
   },
   {
-    icon: '🎯',
+    icon: 'target',
     gradient: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
     title: 'API Access',
     description: 'Integrate AI image generation directly into your apps with our developer-friendly API.',
@@ -71,7 +120,7 @@ export default function Features() {
             borderRadius: 'var(--radius-full)',
             marginBottom: '1rem'
           }}>
-            <span style={{ fontSize: '1rem' }}>⚡</span>
+            <span style={{ color: 'var(--accent-primary)', display: 'flex' }}>{Icons.bolt}</span>
             <span style={{
               fontSize: '0.875rem',
               fontWeight: 600,
@@ -102,12 +151,12 @@ export default function Features() {
           </p>
         </div>
 
-        {/* Features Grid */}
+        {/* Features Grid - Wider cards */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '1.25rem',
-          maxWidth: '1100px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+          gap: '1.5rem',
+          maxWidth: '1200px',
           margin: '0 auto'
         }}>
           {FEATURES.map((feature, index) => (
@@ -115,6 +164,7 @@ export default function Features() {
               key={index}
               className="card"
               style={{
+                padding: '1.75rem',
                 animation: `fadeInUp 0.5s ease ${index * 0.08}s both`
               }}
             >
@@ -127,11 +177,11 @@ export default function Features() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '1.75rem',
+                color: 'white',
                 marginBottom: '1.25rem',
                 boxShadow: 'var(--shadow-md)'
               }}>
-                {feature.icon}
+                {Icons[feature.icon as keyof typeof Icons]}
               </div>
 
               {/* Title */}

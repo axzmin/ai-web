@@ -2,6 +2,23 @@
 
 import { useState } from 'react';
 
+const GALLERY_ICONS = {
+  image: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+      <circle cx="9" cy="9" r="2"/>
+      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+    </svg>
+  ),
+  gallery: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+      <circle cx="9" cy="9" r="2"/>
+      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+    </svg>
+  ),
+};
+
 const GALLERY_ITEMS = [
   { id: 1, title: 'Cyberpunk City', seed: 1001, category: 'Sci-Fi' },
   { id: 2, title: 'Mountain Temple', seed: 1002, category: 'Nature' },
@@ -41,7 +58,7 @@ export default function GalleryPreview() {
             borderRadius: 'var(--radius-full)',
             marginBottom: '1rem'
           }}>
-            <span style={{ fontSize: '1rem' }}>🖼️</span>
+            <span style={{ color: 'var(--accent-primary)', display: 'flex' }}>{GALLERY_ICONS.gallery}</span>
             <span style={{
               fontSize: '0.875rem',
               fontWeight: 600,
@@ -92,12 +109,12 @@ export default function GalleryPreview() {
           ))}
         </div>
 
-        {/* Gallery Grid */}
+        {/* Gallery Grid - Wider cards */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '1rem',
-          maxWidth: '1200px',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+          gap: '1.25rem',
+          maxWidth: '1300px',
           margin: '0 auto'
         }}>
           {filteredItems.map((item, index) => (
@@ -107,16 +124,17 @@ export default function GalleryPreview() {
               style={{
                 position: 'relative',
                 aspectRatio: '1',
-                borderRadius: '12px',
+                borderRadius: '16px',
                 overflow: 'hidden',
                 cursor: 'pointer',
                 animation: `fadeInUp 0.5s ease ${index * 0.1}s both`,
                 background: 'var(--bg-card)',
-                boxShadow: 'var(--shadow-sm)'
+                boxShadow: 'var(--shadow-md)',
+                border: '1px solid var(--border-subtle)'
               }}
             >
               <img
-                src={`https://picsum.photos/seed/${item.seed}/400/400`}
+                src={`https://picsum.photos/seed/${item.seed}/500/500`}
                 alt={item.title}
                 loading="lazy"
                 style={{
@@ -132,19 +150,19 @@ export default function GalleryPreview() {
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(to top, rgba(20,20,19,0.8) 0%, transparent 50%)',
+                background: 'linear-gradient(to top, rgba(20,20,19,0.85) 0%, transparent 60%)',
                 opacity: 0,
                 transition: 'opacity 0.3s ease',
                 display: 'flex',
                 alignItems: 'flex-end',
-                padding: '1rem'
+                padding: '1.25rem'
               }}
               onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
               onMouseOut={(e) => e.currentTarget.style.opacity = '0'}
               >
                 <div style={{ color: 'white' }}>
-                  <p style={{ fontWeight: 600, fontSize: '0.875rem' }}>{item.title}</p>
-                  <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>{item.category}</p>
+                  <p style={{ fontWeight: 600, fontSize: '0.9375rem', marginBottom: '0.25rem' }}>{item.title}</p>
+                  <p style={{ fontSize: '0.75rem', opacity: 0.7 }}>{item.category}</p>
                 </div>
               </div>
             </div>
@@ -152,9 +170,12 @@ export default function GalleryPreview() {
         </div>
 
         {/* View More Button */}
-        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+        <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
           <a href="/gallery" className="btn btn-secondary">
-            View Full Gallery →
+            View Full Gallery
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '0.5rem' }}>
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
           </a>
         </div>
       </div>
@@ -166,7 +187,7 @@ export default function GalleryPreview() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(20, 20, 19, 0.9)',
+            background: 'rgba(20, 20, 19, 0.92)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -189,16 +210,17 @@ export default function GalleryPreview() {
               style={{ 
                 width: '100%', 
                 borderRadius: '16px',
-                display: 'block'
+                display: 'block',
+                boxShadow: 'var(--shadow-xl)'
               }}
             />
             <div style={{ 
               textAlign: 'center',
-              marginTop: '1rem',
+              marginTop: '1.25rem',
               color: 'white'
             }}>
-              <p style={{ fontWeight: 600 }}>{selectedImage.title}</p>
-              <p style={{ fontSize: '0.875rem', opacity: 0.7 }}>{selectedImage.category}</p>
+              <p style={{ fontWeight: 600, fontSize: '1rem' }}>{selectedImage.title}</p>
+              <p style={{ fontSize: '0.875rem', opacity: 0.7, marginTop: '0.25rem' }}>{selectedImage.category}</p>
             </div>
           </div>
         </div>
