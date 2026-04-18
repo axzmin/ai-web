@@ -64,6 +64,7 @@ export default function ImageGeneratorDemo() {
   const [quality, setQuality] = useState('standard');
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
   const [qualityDropdownOpen, setQualityDropdownOpen] = useState(false);
+  const [aspectDropdownOpen, setAspectDropdownOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const aspectRatios = [
@@ -534,27 +535,77 @@ export default function ImageGeneratorDemo() {
                   <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
                     Aspect Ratio
                   </label>
-                  <select
-                    value={aspectRatio}
-                    onChange={(e) => setAspectRatio(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem 0.875rem',
-                      background: 'var(--bg-tertiary)',
-                      border: '1px solid var(--border-default)',
-                      borderRadius: '12px',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.8125rem',
-                      cursor: 'pointer',
-                      outline: 'none'
-                    }}
-                  >
-                    {aspectRatios.map((ratio) => (
-                      <option key={ratio.value} value={ratio.value}>
-                        {ratio.label} ({ratio.value})
-                      </option>
-                    ))}
-                  </select>
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      onClick={() => { setAspectDropdownOpen(!aspectDropdownOpen); setModelDropdownOpen(false); setQualityDropdownOpen(false); }}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem 0.875rem',
+                        background: 'var(--bg-tertiary)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        color: 'var(--text-primary)',
+                        fontSize: '0.8125rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      <span style={{ fontWeight: 600 }}>
+                        {aspectRatios.find(r => r.value === aspectRatio)?.label} ({aspectRatio})
+                      </span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
+                        <path d="M6 9l6 6 6-6"/>
+                      </svg>
+                    </button>
+                    {aspectDropdownOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 6px)',
+                        left: 0,
+                        right: 0,
+                        background: 'var(--bg-card)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        padding: '0.375rem',
+                        zIndex: 10,
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
+                      }}>
+                        {aspectRatios.map((ratio) => (
+                          <button
+                            key={ratio.value}
+                            onClick={() => { setAspectRatio(ratio.value); setAspectDropdownOpen(false); }}
+                            style={{
+                              width: '100%',
+                              padding: '0.625rem 0.75rem',
+                              background: aspectRatio === ratio.value ? 'var(--bg-tertiary)' : 'transparent',
+                              border: aspectRatio === ratio.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                              borderRadius: '8px',
+                              color: 'var(--text-primary)',
+                              fontSize: '0.8125rem',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '2px'
+                            }}
+                          >
+                            <span style={{ textAlign: 'left' }}>
+                              <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{ratio.label}</span>
+                              <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem', fontFamily: 'Georgia, serif' }}>{ratio.value}</span>
+                            </span>
+                            {aspectRatio === ratio.value && (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                              </svg>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
