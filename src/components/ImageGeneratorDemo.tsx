@@ -201,8 +201,7 @@ export default function ImageGeneratorDemo() {
           padding: '2rem',
           border: '1px solid var(--border-default)',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05)',
-          position: 'relative',
-          overflow: 'hidden'
+          position: 'relative'
         }}>
           {/* Subtle top gradient line */}
           <div style={{
@@ -342,7 +341,7 @@ export default function ImageGeneratorDemo() {
               </div>
 
               {/* Settings Row - Model, Quality, Aspect Ratio */}
-              <div className="settings-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem', position: 'relative', zIndex: 10 }}>
+              <div className="settings-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
                 {/* Model Selector */}
                 <div>
                   <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
