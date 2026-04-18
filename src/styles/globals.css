@@ -68,6 +68,17 @@
   --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
 }
 
+/* Remove tap highlight and focus outlines on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-focus-ring-color: transparent;
+  outline: none;
+}
+
+button, a, select, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Reset */
 *, *::before, *::after {
   box-sizing: border-box;
