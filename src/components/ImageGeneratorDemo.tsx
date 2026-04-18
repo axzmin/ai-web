@@ -342,7 +342,7 @@ export default function ImageGeneratorDemo() {
               </div>
 
               {/* Settings Row - Model, Quality, Aspect Ratio */}
-              <div className="settings-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div className="settings-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem', position: 'relative', zIndex: 10 }}>
                 {/* Model Selector */}
                 <div>
                   <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
@@ -400,8 +400,10 @@ export default function ImageGeneratorDemo() {
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         padding: '0.375rem',
-                        zIndex: 10,
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
+                        zIndex: 50,
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                        maxHeight: '200px',
+                        overflowY: 'auto'
                       }}>
                         {modelOptions.map((option) => (
                           <button
@@ -492,8 +494,10 @@ export default function ImageGeneratorDemo() {
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         padding: '0.375rem',
-                        zIndex: 10,
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
+                        zIndex: 50,
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                        maxHeight: '200px',
+                        overflowY: 'auto'
                       }}>
                         {qualityOptions.map((option) => (
                           <button
@@ -570,8 +574,10 @@ export default function ImageGeneratorDemo() {
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         padding: '0.375rem',
-                        zIndex: 10,
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
+                        zIndex: 50,
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                        maxHeight: '200px',
+                        overflowY: 'auto'
                       }}>
                         {aspectRatios.map((ratio) => (
                           <button
