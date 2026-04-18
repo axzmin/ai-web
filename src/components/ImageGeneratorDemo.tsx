@@ -60,6 +60,10 @@ export default function ImageGeneratorDemo() {
   const [resultImage, setResultImage] = useState<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState('1:1');
   const [strength, setStrength] = useState(0.7);
+  const [model, setModel] = useState('flux-dev');
+  const [quality, setQuality] = useState('standard');
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const [qualityDropdownOpen, setQualityDropdownOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const aspectRatios = [
@@ -67,6 +71,17 @@ export default function ImageGeneratorDemo() {
     { label: 'Portrait', value: '3:4' },
     { label: 'Landscape', value: '4:3' },
     { label: 'Wide', value: '16:9' },
+  ];
+
+  const modelOptions = [
+    { label: 'Flux.1 Schnell', value: 'flux-schnell', description: 'Fast, 4 steps' },
+    { label: 'Flux.1 Dev', value: 'flux-dev', description: 'Best quality' },
+    { label: 'Flux.1 Pro', value: 'flux-pro', description: 'Premium quality' },
+  ];
+
+  const qualityOptions = [
+    { label: 'Standard', value: 'standard', description: 'Fast generation' },
+    { label: 'HD', value: 'hd', description: 'Enhanced details' },
   ];
 
   const handleFileSelect = (file: File) => {
@@ -325,44 +340,231 @@ export default function ImageGeneratorDemo() {
                 </div>
               </div>
 
-              {/* Aspect Ratio Selector */}
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.8125rem', marginBottom: '0.625rem' }}>
-                  Aspect Ratio
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.625rem' }}>
-                  {aspectRatios.map((ratio) => (
+              {/* Settings Row - Model, Quality, Aspect Ratio */}
+              <div className="settings-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                {/* Model Selector */}
+                <div>
+                  <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    AI Model
+                  </label>
+                  <div style={{ position: 'relative' }}>
                     <button
-                      key={ratio.value}
-                      onClick={() => setAspectRatio(ratio.value)}
+                      onClick={() => { setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); }}
                       style={{
-                        padding: '0.75rem 0.5rem',
-                        background: aspectRatio === ratio.value ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
-                        border: aspectRatio === ratio.value ? 'none' : '1px solid var(--border-default)',
+                        width: '100%',
+                        padding: '0.75rem 0.875rem',
+                        background: 'var(--bg-tertiary)',
+                        border: '1px solid var(--border-default)',
                         borderRadius: '12px',
-                        color: aspectRatio === ratio.value ? '#fff' : 'var(--text-secondary)',
+                        color: 'var(--text-primary)',
                         fontSize: '0.8125rem',
-                        fontWeight: 500,
                         cursor: 'pointer',
-                        transition: 'all 0.2s',
                         display: 'flex',
-                        flexDirection: 'column',
                         alignItems: 'center',
-                        gap: '0.375rem'
+                        justifyContent: 'space-between',
+                        gap: '0.5rem'
                       }}
                     >
-                      <span style={{ 
-                        fontSize: '1.25rem', 
-                        fontWeight: 700,
-                        fontFamily: 'Georgia, serif'
-                      }}>
-                        {ratio.value}
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
+                        <span style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '6px',
+                          background: 'var(--gradient-primary)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontSize: '0.625rem',
+                          fontWeight: 700,
+                          flexShrink: 0
+                        }}>
+                          {model.split('-')[1]?.toUpperCase()?.substring(0, 2) || 'FX'}
+                        </span>
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {modelOptions.find(m => m.value === model)?.label.split(' ')[1] || model}
+                        </span>
                       </span>
-                      <span>{ratio.label}</span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
+                        <path d="M6 9l6 6 6-6"/>
+                      </svg>
                     </button>
-                  ))}
+                    {modelDropdownOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 6px)',
+                        left: 0,
+                        right: 0,
+                        background: 'var(--bg-card)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        padding: '0.375rem',
+                        zIndex: 10,
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
+                      }}>
+                        {modelOptions.map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => { setModel(option.value); setModelDropdownOpen(false); }}
+                            style={{
+                              width: '100%',
+                              padding: '0.625rem 0.75rem',
+                              background: model === option.value ? 'var(--bg-tertiary)' : 'transparent',
+                              border: model === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                              borderRadius: '8px',
+                              color: 'var(--text-primary)',
+                              fontSize: '0.8125rem',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              marginBottom: '2px'
+                            }}
+                          >
+                            <span style={{
+                              width: '24px',
+                              height: '24px',
+                              borderRadius: '6px',
+                              background: model === option.value ? 'var(--gradient-primary)' : 'var(--bg-tertiary)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: model === option.value ? 'white' : 'var(--text-secondary)',
+                              fontSize: '0.625rem',
+                              fontWeight: 700
+                            }}>
+                              {option.value.split('-')[1]?.toUpperCase()?.substring(0, 2) || 'FX'}
+                            </span>
+                            <span style={{ flex: 1, textAlign: 'left' }}>
+                              <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{option.label.split(' ')[1]}</span>
+                              <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.description}</span>
+                            </span>
+                            {model === option.value && (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                              </svg>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quality Selector */}
+                <div>
+                  <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    Quality
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      onClick={() => { setQualityDropdownOpen(!qualityDropdownOpen); setModelDropdownOpen(false); }}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem 0.875rem',
+                        background: 'var(--bg-tertiary)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        color: 'var(--text-primary)',
+                        fontSize: '0.8125rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      <span style={{ fontWeight: 600 }}>
+                        {qualityOptions.find(q => q.value === quality)?.label}
+                      </span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
+                        <path d="M6 9l6 6 6-6"/>
+                      </svg>
+                    </button>
+                    {qualityDropdownOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 6px)',
+                        left: 0,
+                        right: 0,
+                        background: 'var(--bg-card)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        padding: '0.375rem',
+                        zIndex: 10,
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)'
+                      }}>
+                        {qualityOptions.map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => { setQuality(option.value); setQualityDropdownOpen(false); }}
+                            style={{
+                              width: '100%',
+                              padding: '0.625rem 0.75rem',
+                              background: quality === option.value ? 'var(--bg-tertiary)' : 'transparent',
+                              border: quality === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                              borderRadius: '8px',
+                              color: 'var(--text-primary)',
+                              fontSize: '0.8125rem',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '2px'
+                            }}
+                          >
+                            <span style={{ textAlign: 'left' }}>
+                              <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{option.label}</span>
+                              <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.description}</span>
+                            </span>
+                            {quality === option.value && (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                              </svg>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Aspect Ratio */}
+                <div>
+                  <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    Aspect Ratio
+                  </label>
+                  <select
+                    value={aspectRatio}
+                    onChange={(e) => setAspectRatio(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 0.875rem',
+                      background: 'var(--bg-tertiary)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '12px',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.8125rem',
+                      cursor: 'pointer',
+                      outline: 'none'
+                    }}
+                  >
+                    {aspectRatios.map((ratio) => (
+                      <option key={ratio.value} value={ratio.value}>
+                        {ratio.label} ({ratio.value})
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
+
+              <style>{`
+                @media (max-width: 640px) {
+                  .settings-row {
+                    grid-template-columns: 1fr !important;
+                  }
+                }
+              `}</style>
             </div>
           ) : (
             <div>
@@ -384,7 +586,7 @@ export default function ImageGeneratorDemo() {
                   textAlign: 'center',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  background: uploadedImage ? 'rgba(34, 197, 94, 0.05)' : 'var(--bg-tertiary)',
+                  background: uploadedImage ? 'rgba(255, 140, 66, 0.05)' : 'var(--bg-tertiary)',
                   marginBottom: '1.25rem'
                 }}
               >
