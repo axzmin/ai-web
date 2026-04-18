@@ -378,7 +378,7 @@ export default function ImageGeneratorDemo() {
                 }}
                 onClick={() => fileInputRef.current?.click()}
                 style={{
-                  border: `2px dashed ${isDragging ? 'var(--accent-primary)' : uploadedImage ? '#22c55e' : 'var(--border-default)'}`,
+                  border: `2px dashed ${isDragging ? 'var(--accent-primary)' : uploadedImage ? 'var(--accent-primary)' : 'var(--border-default)'}`,
                   borderRadius: '18px',
                   padding: '2.5rem 2rem',
                   textAlign: 'center',
@@ -417,7 +417,7 @@ export default function ImageGeneratorDemo() {
                       width: '28px',
                       height: '28px',
                       borderRadius: '50%',
-                      background: '#22c55e',
+                      background: 'var(--accent-primary)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -593,10 +593,10 @@ export default function ImageGeneratorDemo() {
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <button style={{
                     padding: '0.5rem 1rem',
-                    background: 'rgba(34, 197, 94, 0.1)',
-                    border: '1px solid rgba(34, 197, 94, 0.3)',
+                    background: 'rgba(255, 140, 66, 0.1)',
+                    border: '1px solid rgba(255, 140, 66, 0.3)',
                     borderRadius: '10px',
-                    color: '#22c55e',
+                    color: 'var(--accent-primary)',
                     fontSize: '0.8125rem',
                     fontWeight: 500,
                     cursor: 'pointer',
