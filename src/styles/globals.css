@@ -517,7 +517,6 @@ h1, h2, h3, h4, h5, h6 {
 
   section > div > div[style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;
-    minmax(280px, 1fr) !important;
   }
 
   /* Footer mobile */
