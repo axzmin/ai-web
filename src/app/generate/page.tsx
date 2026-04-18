@@ -51,10 +51,18 @@ const QUALITY_PRESETS = [
   { label: 'HD', value: 'hd', description: 'Enhanced details' },
 ];
 
+const MODEL_OPTIONS = [
+  { label: 'Flux.1 Schnell', value: 'flux-schnell', description: 'Fast generation, 4 steps' },
+  { label: 'Flux.1 Dev', value: 'flux-dev', description: 'Best quality, balanced' },
+  { label: 'Flux.1 Pro', value: 'flux-pro', description: 'Premium quality, slowest' },
+];
+
 export default function GeneratePage() {
   const [prompt, setPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState('1:1');
   const [quality, setQuality] = useState('standard');
+  const [model, setModel] = useState('flux-dev');
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
   const [state, setState] = useState<GenerationState>({
     status: 'idle',
     progress: 0,
@@ -79,7 +87,7 @@ export default function GeneratePage() {
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, aspectRatio, quality }),
+        body: JSON.stringify({ prompt, aspectRatio, quality, model }),
       });
 
       const data = await response.json();
@@ -176,6 +184,138 @@ export default function GeneratePage() {
                       <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>{ratio.label.split(' ')[0]}</div>
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Model Selector - Premium Dropdown */}
+              <div className="settings-group">
+                <label className="settings-label">AI Model</label>
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setModelDropdownOpen(!modelDropdownOpen)}
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem 1rem',
+                      background: 'var(--bg-tertiary)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '12px',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.875rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <span style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '8px',
+                        background: 'var(--gradient-primary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '0.75rem',
+                        fontWeight: 700
+                      }}>
+                        {model.split('-')[1]?.toUpperCase()?.substring(0, 2) || 'FX'}
+                      </span>
+                      <span>
+                        <span style={{ fontWeight: 600, display: 'block', textAlign: 'left' }}>
+                          {MODEL_OPTIONS.find(m => m.value === model)?.label}
+                        </span>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+                          {MODEL_OPTIONS.find(m => m.value === model)?.description}
+                        </span>
+                      </span>
+                    </span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{
+                      transform: modelDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s ease'
+                    }}>
+                      <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                  </button>
+
+                  {modelDropdownOpen && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 8px)',
+                      left: 0,
+                      right: 0,
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '14px',
+                      padding: '0.5rem',
+                      zIndex: 10,
+                      boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
+                      animation: 'fadeIn 0.2s ease'
+                    }}>
+                      {MODEL_OPTIONS.map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => {
+                            setModel(option.value);
+                            setModelDropdownOpen(false);
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '0.875rem 1rem',
+                            background: model === option.value ? 'var(--bg-tertiary)' : 'transparent',
+                            border: model === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                            borderRadius: '10px',
+                            color: 'var(--text-primary)',
+                            fontSize: '0.875rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            marginBottom: '0.25rem',
+                            transition: 'all 0.15s ease'
+                          }}
+                          onMouseOver={(e) => {
+                            if (model !== option.value) {
+                              e.currentTarget.style.background = 'var(--bg-tertiary)';
+                            }
+                          }}
+                          onMouseOut={(e) => {
+                            if (model !== option.value) {
+                              e.currentTarget.style.background = 'transparent';
+                            }
+                          }}
+                        >
+                          <span style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '8px',
+                            background: model === option.value ? 'var(--gradient-primary)' : 'var(--bg-tertiary)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: model === option.value ? 'white' : 'var(--text-secondary)',
+                            fontSize: '0.75rem',
+                            fontWeight: 700
+                          }}>
+                            {option.value.split('-')[1]?.toUpperCase()?.substring(0, 2) || 'FX'}
+                          </span>
+                          <span style={{ flex: 1, textAlign: 'left' }}>
+                            <span style={{ fontWeight: 600, display: 'block' }}>{option.label}</span>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{option.description}</span>
+                          </span>
+                          {model === option.value && (
+                            <span style={{ color: 'var(--accent-primary)' }}>
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                              </svg>
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 

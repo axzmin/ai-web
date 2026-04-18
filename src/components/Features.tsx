@@ -78,7 +78,7 @@ const FEATURES = [
   },
   {
     icon: 'lock',
-    gradient: 'linear-gradient(135deg, #16a34a, #15803d)',
+    gradient: 'linear-gradient(135deg, #FF8C42, #FF6B1A)',
     title: 'Privacy First',
     description: 'Your creations are private by default. No data collection, no watermarks. You own what you create.',
     details: ['No data retention', 'No watermarks', 'Full ownership']
