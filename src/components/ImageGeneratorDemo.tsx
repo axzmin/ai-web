@@ -121,24 +121,37 @@ export default function ImageGeneratorDemo() {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Ambient Glow Effects */}
+      {/* Ambient Glow Effects - Large Soft Warm Glow */}
       <div style={{
         position: 'absolute',
-        top: '10%',
-        left: '5%',
+        top: '-20%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '900px',
+        height: '600px',
+        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.08) 0%, transparent 70%)',
+        filter: 'blur(80px)',
+        pointerEvents: 'none'
+      }} />
+      {/* Subtle Accent Glow Right */}
+      <div style={{
+        position: 'absolute',
+        top: '20%',
+        right: '-10%',
         width: '400px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.06) 0%, transparent 70%)',
         filter: 'blur(60px)',
         pointerEvents: 'none'
       }} />
+      {/* Soft Bottom Glow */}
       <div style={{
         position: 'absolute',
-        bottom: '20%',
-        right: '10%',
-        width: '350px',
-        height: '350px',
-        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.1) 0%, transparent 70%)',
+        bottom: '-10%',
+        left: '30%',
+        width: '500px',
+        height: '300px',
+        background: 'radial-gradient(ellipse, rgba(255, 179, 128, 0.06) 0%, transparent 70%)',
         filter: 'blur(60px)',
         pointerEvents: 'none'
       }} />

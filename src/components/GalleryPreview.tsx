@@ -42,8 +42,44 @@ export default function GalleryPreview() {
 
   return (
     <section id="gallery" className="section-padded" style={{
-      background: 'var(--bg-secondary)'
+      background: 'var(--bg-secondary)',
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      {/* Ambient Glow Effects - Warm Top Center Glow */}
+      <div style={{
+        position: 'absolute',
+        top: '-15%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '800px',
+        height: '500px',
+        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.07) 0%, transparent 70%)',
+        filter: 'blur(80px)',
+        pointerEvents: 'none'
+      }} />
+      {/* Left Accent Glow */}
+      <div style={{
+        position: 'absolute',
+        top: '30%',
+        left: '-8%',
+        width: '350px',
+        height: '350px',
+        background: 'radial-gradient(circle, rgba(255, 179, 128, 0.06) 0%, transparent 70%)',
+        filter: 'blur(60px)',
+        pointerEvents: 'none'
+      }} />
+      {/* Right Bottom Glow */}
+      <div style={{
+        position: 'absolute',
+        bottom: '-5%',
+        right: '5%',
+        width: '400px',
+        height: '300px',
+        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.05) 0%, transparent 70%)',
+        filter: 'blur(60px)',
+        pointerEvents: 'none'
+      }} />
       <div className="container">
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>

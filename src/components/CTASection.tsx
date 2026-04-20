@@ -7,25 +7,35 @@ export default function CTASection() {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Warm Gradient Background Effects - Blue instead of Purple */}
+      {/* Ambient Glow Effects - Elegant Warm Orbs */}
       <div style={{
         position: 'absolute',
-        top: '50%',
+        top: '-25%',
         left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '800px',
-        height: '600px',
-        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.15) 0%, transparent 70%)',
+        transform: 'translate(-50%, 0%)',
+        width: '1000px',
+        height: '700px',
+        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.08) 0%, transparent 70%)',
         filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
       <div style={{
         position: 'absolute',
-        top: '30%',
-        right: '20%',
-        width: '400px',
+        top: '10%',
+        right: '-15%',
+        width: '500px',
+        height: '500px',
+        background: 'radial-gradient(circle, rgba(255, 179, 128, 0.07) 0%, transparent 70%)',
+        filter: 'blur(80px)',
+        pointerEvents: 'none'
+      }} />
+      <div style={{
+        position: 'absolute',
+        bottom: '-20%',
+        left: '20%',
+        width: '600px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.06) 0%, transparent 70%)',
         filter: 'blur(80px)',
         pointerEvents: 'none'
       }} />
