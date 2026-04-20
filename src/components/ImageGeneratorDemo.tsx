@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useAuth } from '@clerk/nextjs';
 
 const ICONS = {
   sparkles: (
@@ -58,14 +59,19 @@ export default function ImageGeneratorDemo() {
   const [isDragging, setIsDragging] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [resultSeed, setResultSeed] = useState<number | null>(null);
+  const [resultModel, setResultModel] = useState<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState('1:1');
   const [strength, setStrength] = useState(0.7);
-  const [model, setModel] = useState('flux-dev');
+  const [model, setModel] = useState('flux-schnell');
   const [quality, setQuality] = useState('standard');
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
   const [qualityDropdownOpen, setQualityDropdownOpen] = useState(false);
   const [aspectDropdownOpen, setAspectDropdownOpen] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isSignedIn } = useAuth();
 
   const aspectRatios = [
     { label: 'Square', value: '1:1' },
@@ -92,20 +98,68 @@ export default function ImageGeneratorDemo() {
     reader.readAsDataURL(file);
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (activeTab === 'text' && !prompt.trim()) return;
     if (activeTab === 'image' && (!uploadedImage || !remixPrompt.trim())) return;
     
     setIsGenerating(true);
     setResultImage(null);
+    setGenerationError(null);
+    setProgress(0);
     
-    setTimeout(() => {
-      const seed = Date.now();
-      const w = aspectRatio === '16:9' ? 800 : aspectRatio === '3:4' ? 600 : 700;
-      const h = aspectRatio === '16:9' ? 450 : aspectRatio === '3:4' ? 800 : 700;
-      setResultImage(`https://picsum.photos/seed/${seed}/${w}/${h}`);
+    // Simulate progress
+    const progressInterval = setInterval(() => {
+      setProgress(prev => Math.min(prev + Math.random() * 15, 85));
+    }, 500);
+    
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: activeTab === 'text' ? prompt : remixPrompt,
+          model,
+          aspectRatio,
+          quality,
+        }),
+      });
+      
+      clearInterval(progressInterval);
+      setProgress(100);
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Generation failed');
+      }
+      
+      setResultImage(data.imageUrl);
+      setResultSeed(data.seed);
+      setResultModel(data.model);
+    } catch (error) {
+      clearInterval(progressInterval);
+      setGenerationError(error instanceof Error ? error.message : 'Something went wrong');
+    } finally {
       setIsGenerating(false);
-    }, 2500);
+    }
+  };
+
+  const handleDownload = async (imageUrl: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ai-image-${resultSeed || Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch {
+      // Fallback: open in new tab
+      window.open(imageUrl, '_blank');
+    }
   };
 
   const samplePrompts = [
@@ -784,57 +838,149 @@ export default function ImageGeneratorDemo() {
           )}
 
           {/* Generate Button - Premium */}
-          <button
-            onClick={handleGenerate}
-            disabled={
-              isGenerating || 
-              (activeTab === 'text' && !prompt.trim()) ||
-              (activeTab === 'image' && (!uploadedImage || !remixPrompt.trim()))
-            }
-            style={{
-              width: '100%',
-              padding: '1.125rem',
+          {!isSignedIn ? (
+            <div style={{
               marginTop: '1.5rem',
-              background: isGenerating 
-                ? 'var(--text-disabled)' 
-                : 'linear-gradient(135deg, var(--accent-primary) 0%, #E67A35 100%)',
-              border: 'none',
+              padding: '1.5rem',
+              background: 'rgba(255, 140, 66, 0.08)',
+              border: '1px solid rgba(255, 140, 66, 0.15)',
               borderRadius: '14px',
-              color: '#fff',
-              fontSize: '1rem',
-              fontWeight: 600,
-              cursor: isGenerating ? 'not-allowed' : 'pointer',
-              transition: 'all 0.3s ease',
+              textAlign: 'center'
+            }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginBottom: '1rem' }}>
+                Sign in to generate AI images
+              </p>
+              <a href="/login" style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.875rem 1.5rem',
+                background: 'linear-gradient(135deg, var(--accent-primary), #E67A35)',
+                borderRadius: '10px',
+                color: '#fff',
+                fontSize: '0.9375rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+                boxShadow: '0 4px 15px rgba(255, 140, 66, 0.3)'
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                  <polyline points="10 17 15 12 10 7"/>
+                  <line x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+                Sign In to Continue
+              </a>
+            </div>
+          ) : (
+            <button
+              onClick={handleGenerate}
+              disabled={
+                isGenerating || 
+                (activeTab === 'text' && !prompt.trim()) ||
+                (activeTab === 'image' && (!uploadedImage || !remixPrompt.trim()))
+              }
+              style={{
+                width: '100%',
+                padding: '1.125rem',
+                marginTop: '1.5rem',
+                background: isGenerating 
+                  ? 'var(--text-disabled)' 
+                  : 'linear-gradient(135deg, var(--accent-primary) 0%, #E67A35 100%)',
+                border: 'none',
+                borderRadius: '14px',
+                color: '#fff',
+                fontSize: '1rem',
+                fontWeight: 600,
+                cursor: isGenerating ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                boxShadow: isGenerating ? 'none' : '0 10px 25px -5px rgba(255, 140, 66, 0.4)',
+                transform: isGenerating ? 'none' : 'translateY(0)'
+              }}
+            >
+              {isGenerating ? (
+                <>
+                  <span style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid rgba(255,255,255,0.3)',
+                    borderTopColor: '#fff',
+                    borderRadius: '50%',
+                    animation: 'spin 0.8s linear infinite'
+                  }} />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <span style={{ display: 'flex' }}>{ICONS.sparkles}</span>
+                  Generate Image
+                </>
+              )}
+            </button>
+          )}
+
+          {/* Progress Bar */}
+          {isGenerating && (
+            <div style={{
+              marginTop: '1.5rem',
+              padding: '1.5rem',
+              background: 'var(--bg-card)',
+              borderRadius: '16px',
+              border: '1px solid var(--border-default)',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                height: '8px',
+                background: 'var(--bg-secondary)',
+                borderRadius: '4px',
+                overflow: 'hidden',
+                marginBottom: '1rem'
+              }}>
+                <div style={{
+                  height: '100%',
+                  width: `${progress}%`,
+                  background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))',
+                  borderRadius: '4px',
+                  transition: 'width 0.3s ease'
+                }} />
+              </div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                {progress < 30 ? 'Initializing model...' : 
+                 progress < 60 ? 'Generating image...' : 
+                 progress < 90 ? 'Refining details...' : 'Finalizing...'}
+              </p>
+            </div>
+          )}
+
+          {/* Error Display */}
+          {generationError && !isGenerating && (
+            <div style={{
+              marginTop: '1.5rem',
+              padding: '1rem 1.25rem',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              boxShadow: isGenerating ? 'none' : '0 10px 25px -5px rgba(255, 140, 66, 0.4)',
-              transform: isGenerating ? 'none' : 'translateY(0)'
-            }}
-          >
-            {isGenerating ? (
-              <>
-                <span style={{
-                  width: '20px',
-                  height: '20px',
-                  border: '2px solid rgba(255,255,255,0.3)',
-                  borderTopColor: '#fff',
-                  borderRadius: '50%',
-                  animation: 'spin 0.8s linear infinite'
-                }} />
-                Generating...
-              </>
-            ) : (
-              <>
-                <span style={{ display: 'flex' }}>{ICONS.sparkles}</span>
-                Generate Image
-              </>
-            )}
-          </button>
+              gap: '0.75rem'
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <div>
+                <p style={{ color: '#ef4444', fontSize: '0.875rem', fontWeight: 500 }}>Generation Failed</p>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>{generationError}</p>
+              </div>
+            </div>
+          )}
 
           {/* Result */}
-          {resultImage && (
+          {resultImage && !isGenerating && (
             <div style={{
               marginTop: '1.75rem',
               borderRadius: '18px',
@@ -848,7 +994,8 @@ export default function ImageGeneratorDemo() {
                 style={{ 
                   width: '100%', 
                   height: 'auto',
-                  display: 'block'
+                  display: 'block',
+                  background: 'var(--bg-tertiary)'
                 }}
               />
               <div style={{
@@ -856,41 +1003,57 @@ export default function ImageGeneratorDemo() {
                 background: 'var(--bg-secondary)',
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '0.5rem'
               }}>
                 <span style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
-                  Generated with Flux.1 Dev
+                  Generated with Flux.1 {resultModel?.replace('flux-', '').toUpperCase() || 'SCHNELL'}
                 </span>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button style={{
-                    padding: '0.5rem 1rem',
-                    background: 'rgba(255, 140, 66, 0.1)',
-                    border: '1px solid rgba(255, 140, 66, 0.3)',
-                    borderRadius: '10px',
-                    color: 'var(--accent-primary)',
-                    fontSize: '0.8125rem',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.375rem'
-                  }}>
+                  <button
+                    onClick={() => handleDownload(resultImage)}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      background: 'rgba(255, 140, 66, 0.1)',
+                      border: '1px solid rgba(255, 140, 66, 0.3)',
+                      borderRadius: '10px',
+                      color: 'var(--accent-primary)',
+                      fontSize: '0.8125rem',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.375rem'
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
                     Download
                   </button>
-                  <button style={{
-                    padding: '0.5rem 1rem',
-                    background: 'rgba(255, 140, 66, 0.1)',
-                    border: '1px solid rgba(255, 140, 66, 0.2)',
-                    borderRadius: '10px',
-                    color: 'var(--accent-primary)',
-                    fontSize: '0.8125rem',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.375rem'
-                  }}>
-                    Remix
+                  <button
+                    onClick={() => { setResultImage(null); setPrompt(''); setRemixPrompt(''); }}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      background: 'rgba(255, 140, 66, 0.1)',
+                      border: '1px solid rgba(255, 140, 66, 0.2)',
+                      borderRadius: '10px',
+                      color: 'var(--accent-primary)',
+                      fontSize: '0.8125rem',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.375rem'
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 5v14M5 12l7 7 7-7"/>
+                    </svg>
+                    Create Another
                   </button>
                 </div>
               </div>

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth, UserButton } from '@clerk/nextjs';
+import Link from 'next/link';
 
 const ASPECT_RATIOS = [
   { label: 'Square', value: '1:1', icon: '◻️' },
