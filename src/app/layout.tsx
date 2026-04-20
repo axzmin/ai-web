@@ -31,10 +31,11 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Providers />
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <Providers>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
