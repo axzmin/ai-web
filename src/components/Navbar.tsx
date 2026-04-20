@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useUser, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
 
 const ICONS = {
   menu: (
@@ -27,6 +28,7 @@ const ICONS = {
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { isSignedIn, isLoaded } = useUser();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -127,9 +129,32 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }} className="hide-mobile">
-            <Link href="/generate" className="btn btn-primary" style={{ padding: '0.5rem 1rem' }}>
-              Start Creating
-            </Link>
+            {isLoaded && isSignedIn ? (
+              <UserButton
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox: {
+                      width: '36px',
+                      height: '36px',
+                    },
+                  },
+                }}
+              />
+            ) : isLoaded ? (
+              <>
+                <SignInButton mode="modal">
+                  <button className="btn btn-ghost" style={{ padding: '0.5rem 1rem' }}>
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="btn btn-primary" style={{ padding: '0.5rem 1rem' }}>
+                    Get Started
+                  </button>
+                </SignUpButton>
+              </>
+            ) : null}
           </div>
 
           {/* Mobile Menu Button */}
@@ -196,6 +221,25 @@ export default function Navbar() {
             >
               Start Creating
             </Link>
+            {!isSignedIn && (
+              <Link
+                href="/login"
+                onClick={handleNavClick}
+                style={{
+                  marginTop: '0.25rem',
+                  textAlign: 'center',
+                  padding: '1rem 1.25rem',
+                  color: 'var(--text-secondary)',
+                  textDecoration: 'none',
+                  fontSize: '1rem',
+                  fontWeight: 500,
+                  borderRadius: '12px',
+                  background: 'transparent',
+                }}
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       )}

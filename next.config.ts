@@ -14,6 +14,16 @@ const nextConfig = {
         protocol: 'https',
         hostname: '*.replicate.delivery',
       },
+      {
+        // Groq image generation returns images via this CDN
+        protocol: 'https',
+        hostname: 'image.groq.com',
+      },
+      {
+        // Picsum for demo images
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
     ],
   },
 };
