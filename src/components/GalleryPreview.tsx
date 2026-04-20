@@ -42,7 +42,7 @@ export default function GalleryPreview() {
 
   return (
     <section id="gallery" className="section-padded" style={{
-      background: 'var(--bg-tertiary)'
+      background: 'var(--bg-secondary)'
     }}>
       <div className="container">
         {/* Header */}
@@ -128,7 +128,7 @@ export default function GalleryPreview() {
                 cursor: 'pointer',
                 animation: `fadeInUp 0.5s ease ${index * 0.1}s both`,
                 background: 'var(--bg-card)',
-                boxShadow: 'var(--shadow-md)',
+                boxShadow: 'none',
                 border: '1px solid var(--border-subtle)'
               }}
             >

@@ -117,7 +117,7 @@ export default function ImageGeneratorDemo() {
 
   return (
     <section id="generator" className="section-padded" style={{
-      background: 'var(--bg-tertiary)',
+      background: 'var(--bg-secondary)',
       position: 'relative',
       overflow: 'hidden'
     }}>
@@ -200,7 +200,7 @@ export default function ImageGeneratorDemo() {
           borderRadius: '24px',
           padding: '2rem',
           border: '1px solid var(--border-default)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05)',
+          boxShadow: 'none',
           position: 'relative'
         }}>
           {/* Subtle top gradient line */}
@@ -217,7 +217,7 @@ export default function ImageGeneratorDemo() {
           <div style={{
             display: 'flex',
             gap: '0.25rem',
-            background: 'var(--bg-tertiary)',
+            background: 'var(--bg-secondary)',
             borderRadius: '14px',
             padding: '0.25rem',
             marginBottom: '1.75rem'
@@ -281,7 +281,7 @@ export default function ImageGeneratorDemo() {
                     width: '100%',
                     minHeight: '120px',
                     padding: '1.25rem 1rem 2.5rem 1rem',
-                    background: 'var(--bg-tertiary)',
+                    background: 'var(--bg-secondary)',
                     border: '1px solid var(--border-default)',
                     borderRadius: '16px',
                     color: 'var(--text-primary)',
@@ -353,7 +353,7 @@ export default function ImageGeneratorDemo() {
                       style={{
                         width: '100%',
                         padding: '0.75rem 0.875rem',
-                        background: 'var(--bg-tertiary)',
+                        background: 'var(--bg-secondary)',
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         color: 'var(--text-primary)',
@@ -464,7 +464,7 @@ export default function ImageGeneratorDemo() {
                       style={{
                         width: '100%',
                         padding: '0.75rem 0.875rem',
-                        background: 'var(--bg-tertiary)',
+                        background: 'var(--bg-secondary)',
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         color: 'var(--text-primary)',
@@ -544,7 +544,7 @@ export default function ImageGeneratorDemo() {
                       style={{
                         width: '100%',
                         padding: '0.75rem 0.875rem',
-                        background: 'var(--bg-tertiary)',
+                        background: 'var(--bg-secondary)',
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         color: 'var(--text-primary)',
@@ -707,7 +707,7 @@ export default function ImageGeneratorDemo() {
                     width: '100%',
                     minHeight: '80px',
                     padding: '1rem 1rem 2rem 1rem',
-                    background: 'var(--bg-tertiary)',
+                    background: 'var(--bg-secondary)',
                     border: '1px solid var(--border-default)',
                     borderRadius: '14px',
                     color: 'var(--text-primary)',
@@ -734,7 +734,7 @@ export default function ImageGeneratorDemo() {
                     position: 'absolute',
                     width: '100%',
                     height: '100%',
-                    background: 'var(--bg-tertiary)',
+                    background: 'var(--bg-secondary)',
                     borderRadius: '4px'
                   }} />
                   <div style={{
@@ -840,7 +840,7 @@ export default function ImageGeneratorDemo() {
               />
               <div style={{
                 padding: '1rem 1.25rem',
-                background: 'var(--bg-tertiary)',
+                background: 'var(--bg-secondary)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'

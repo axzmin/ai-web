@@ -3,7 +3,7 @@
 export default function CTASection() {
   return (
     <section className="section-padded" style={{
-      background: 'var(--bg-tertiary)',
+      background: 'var(--bg-secondary)',
       position: 'relative',
       overflow: 'hidden'
     }}>
