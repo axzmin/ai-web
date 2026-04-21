@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, SignInButton } from '@clerk/nextjs';
 
 const ICONS = {
   sparkles: (
@@ -850,26 +850,29 @@ export default function ImageGeneratorDemo() {
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginBottom: '1rem' }}>
                 Sign in to generate AI images
               </p>
-              <a href="/login" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.875rem 1.5rem',
-                background: 'linear-gradient(135deg, var(--accent-primary), #E67A35)',
-                borderRadius: '10px',
-                color: '#fff',
-                fontSize: '0.9375rem',
-                fontWeight: 600,
-                textDecoration: 'none',
-                boxShadow: '0 4px 15px rgba(255, 140, 66, 0.3)'
-              }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                  <polyline points="10 17 15 12 10 7"/>
-                  <line x1="15" y1="12" x2="3" y2="12"/>
-                </svg>
-                Sign In to Continue
-              </a>
+              <SignInButton mode="modal">
+                <button style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.875rem 1.5rem',
+                  background: 'linear-gradient(135deg, var(--accent-primary), #E67A35)',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: '#fff',
+                  fontSize: '0.9375rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 15px rgba(255, 140, 66, 0.3)'
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10 17 15 12 10 7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                  </svg>
+                  Sign In to Generate
+                </button>
+              </SignInButton>
             </div>
           ) : (
             <button

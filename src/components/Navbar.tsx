@@ -96,7 +96,7 @@ export default function Navbar() {
             gap: '0.25rem'
           }} className="hide-mobile">
             {[
-              { href: '/generate', label: 'Generate' },
+              { href: '/#generator', label: 'Generate' },
               { href: '/gallery', label: 'Gallery' },
               { href: '/pricing', label: 'Pricing' },
               { href: '/faq', label: 'FAQ' }
@@ -190,16 +190,16 @@ export default function Navbar() {
           animation: 'fadeIn 0.2s ease'
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {[
-              { href: '/generate', label: 'Generate' },
-              { href: '/gallery', label: 'Gallery' },
-              { href: '/pricing', label: 'Pricing' },
-              { href: '/faq', label: 'FAQ' }
-            ].map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={handleNavClick}
+              {[
+                { href: '/#generator', label: 'Generate' },
+                { href: '/gallery', label: 'Gallery' },
+                { href: '/pricing', label: 'Pricing' },
+                { href: '/faq', label: 'FAQ' }
+              ].map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={handleNavClick}
                 style={{
                   padding: '1rem 1.25rem',
                   color: 'var(--text-primary)',
