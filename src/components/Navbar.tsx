@@ -215,28 +215,26 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {!isSignedIn && (
-              <SignInButton mode="modal">
-                <button
-                  style={{
-                    marginTop: '0.25rem',
-                    width: '100%',
-                    textAlign: 'center',
-                    padding: '0.875rem 1.25rem',
-                    background: 'var(--gradient-primary)',
-                    border: 'none',
-                    borderRadius: '12px',
-                    color: 'white',
-                    fontSize: '0.9375rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    boxShadow: 'var(--shadow-glow-orange)',
-                  }}
-                >
-                  Get Started
-                </button>
-              </SignInButton>
-            )}
+            <SignUpButton mode="modal">
+              <button
+                style={{
+                  marginTop: '0.25rem',
+                  width: '100%',
+                  textAlign: 'center',
+                  padding: '0.875rem 1.25rem',
+                  background: 'var(--gradient-primary)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  color: 'white',
+                  fontSize: '0.9375rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: 'var(--shadow-glow-orange)',
+                }}
+              >
+                Get Started
+              </button>
+            </SignUpButton>
           </div>
         </div>
       )}
