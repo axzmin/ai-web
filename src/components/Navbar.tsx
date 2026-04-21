@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useUser, UserButton, SignInButton } from '@clerk/nextjs';
+import { useUser, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
 
 const ICONS = {
   menu: (
@@ -143,13 +143,18 @@ export default function Navbar() {
             ) : isLoaded ? (
               <>
                 <SignInButton mode="modal">
+                  <button className="btn btn-ghost" style={{ padding: '0.4rem 1rem', height: '38px' }}>
+                    Log In
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
                   <button
                     className="btn btn-primary"
-                    style={{ padding: '0.5rem 1.25rem' }}
+                    style={{ padding: '0.5rem 1.25rem', height: '44px' }}
                   >
                     Get Started
                   </button>
-                </SignInButton>
+                </SignUpButton>
               </>
             ) : null}
           </div>
