@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, SignInButton } from '@clerk/nextjs';
 import Link from 'next/link';
 
 interface GenerationState {
@@ -508,24 +508,26 @@ export default function GeneratePage() {
                   {ICONS.lock}
                   Sign in to generate
                 </div>
-                <Link
-                  href="/login"
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    padding: '0.75rem',
-                    background: 'var(--gradient-primary)',
-                    borderRadius: '10px',
-                    color: 'white',
-                    textDecoration: 'none',
-                    fontWeight: 600,
-                    fontSize: '0.9375rem',
-                    textAlign: 'center',
-                    boxShadow: 'var(--shadow-glow-orange)',
-                  }}
-                >
-                  Sign In
-                </Link>
+                <SignInButton mode="modal">
+                  <button
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      padding: '0.75rem',
+                      background: 'var(--gradient-primary)',
+                      border: 'none',
+                      borderRadius: '10px',
+                      color: 'white',
+                      fontSize: '0.9375rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      boxShadow: 'var(--shadow-glow-orange)',
+                    }}
+                  >
+                    Sign In
+                  </button>
+                </SignInButton>
               </div>
             ) : (
               <button
