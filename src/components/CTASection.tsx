@@ -1,5 +1,7 @@
 'use client';
 
+import { SignUpButton } from '@clerk/nextjs';
+
 export default function CTASection() {
   return (
     <section className="section-padded" style={{
@@ -52,7 +54,6 @@ export default function CTASection() {
             border: '1px solid rgba(255, 140, 66, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1.5rem',
-            animation: 'float 3s ease-in-out infinite'
           }}>
             <span style={{ fontSize: '1rem' }}>🚀</span>
             <span style={{
@@ -89,22 +90,38 @@ export default function CTASection() {
             marginBottom: '2.5rem',
             lineHeight: 1.6
           }}>
-            Join thousands of creators already using AI Studio. 
+            Join thousands of creators already using AI Studio.
             No credit card required. Start creating in seconds.
           </p>
 
           {/* CTA Buttons */}
-          <div style={{ 
-            display: 'flex', 
-            gap: '1rem', 
+          <div style={{
+            display: 'flex',
+            gap: '1rem',
             justifyContent: 'center',
             flexWrap: 'wrap'
           }}>
-            <a href="/generate" className="btn btn-primary btn-large">
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <SignUpButton mode="modal">
+              <button
+                className="btn btn-primary btn-large"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.875rem 1.75rem',
+                  background: 'var(--gradient-primary)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  color: 'white',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: 'var(--shadow-glow-orange)',
+                }}
+              >
                 ✨ Start Creating Free
-              </span>
-            </a>
+              </button>
+            </SignUpButton>
             <a href="/gallery" className="btn btn-secondary btn-large">
               View Gallery
             </a>

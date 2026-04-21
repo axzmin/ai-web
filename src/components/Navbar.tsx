@@ -96,10 +96,10 @@ export default function Navbar() {
             gap: '0.25rem'
           }} className="hide-mobile">
             {[
-              { href: '/#generator', label: 'Generate' },
+              { href: '/#generator', label: 'Home' },
               { href: '/gallery', label: 'Gallery' },
-              { href: '/pricing', label: 'Pricing' },
-              { href: '/faq', label: 'FAQ' }
+              { href: '/#pricing', label: 'Pricing' },
+              { href: '/#faq', label: 'FAQ' }
             ].map((link) => (
               <Link
                 key={link.href}
@@ -192,10 +192,10 @@ export default function Navbar() {
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {[
-                { href: '/#generator', label: 'Generate' },
+                { href: '/#generator', label: 'Home' },
                 { href: '/gallery', label: 'Gallery' },
-                { href: '/pricing', label: 'Pricing' },
-                { href: '/faq', label: 'FAQ' }
+                { href: '/#pricing', label: 'Pricing' },
+                { href: '/#faq', label: 'FAQ' }
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -215,32 +215,27 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/generate"
-              onClick={handleNavClick}
-              className="btn btn-primary"
-              style={{ marginTop: '0.5rem', textAlign: 'center' }}
-            >
-              Start Creating
-            </Link>
             {!isSignedIn && (
-              <Link
-                href="/login"
-                onClick={handleNavClick}
-                style={{
-                  marginTop: '0.25rem',
-                  textAlign: 'center',
-                  padding: '1rem 1.25rem',
-                  color: 'var(--text-secondary)',
-                  textDecoration: 'none',
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  borderRadius: '12px',
-                  background: 'transparent',
-                }}
-              >
-                Sign In
-              </Link>
+              <SignInButton mode="modal">
+                <button
+                  style={{
+                    marginTop: '0.25rem',
+                    width: '100%',
+                    textAlign: 'center',
+                    padding: '0.875rem 1.25rem',
+                    background: 'var(--gradient-primary)',
+                    border: 'none',
+                    borderRadius: '12px',
+                    color: 'white',
+                    fontSize: '0.9375rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    boxShadow: 'var(--shadow-glow-orange)',
+                  }}
+                >
+                  Get Started
+                </button>
+              </SignInButton>
             )}
           </div>
         </div>
