@@ -143,17 +143,13 @@ export default function Navbar() {
             ) : isLoaded ? (
               <>
                 <SignInButton mode="modal">
-                  <button className="btn btn-ghost" style={{ padding: '0.5rem 1rem' }}>
-                    Sign In
+                  <button
+                    className="btn btn-primary"
+                    style={{ padding: '0.5rem 1.25rem' }}
+                  >
+                    Get Started
                   </button>
                 </SignInButton>
-                <Link
-                  href="/register"
-                  className="btn btn-primary"
-                  style={{ padding: '0.5rem 1rem' }}
-                >
-                  Get Started
-                </Link>
               </>
             ) : null}
           </div>
