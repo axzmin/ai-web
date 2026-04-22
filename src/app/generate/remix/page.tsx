@@ -58,14 +58,17 @@ export default function RemixPage() {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+      // Close all dropdowns when clicking on something NOT inside a dropdown-container
       if (!target.closest('.dropdown-container')) {
         setModelDropdownOpen(false);
         setQualityDropdownOpen(false);
         setAspectDropdownOpen(false);
       }
     };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+
+    // Use mousedown for better event capture (before React onClick)
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Fetch user credits on mount
@@ -319,23 +322,25 @@ export default function RemixPage() {
                   AI Model
                 </label>
                 <div className="dropdown-container" style={{ position: 'relative' }}>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); setAspectDropdownOpen(false); }}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem 1rem',
-                      background: 'var(--bg-card)',
-                      border: '1px solid var(--border-default)',
-                      borderRadius: '12px',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.875rem',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: '0.5rem'
-                    }}
-                  >
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); setAspectDropdownOpen(false); }}
+                      style={{
+                        width: '100%',
+                        height: '44px',
+                        padding: '0 1rem',
+                        background: 'var(--bg-card)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        color: 'var(--text-primary)',
+                        fontSize: '0.875rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem',
+                        boxSizing: 'border-box'
+                      }}
+                    >
                     <span style={{ fontWeight: 600 }}>
                       {MODEL_OPTIONS.find(m => m.value === model)?.label}
                     </span>
@@ -404,7 +409,8 @@ export default function RemixPage() {
                       onClick={(e) => { e.stopPropagation(); setQualityDropdownOpen(!qualityDropdownOpen); setModelDropdownOpen(false); setAspectDropdownOpen(false); }}
                       style={{
                         width: '100%',
-                        padding: '0.75rem 1rem',
+                        height: '44px',
+                        padding: '0 1rem',
                         background: 'var(--bg-card)',
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
@@ -414,7 +420,8 @@ export default function RemixPage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        gap: '0.5rem'
+                        gap: '0.5rem',
+                        boxSizing: 'border-box'
                       }}
                     >
                       <span style={{ fontWeight: 600 }}>
@@ -484,7 +491,8 @@ export default function RemixPage() {
                       onClick={(e) => { e.stopPropagation(); setAspectDropdownOpen(!aspectDropdownOpen); setModelDropdownOpen(false); setQualityDropdownOpen(false); }}
                       style={{
                         width: '100%',
-                        padding: '0.75rem 1rem',
+                        height: '44px',
+                        padding: '0 1rem',
                         background: 'var(--bg-card)',
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
@@ -494,7 +502,8 @@ export default function RemixPage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        gap: '0.5rem'
+                        gap: '0.5rem',
+                        boxSizing: 'border-box'
                       }}
                     >
                       <span style={{ fontWeight: 600 }}>
