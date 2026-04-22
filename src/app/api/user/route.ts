@@ -38,13 +38,14 @@ export async function GET(req: NextRequest) {
     });
 
     if (!dbUser) {
-      // Create user in database
+      // Create user in database with free credits
       dbUser = await prisma.user.create({
         data: {
           id: userId,
           email: clerkUser.emailAddresses[0]?.emailAddress || '',
           name: clerkUser.fullName || clerkUser.firstName || null,
           image: clerkUser.imageUrl || null,
+          credits: 25, // Default free credits on registration
         },
         include: {
           _count: { select: { generations: true } },
@@ -60,6 +61,7 @@ export async function GET(req: NextRequest) {
       email: dbUser.email,
       name: dbUser.name,
       image: dbUser.image,
+      credits: dbUser.credits,
       generationsCount: dbUser._count.generations,
       recentGenerations: dbUser.generations,
     });

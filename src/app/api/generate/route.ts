@@ -60,10 +60,35 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Check and deduct credits
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { credits: true }
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    if (user.credits === null || user.credits <= 0) {
+      return NextResponse.json({ error: 'Insufficient credits. Please upgrade your plan.' }, { status: 402 });
+    }
+
+    // Deduct one credit
+    await prisma.user.update({
+      where: { id: userId },
+      data: { credits: { decrement: 1 } }
+    });
+
     const body = await req.json();
     const { prompt, model = 'flux-schnell', aspectRatio = '1:1', quality = 'standard', seed } = body;
 
     if (!prompt || prompt.trim().length === 0) {
+      // Refund credit if prompt is invalid
+      await prisma.user.update({
+        where: { id: userId },
+        data: { credits: { increment: 1 } }
+      });
       return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
     }
 
@@ -71,8 +96,8 @@ export async function POST(req: NextRequest) {
     const aspect = ASPECT_RATIOS[aspectRatio] || ASPECT_RATIOS['1:1'];
 
     // Adjust steps based on quality
-    const numSteps = quality === 'hd' 
-      ? Math.round(modelConfig.steps * 1.5) 
+    const numSteps = quality === 'hd'
+      ? Math.round(modelConfig.steps * 1.5)
       : modelConfig.steps;
 
     const groqRequest: GroqImageRequest = {
@@ -97,6 +122,11 @@ export async function POST(req: NextRequest) {
 
     if (!response.ok || data.error) {
       console.error('Groq API error:', data.error);
+      // Refund credit on API error
+      await prisma.user.update({
+        where: { id: userId },
+        data: { credits: { increment: 1 } }
+      });
       return NextResponse.json(
         { error: data.error?.message || 'Image generation failed' },
         { status: 500 }
@@ -105,6 +135,11 @@ export async function POST(req: NextRequest) {
 
     const imageUrl = data.data?.[0]?.url;
     if (!imageUrl) {
+      // Refund credit if no image returned
+      await prisma.user.update({
+        where: { id: userId },
+        data: { credits: { increment: 1 } }
+      });
       return NextResponse.json({ error: 'No image returned' }, { status: 500 });
     }
 

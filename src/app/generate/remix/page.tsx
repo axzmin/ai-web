@@ -1,6 +1,26 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { useAuth } from '@clerk/nextjs';
+import Link from 'next/link';
+
+const ASPECT_RATIOS = [
+  { label: 'Square', value: '1:1' },
+  { label: 'Portrait', value: '3:4' },
+  { label: 'Landscape', value: '4:3' },
+  { label: 'Wide', value: '16:9' },
+];
+
+const QUALITY_OPTIONS = [
+  { label: 'Standard', value: 'standard', description: 'Fast generation' },
+  { label: 'HD', value: 'hd', description: 'Enhanced details' },
+];
+
+const MODEL_OPTIONS = [
+  { label: 'Flux.1 Schnell', value: 'flux-schnell', description: 'Fast, 4 steps' },
+  { label: 'Flux.1 Dev', value: 'flux-dev', description: 'Best quality' },
+  { label: 'Flux.1 Pro', value: 'flux-pro', description: 'Premium quality' },
+];
 
 interface GenerationState {
   status: 'idle' | 'uploading' | 'generating' | 'complete' | 'error';
@@ -16,6 +36,14 @@ export default function RemixPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [strength, setStrength] = useState(0.7);
+  const [model, setModel] = useState('flux-schnell');
+  const [quality, setQuality] = useState('standard');
+  const [aspectRatio, setAspectRatio] = useState('1:1');
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const [qualityDropdownOpen, setQualityDropdownOpen] = useState(false);
+  const [aspectDropdownOpen, setAspectDropdownOpen] = useState(false);
+  const [credits, setCredits] = useState<number | null>(null);
+  const [insufficientCredits, setInsufficientCredits] = useState(false);
   const [state, setState] = useState<GenerationState>({
     status: 'idle',
     progress: 0,
@@ -24,6 +52,21 @@ export default function RemixPage() {
     error: null,
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isSignedIn, userId } = useAuth();
+
+  // Fetch user credits on mount
+  useEffect(() => {
+    if (userId) {
+      fetch('/api/user')
+        .then(res => res.json())
+        .then(data => {
+          if (data.credits !== undefined) {
+            setCredits(data.credits);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [userId]);
 
   const handleFileSelect = useCallback((file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -66,6 +109,12 @@ export default function RemixPage() {
   const handleGenerate = async () => {
     if (!prompt.trim() || !imageUrl) return;
 
+    // Check credits first
+    if (credits !== null && credits <= 0) {
+      setInsufficientCredits(true);
+      return;
+    }
+
     setState({ 
       status: 'generating', 
       progress: 0, 
@@ -73,6 +122,7 @@ export default function RemixPage() {
       resultUrl: null, 
       error: null 
     });
+    setInsufficientCredits(false);
 
     // Simulate progress
     const progressInterval = setInterval(() => {
@@ -90,7 +140,10 @@ export default function RemixPage() {
           prompt, 
           imageUrl,
           mode: 'remix',
-          strength 
+          strength,
+          model,
+          quality,
+          aspectRatio
         }),
       });
 
@@ -100,6 +153,9 @@ export default function RemixPage() {
 
       if (data.error) {
         setState({ status: 'error', progress: 0, imageUrl: null, resultUrl: null, error: data.error });
+        if (data.error.includes('credits') || data.error.includes('Credit')) {
+          setInsufficientCredits(true);
+        }
       } else {
         setState({ 
           status: 'complete', 
@@ -108,6 +164,10 @@ export default function RemixPage() {
           resultUrl: data.imageUrl, 
           error: null 
         });
+        // Update credits after successful generation
+        if (credits !== null) {
+          setCredits(prev => prev !== null ? prev - 1 : null);
+        }
       }
     } catch (error) {
       clearInterval(progressInterval);
@@ -239,6 +299,249 @@ export default function RemixPage() {
 
             {/* Strength Slider */}
             <div className="settings-panel mt-3">
+              {/* Model Selector */}
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                  AI Model
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => { setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); setAspectDropdownOpen(false); }}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      background: 'var(--bg-secondary)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '12px',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.8125rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.5rem'
+                    }}
+                  >
+                    <span style={{ fontWeight: 600 }}>
+                      {MODEL_OPTIONS.find(m => m.value === model)?.label}
+                    </span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                  </button>
+                  {modelDropdownOpen && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 6px)',
+                      left: 0,
+                      right: 0,
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '12px',
+                      padding: '0.375rem',
+                      zIndex: 50,
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                      maxHeight: '200px',
+                      overflowY: 'auto'
+                    }}>
+                      {MODEL_OPTIONS.map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => { setModel(option.value); setModelDropdownOpen(false); }}
+                          style={{
+                            width: '100%',
+                            padding: '0.625rem 0.75rem',
+                            background: model === option.value ? 'var(--bg-tertiary)' : 'transparent',
+                            border: model === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                            borderRadius: '8px',
+                            color: 'var(--text-primary)',
+                            fontSize: '0.8125rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginBottom: '2px'
+                          }}
+                        >
+                          <span style={{ textAlign: 'left' }}>
+                            <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{option.label}</span>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.description}</span>
+                          </span>
+                          {model === option.value && (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                {/* Quality */}
+                <div>
+                  <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    Quality
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      onClick={() => { setQualityDropdownOpen(!qualityDropdownOpen); setModelDropdownOpen(false); setAspectDropdownOpen(false); }}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem 0.875rem',
+                        background: 'var(--bg-secondary)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        color: 'var(--text-primary)',
+                        fontSize: '0.8125rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      <span style={{ fontWeight: 600 }}>
+                        {QUALITY_OPTIONS.find(q => q.value === quality)?.label}
+                      </span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M6 9l6 6 6-6"/>
+                      </svg>
+                    </button>
+                    {qualityDropdownOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 6px)',
+                        left: 0,
+                        right: 0,
+                        background: 'var(--bg-card)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        padding: '0.375rem',
+                        zIndex: 50,
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                        maxHeight: '200px',
+                        overflowY: 'auto'
+                      }}>
+                        {QUALITY_OPTIONS.map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => { setQuality(option.value); setQualityDropdownOpen(false); }}
+                            style={{
+                              width: '100%',
+                              padding: '0.625rem 0.75rem',
+                              background: quality === option.value ? 'var(--bg-tertiary)' : 'transparent',
+                              border: quality === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                              borderRadius: '8px',
+                              color: 'var(--text-primary)',
+                              fontSize: '0.8125rem',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '2px'
+                            }}
+                          >
+                            <span style={{ textAlign: 'left' }}>
+                              <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{option.label}</span>
+                              <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.description}</span>
+                            </span>
+                            {quality === option.value && (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                              </svg>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Aspect Ratio */}
+                <div>
+                  <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    Aspect Ratio
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <button
+                      onClick={() => { setAspectDropdownOpen(!aspectDropdownOpen); setModelDropdownOpen(false); setQualityDropdownOpen(false); }}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem 0.875rem',
+                        background: 'var(--bg-secondary)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        color: 'var(--text-primary)',
+                        fontSize: '0.8125rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      <span style={{ fontWeight: 600 }}>
+                        {ASPECT_RATIOS.find(r => r.value === aspectRatio)?.label} ({aspectRatio})
+                      </span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M6 9l6 6 6-6"/>
+                      </svg>
+                    </button>
+                    {aspectDropdownOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 6px)',
+                        left: 0,
+                        right: 0,
+                        background: 'var(--bg-card)',
+                        border: '1px solid var(--border-default)',
+                        borderRadius: '12px',
+                        padding: '0.375rem',
+                        zIndex: 50,
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                        maxHeight: '200px',
+                        overflowY: 'auto'
+                      }}>
+                        {ASPECT_RATIOS.map((ratio) => (
+                          <button
+                            key={ratio.value}
+                            onClick={() => { setAspectRatio(ratio.value); setAspectDropdownOpen(false); }}
+                            style={{
+                              width: '100%',
+                              padding: '0.625rem 0.75rem',
+                              background: aspectRatio === ratio.value ? 'var(--bg-tertiary)' : 'transparent',
+                              border: aspectRatio === ratio.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                              borderRadius: '8px',
+                              color: 'var(--text-primary)',
+                              fontSize: '0.8125rem',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '2px'
+                            }}
+                          >
+                            <span style={{ textAlign: 'left' }}>
+                              <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{ratio.label}</span>
+                              <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{ratio.value}</span>
+                            </span>
+                            {aspectRatio === ratio.value && (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                              </svg>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Transformation Strength */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <label className="settings-label">Transformation Strength</label>
                 <span style={{ color: 'var(--vercel-white)', fontSize: '0.875rem' }}>
@@ -271,31 +574,93 @@ export default function RemixPage() {
             </div>
 
             {/* Generate Button */}
-            <button
-              onClick={handleGenerate}
-              disabled={!prompt.trim() || !imageUrl || state.status === 'generating'}
-              className="btn-generate mt-3"
-              style={{
-                width: '100%',
-                opacity: !prompt.trim() || !imageUrl || state.status === 'generating' ? 0.6 : 1,
-                cursor: !prompt.trim() || !imageUrl || state.status === 'generating' ? 'not-allowed' : 'pointer',
-                background: 'linear-gradient(135deg, #de1d8d 0%, #ff5b4f 100%)'
-              }}
-            >
-              {state.status === 'generating' ? (
-                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                  <span className="spinner" />
-                  Transforming...
-                </span>
-              ) : (
-                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M10 2L2 10L6 10L4 18L16 6L12 6L14 2L10 2Z" fill="currentColor"/>
-                  </svg>
-                  Remix Image
-                </span>
-              )}
-            </button>
+            {!isSignedIn ? (
+              <div style={{
+                marginTop: '1.5rem',
+                padding: '1.5rem',
+                background: 'rgba(255, 140, 66, 0.08)',
+                border: '1px solid rgba(255, 140, 66, 0.15)',
+                borderRadius: '14px',
+                textAlign: 'center'
+              }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginBottom: '1rem' }}>
+                  Sign in to remix images
+                </p>
+                <Link href="/login" style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.875rem 1.5rem',
+                  background: 'linear-gradient(135deg, #de1d8d 0%, #ff5b4f 100%)',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: '#fff',
+                  fontSize: '0.9375rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textDecoration: 'none',
+                  boxShadow: '0 4px 15px rgba(222, 29, 141, 0.3)'
+                }}>
+                  Sign In to Remix
+                </Link>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={handleGenerate}
+                  disabled={!prompt.trim() || !imageUrl || state.status === 'generating'}
+                  className="btn-generate mt-3"
+                  style={{
+                    width: '100%',
+                    opacity: !prompt.trim() || !imageUrl || state.status === 'generating' ? 0.6 : 1,
+                    cursor: !prompt.trim() || !imageUrl || state.status === 'generating' ? 'not-allowed' : 'pointer',
+                    background: 'linear-gradient(135deg, #de1d8d 0%, #ff5b4f 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  {state.status === 'generating' ? (
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                      <span className="spinner" />
+                      Transforming...
+                    </span>
+                  ) : (
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 2L2 10L6 10L4 18L16 6L12 6L14 2L10 2Z" fill="currentColor"/>
+                      </svg>
+                      Remix Image {credits !== null && <span style={{ fontSize: '0.875rem', opacity: 0.8 }}>({credits} credits)</span>}
+                    </span>
+                  )}
+                </button>
+
+                {/* Insufficient Credits Message */}
+                {insufficientCredits && (
+                  <div style={{
+                    marginTop: '1rem',
+                    padding: '1rem',
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    borderRadius: '12px',
+                    textAlign: 'center'
+                  }}>
+                    <p style={{ color: '#ef4444', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+                      Insufficient credits
+                    </p>
+                    <Link href="/pricing" style={{
+                      color: 'var(--accent-primary)',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      textDecoration: 'none'
+                    }}>
+                      Upgrade your plan →
+                    </Link>
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
           {/* Right: Result */}
