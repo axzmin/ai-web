@@ -50,7 +50,7 @@ export default function Navbar() {
         padding: '0.75rem 1.5rem',
         background: scrolled ? 'rgba(245, 240, 230, 0.95)' : 'rgba(245, 240, 230, 0.8)',
         backdropFilter: scrolled ? 'blur(20px)' : 'none',
-        borderBottom: scrolled ? '1px solid var(--border-subtle)' : 'none',
+        borderBottom: scrolled ? 'none' : 'none',
         transition: 'all 0.3s ease'
       }}>
         <div style={{
