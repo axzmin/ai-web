@@ -156,91 +156,14 @@ export default function ImageGenerator() {
             </div>
 
             <div className="settings-panel mt-4">
-              {/* AI Model */}
-              <div style={{ marginBottom: '1rem' }}>
-                <label className="settings-label">AI Model</label>
-                <div className="dropdown-container" style={{ position: 'relative' }}>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); setAspectDropdownOpen(false); }}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem 1rem',
-                      background: 'var(--bg-card)',
-                      border: '1px solid var(--border-default)',
-                      borderRadius: '12px',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.875rem',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: '0.5rem'
-                    }}
-                  >
-                    <span style={{ fontWeight: 600 }}>
-                      {MODEL_OPTIONS.find(m => m.value === model)?.label}
-                    </span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M6 9l6 6 6-6"/>
-                    </svg>
-                  </button>
-                  {modelDropdownOpen && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 'calc(100% + 6px)',
-                      left: 0,
-                      right: 0,
-                      background: 'var(--bg-card)',
-                      border: '1px solid var(--border-default)',
-                      borderRadius: '12px',
-                      padding: '0.375rem',
-                      zIndex: 50,
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                      maxHeight: '200px',
-                      overflowY: 'auto'
-                    }}>
-                      {MODEL_OPTIONS.map((option) => (
-                        <button
-                          key={option.value}
-                          onClick={() => { setModel(option.value); setModelDropdownOpen(false); }}
-                          style={{
-                            width: '100%',
-                            padding: '0.625rem 0.75rem',
-                            background: model === option.value ? 'var(--bg-tertiary)' : 'transparent',
-                            border: model === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
-                            borderRadius: '8px',
-                            color: 'var(--text-primary)',
-                            fontSize: '0.8125rem',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginBottom: '2px'
-                          }}
-                        >
-                          <span style={{ textAlign: 'left' }}>
-                            <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{option.label}</span>
-                            <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.description}</span>
-                          </span>
-                          {model === option.value && (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
-                              <polyline points="20 6 9 17 4 12"/>
-                            </svg>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid-2" style={{ gap: '1rem' }}>
-                {/* Quality */}
-                <div className="settings-group">
-                  <label className="settings-label">Quality</label>
+              {/* All selectors in a consistent grid layout */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {/* AI Model */}
+                <div>
+                  <label className="settings-label">AI Model</label>
                   <div className="dropdown-container" style={{ position: 'relative' }}>
                     <button
-                      onClick={(e) => { e.stopPropagation(); setQualityDropdownOpen(!qualityDropdownOpen); setModelDropdownOpen(false); setAspectDropdownOpen(false); }}
+                      onClick={(e) => { e.stopPropagation(); setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); setAspectDropdownOpen(false); }}
                       style={{
                         width: '100%',
                         padding: '0.75rem 1rem',
@@ -257,13 +180,13 @@ export default function ImageGenerator() {
                       }}
                     >
                       <span style={{ fontWeight: 600 }}>
-                        {QUALITY_OPTIONS.find(q => q.value === quality)?.label}
+                        {MODEL_OPTIONS.find(m => m.value === model)?.label}
                       </span>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M6 9l6 6 6-6"/>
                       </svg>
                     </button>
-                    {qualityDropdownOpen && (
+                    {modelDropdownOpen && (
                       <div style={{
                         position: 'absolute',
                         top: 'calc(100% + 6px)',
@@ -278,15 +201,15 @@ export default function ImageGenerator() {
                         maxHeight: '200px',
                         overflowY: 'auto'
                       }}>
-                        {QUALITY_OPTIONS.map((option) => (
+                        {MODEL_OPTIONS.map((option) => (
                           <button
                             key={option.value}
-                            onClick={() => { setQuality(option.value); setQualityDropdownOpen(false); }}
+                            onClick={() => { setModel(option.value); setModelDropdownOpen(false); }}
                             style={{
                               width: '100%',
                               padding: '0.625rem 0.75rem',
-                              background: quality === option.value ? 'var(--bg-tertiary)' : 'transparent',
-                              border: quality === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                              background: model === option.value ? 'var(--bg-tertiary)' : 'transparent',
+                              border: model === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
                               borderRadius: '8px',
                               color: 'var(--text-primary)',
                               fontSize: '0.8125rem',
@@ -299,9 +222,9 @@ export default function ImageGenerator() {
                           >
                             <span style={{ textAlign: 'left' }}>
                               <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{option.label}</span>
-                              <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.desc}</span>
+                              <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.description}</span>
                             </span>
-                            {quality === option.value && (
+                            {model === option.value && (
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
                                 <polyline points="20 6 9 17 4 12"/>
                               </svg>
@@ -313,81 +236,162 @@ export default function ImageGenerator() {
                   </div>
                 </div>
 
-                {/* Aspect Ratio */}
-                <div className="settings-group">
-                  <label className="settings-label">Aspect Ratio</label>
-                  <div className="dropdown-container" style={{ position: 'relative' }}>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setAspectDropdownOpen(!aspectDropdownOpen); setModelDropdownOpen(false); setQualityDropdownOpen(false); }}
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem 1rem',
-                        background: 'var(--bg-card)',
-                        border: '1px solid var(--border-default)',
-                        borderRadius: '12px',
-                        color: 'var(--text-primary)',
-                        fontSize: '0.875rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: '0.5rem'
-                      }}
-                    >
-                      <span style={{ fontWeight: 600 }}>
-                        {ASPECT_RATIOS.find(r => r.value === aspectRatio)?.label} ({aspectRatio})
-                      </span>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M6 9l6 6 6-6"/>
-                      </svg>
-                    </button>
-                    {aspectDropdownOpen && (
-                      <div style={{
-                        position: 'absolute',
-                        top: 'calc(100% + 6px)',
-                        left: 0,
-                        right: 0,
-                        background: 'var(--bg-card)',
-                        border: '1px solid var(--border-default)',
-                        borderRadius: '12px',
-                        padding: '0.375rem',
-                        zIndex: 50,
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                        maxHeight: '200px',
-                        overflowY: 'auto'
-                      }}>
-                        {ASPECT_RATIOS.map((ratio) => (
-                          <button
-                            key={ratio.value}
-                            onClick={() => { setAspectRatio(ratio.value); setAspectDropdownOpen(false); }}
-                            style={{
-                              width: '100%',
-                              padding: '0.625rem 0.75rem',
-                              background: aspectRatio === ratio.value ? 'var(--bg-tertiary)' : 'transparent',
-                              border: aspectRatio === ratio.value ? '1px solid var(--border-default)' : '1px solid transparent',
-                              borderRadius: '8px',
-                              color: 'var(--text-primary)',
-                              fontSize: '0.8125rem',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              marginBottom: '2px'
-                            }}
-                          >
-                            <span style={{ textAlign: 'left' }}>
-                              <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{ratio.label}</span>
-                              <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{ratio.value}</span>
-                            </span>
-                            {aspectRatio === ratio.value && (
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
-                                <polyline points="20 6 9 17 4 12"/>
-                              </svg>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                {/* Quality and Aspect Ratio in a 2-column grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  {/* Quality */}
+                  <div>
+                    <label className="settings-label">Quality</label>
+                    <div className="dropdown-container" style={{ position: 'relative' }}>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setQualityDropdownOpen(!qualityDropdownOpen); setModelDropdownOpen(false); setAspectDropdownOpen(false); }}
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 1rem',
+                          background: 'var(--bg-card)',
+                          border: '1px solid var(--border-default)',
+                          borderRadius: '12px',
+                          color: 'var(--text-primary)',
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '0.5rem'
+                        }}
+                      >
+                        <span style={{ fontWeight: 600 }}>
+                          {QUALITY_OPTIONS.find(q => q.value === quality)?.label}
+                        </span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                      </button>
+                      {qualityDropdownOpen && (
+                        <div style={{
+                          position: 'absolute',
+                          top: 'calc(100% + 6px)',
+                          left: 0,
+                          right: 0,
+                          background: 'var(--bg-card)',
+                          border: '1px solid var(--border-default)',
+                          borderRadius: '12px',
+                          padding: '0.375rem',
+                          zIndex: 50,
+                          boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                          maxHeight: '200px',
+                          overflowY: 'auto'
+                        }}>
+                          {QUALITY_OPTIONS.map((option) => (
+                            <button
+                              key={option.value}
+                              onClick={() => { setQuality(option.value); setQualityDropdownOpen(false); }}
+                              style={{
+                                width: '100%',
+                                padding: '0.625rem 0.75rem',
+                                background: quality === option.value ? 'var(--bg-tertiary)' : 'transparent',
+                                border: quality === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                                borderRadius: '8px',
+                                color: 'var(--text-primary)',
+                                fontSize: '0.8125rem',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                marginBottom: '2px'
+                              }}
+                            >
+                              <span style={{ textAlign: 'left' }}>
+                                <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{option.label}</span>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.desc}</span>
+                              </span>
+                              {quality === option.value && (
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                                  <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Aspect Ratio */}
+                  <div>
+                    <label className="settings-label">Aspect Ratio</label>
+                    <div className="dropdown-container" style={{ position: 'relative' }}>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setAspectDropdownOpen(!aspectDropdownOpen); setModelDropdownOpen(false); setQualityDropdownOpen(false); }}
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 1rem',
+                          background: 'var(--bg-card)',
+                          border: '1px solid var(--border-default)',
+                          borderRadius: '12px',
+                          color: 'var(--text-primary)',
+                          fontSize: '0.875rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '0.5rem'
+                        }}
+                      >
+                        <span style={{ fontWeight: 600 }}>
+                          {ASPECT_RATIOS.find(r => r.value === aspectRatio)?.label} ({aspectRatio})
+                        </span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                      </button>
+                      {aspectDropdownOpen && (
+                        <div style={{
+                          position: 'absolute',
+                          top: 'calc(100% + 6px)',
+                          left: 0,
+                          right: 0,
+                          background: 'var(--bg-card)',
+                          border: '1px solid var(--border-default)',
+                          borderRadius: '12px',
+                          padding: '0.375rem',
+                          zIndex: 50,
+                          boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                          maxHeight: '200px',
+                          overflowY: 'auto'
+                        }}>
+                          {ASPECT_RATIOS.map((ratio) => (
+                            <button
+                              key={ratio.value}
+                              onClick={() => { setAspectRatio(ratio.value); setAspectDropdownOpen(false); }}
+                              style={{
+                                width: '100%',
+                                padding: '0.625rem 0.75rem',
+                                background: aspectRatio === ratio.value ? 'var(--bg-tertiary)' : 'transparent',
+                                border: aspectRatio === ratio.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                                borderRadius: '8px',
+                                color: 'var(--text-primary)',
+                                fontSize: '0.8125rem',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                marginBottom: '2px'
+                              }}
+                            >
+                              <span style={{ textAlign: 'left' }}>
+                                <span style={{ fontWeight: 600, display: 'block', fontSize: '0.8125rem' }}>{ratio.label}</span>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{ratio.value}</span>
+                              </span>
+                              {aspectRatio === ratio.value && (
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                                  <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
