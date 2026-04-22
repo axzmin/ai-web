@@ -48,7 +48,7 @@ export default function Navbar() {
         right: 0,
         zIndex: 100,
         padding: '0.75rem 1.5rem',
-        background: scrolled ? 'rgba(245, 240, 230, 0.95)' : 'rgba(245, 240, 230, 0.8)',
+        background: scrolled ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.85)',
         backdropFilter: scrolled ? 'blur(20px)' : 'none',
         borderBottom: scrolled ? 'none' : 'none',
         transition: 'all 0.3s ease'
