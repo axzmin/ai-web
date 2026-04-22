@@ -56,19 +56,20 @@ export default function RemixPage() {
 
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleMouseDown = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      // Close all dropdowns when clicking on something NOT inside a dropdown-container
-      if (!target.closest('.dropdown-container')) {
-        setModelDropdownOpen(false);
-        setQualityDropdownOpen(false);
-        setAspectDropdownOpen(false);
+      // If clicking inside the settings panel, don't close dropdowns
+      if (target.closest('.settings-panel')) {
+        return;
       }
+      // Close all dropdowns when clicking outside
+      setModelDropdownOpen(false);
+      setQualityDropdownOpen(false);
+      setAspectDropdownOpen(false);
     };
 
-    // Use mousedown for better event capture (before React onClick)
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => document.removeEventListener('mousedown', handleMouseDown);
   }, []);
 
   // Fetch user credits on mount
