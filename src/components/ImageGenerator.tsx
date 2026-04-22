@@ -45,6 +45,20 @@ export default function ImageGenerator() {
 
   const { isSignedIn, userId } = useAuth();
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.dropdown-container')) {
+        setModelDropdownOpen(false);
+        setQualityDropdownOpen(false);
+        setAspectDropdownOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   // Fetch user credits on mount
   useEffect(() => {
     if (userId) {
@@ -145,13 +159,13 @@ export default function ImageGenerator() {
               {/* AI Model */}
               <div style={{ marginBottom: '1rem' }}>
                 <label className="settings-label">AI Model</label>
-                <div style={{ position: 'relative' }}>
+                <div className="dropdown-container" style={{ position: 'relative' }}>
                   <button
-                    onClick={() => { setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); setAspectDropdownOpen(false); }}
+                    onClick={(e) => { e.stopPropagation(); setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); setAspectDropdownOpen(false); }}
                     style={{
                       width: '100%',
                       padding: '0.75rem 1rem',
-                      background: 'var(--bg-tertiary)',
+                      background: 'var(--bg-card)',
                       border: '1px solid var(--border-default)',
                       borderRadius: '12px',
                       color: 'var(--text-primary)',
@@ -224,13 +238,13 @@ export default function ImageGenerator() {
                 {/* Quality */}
                 <div className="settings-group">
                   <label className="settings-label">Quality</label>
-                  <div style={{ position: 'relative' }}>
+                  <div className="dropdown-container" style={{ position: 'relative' }}>
                     <button
-                      onClick={() => { setQualityDropdownOpen(!qualityDropdownOpen); setModelDropdownOpen(false); setAspectDropdownOpen(false); }}
+                      onClick={(e) => { e.stopPropagation(); setQualityDropdownOpen(!qualityDropdownOpen); setModelDropdownOpen(false); setAspectDropdownOpen(false); }}
                       style={{
                         width: '100%',
                         padding: '0.75rem 1rem',
-                        background: 'var(--bg-tertiary)',
+                        background: 'var(--bg-card)',
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         color: 'var(--text-primary)',
@@ -302,13 +316,13 @@ export default function ImageGenerator() {
                 {/* Aspect Ratio */}
                 <div className="settings-group">
                   <label className="settings-label">Aspect Ratio</label>
-                  <div style={{ position: 'relative' }}>
+                  <div className="dropdown-container" style={{ position: 'relative' }}>
                     <button
-                      onClick={() => { setAspectDropdownOpen(!aspectDropdownOpen); setModelDropdownOpen(false); setQualityDropdownOpen(false); }}
+                      onClick={(e) => { e.stopPropagation(); setAspectDropdownOpen(!aspectDropdownOpen); setModelDropdownOpen(false); setQualityDropdownOpen(false); }}
                       style={{
                         width: '100%',
                         padding: '0.75rem 1rem',
-                        background: 'var(--bg-tertiary)',
+                        background: 'var(--bg-card)',
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         color: 'var(--text-primary)',

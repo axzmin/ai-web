@@ -54,6 +54,20 @@ export default function RemixPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { isSignedIn, userId } = useAuth();
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.dropdown-container')) {
+        setModelDropdownOpen(false);
+        setQualityDropdownOpen(false);
+        setAspectDropdownOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   // Fetch user credits on mount
   useEffect(() => {
     if (userId) {
@@ -304,17 +318,17 @@ export default function RemixPage() {
                 <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
                   AI Model
                 </label>
-                <div style={{ position: 'relative' }}>
+                <div className="dropdown-container" style={{ position: 'relative' }}>
                   <button
-                    onClick={() => { setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); setAspectDropdownOpen(false); }}
+                    onClick={(e) => { e.stopPropagation(); setModelDropdownOpen(!modelDropdownOpen); setQualityDropdownOpen(false); setAspectDropdownOpen(false); }}
                     style={{
                       width: '100%',
                       padding: '0.75rem 1rem',
-                      background: 'var(--bg-secondary)',
+                      background: 'var(--bg-card)',
                       border: '1px solid var(--border-default)',
                       borderRadius: '12px',
                       color: 'var(--text-primary)',
-                      fontSize: '0.8125rem',
+                      fontSize: '0.875rem',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -385,17 +399,17 @@ export default function RemixPage() {
                   <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
                     Quality
                   </label>
-                  <div style={{ position: 'relative' }}>
+                  <div className="dropdown-container" style={{ position: 'relative' }}>
                     <button
-                      onClick={() => { setQualityDropdownOpen(!qualityDropdownOpen); setModelDropdownOpen(false); setAspectDropdownOpen(false); }}
+                      onClick={(e) => { e.stopPropagation(); setQualityDropdownOpen(!qualityDropdownOpen); setModelDropdownOpen(false); setAspectDropdownOpen(false); }}
                       style={{
                         width: '100%',
-                        padding: '0.75rem 0.875rem',
-                        background: 'var(--bg-secondary)',
+                        padding: '0.75rem 1rem',
+                        background: 'var(--bg-card)',
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         color: 'var(--text-primary)',
-                        fontSize: '0.8125rem',
+                        fontSize: '0.875rem',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -465,17 +479,17 @@ export default function RemixPage() {
                   <label style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', marginBottom: '0.5rem', fontWeight: 500 }}>
                     Aspect Ratio
                   </label>
-                  <div style={{ position: 'relative' }}>
+                  <div className="dropdown-container" style={{ position: 'relative' }}>
                     <button
-                      onClick={() => { setAspectDropdownOpen(!aspectDropdownOpen); setModelDropdownOpen(false); setQualityDropdownOpen(false); }}
+                      onClick={(e) => { e.stopPropagation(); setAspectDropdownOpen(!aspectDropdownOpen); setModelDropdownOpen(false); setQualityDropdownOpen(false); }}
                       style={{
                         width: '100%',
-                        padding: '0.75rem 0.875rem',
-                        background: 'var(--bg-secondary)',
+                        padding: '0.75rem 1rem',
+                        background: 'var(--bg-card)',
                         border: '1px solid var(--border-default)',
                         borderRadius: '12px',
                         color: 'var(--text-primary)',
-                        fontSize: '0.8125rem',
+                        fontSize: '0.875rem',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
