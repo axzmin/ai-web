@@ -161,7 +161,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
           // Footer
           footer: {
-            background: 'transparent',
+            background: '#000000',
           },
           footerActionLink: {
             color: '#FF8C42',
@@ -169,7 +169,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             fontSize: '14px',
           },
           footerRequiredSymbol: {
-            color: '#DC4545',
+            color: '#FF8C42',
           },
 
           // Logo
