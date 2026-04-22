@@ -161,7 +161,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
           // Footer
           footer: {
-            background: '#000000',
+            background: 'transparent',
           },
           footerActionLink: {
             color: '#FF8C42',
