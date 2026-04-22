@@ -263,6 +263,38 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
+/* Generator Section - used on homepage */
+.generator-section {
+  position: relative;
+  padding: 6rem 0;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+.generator-section .orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.generator-section .orb-1 {
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 140, 66, 0.15) 0%, transparent 70%);
+  filter: blur(60px);
+}
+
+.generator-section .orb-2 {
+  bottom: -150px;
+  left: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 70%);
+  filter: blur(80px);
+}
+
 .generate-page .orb {
   position: absolute;
   border-radius: 50%;
