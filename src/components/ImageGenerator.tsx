@@ -819,21 +819,21 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
             {/* Generate Button */}
             <button
               onClick={handleGenerate}
-              disabled={!isSignedIn || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'}
+              disabled={(activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'}
               style={{
                 width: '100%',
                 padding: '0.875rem',
-                background: !isSignedIn || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
+                background: (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
                   ? 'var(--bg-tertiary)'
                   : 'var(--gradient-primary)',
                 border: 'none',
                 borderRadius: '10px',
-                color: !isSignedIn || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
+                color: (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
                   ? 'var(--text-muted)'
                   : 'white',
                 fontSize: '0.9375rem',
                 fontWeight: 600,
-                cursor: !isSignedIn || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
+                cursor: (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
                   ? 'not-allowed'
                   : 'pointer',
                 display: 'flex',
@@ -841,7 +841,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                 justifyContent: 'center',
                 gap: '0.5rem',
                 transition: 'all 0.2s ease',
-                boxShadow: !isSignedIn || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
+                boxShadow: (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
                   ? 'none'
                   : '0 4px 12px rgba(52, 98, 91, 0.3)',
               }}
@@ -963,13 +963,13 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
             )}
 
             {/* Generated Images - Comparison Slider */}
-            {state.status === 'complete' && state.imageUrls.length > 0 && (
+            {state.status === 'complete' && (state.imageUrls.length > 0 || !!state.imageUrl) && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
                 {/* Main Comparison Slider */}
                 <ComparisonSlider
-                  beforeSrc={uploadedImage || (isDemo ? state.imageUrl! : state.imageUrls[0])}
-                  afterSrc={isDemo ? state.imageUrl! : state.imageUrls[selectedIndex]}
+                  beforeSrc={uploadedImage || (isDemo ? (state.imageUrl || '') : state.imageUrls[0])}
+                  afterSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                 />
 
                 {/* Thumbnail Strip */}
