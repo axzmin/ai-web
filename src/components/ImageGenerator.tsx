@@ -411,7 +411,7 @@ export default function ImageGenerator() {
               }}>
                 Model
               </label>
-              <div ref={modelRef} style={{ position: 'relative' }}>
+              <div ref={modelRef} style={{ position: 'relative', zIndex: 20 }}>
                 <button
                   onClick={(e) => { e.stopPropagation(); setModelDropdownOpen(!modelDropdownOpen); }}
                   style={{
@@ -655,7 +655,7 @@ export default function ImageGenerator() {
               }}>
                 Aspect Ratio
               </label>
-              <div ref={aspectRatioRef} style={{ position: 'relative', zIndex: 10 }}>
+              <div ref={aspectRatioRef} style={{ position: 'relative', zIndex: 15 }}>
                 <button
                   onClick={() => setAspectRatioDropdownOpen(!aspectRatioDropdownOpen)}
                   style={{
