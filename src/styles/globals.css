@@ -5,10 +5,10 @@
 
 /* CSS Variables */
 :root {
-  /* Colors - Warm Tan/Beige Light Theme */
-  --bg-primary: #F5F0E6;
-  --bg-secondary: #EBE6DA;
-  --bg-tertiary: #E1DCD0;
+  /* Colors - Light Theme with Teal Accent */
+  --bg-primary: #f5f1ee;
+  --bg-secondary: #ebe6de;
+  --bg-tertiary: #e1dbd3;
   --bg-card: #ffffff;
   --bg-elevated: #ffffff;
 
@@ -17,16 +17,16 @@
   --text-muted: #8a8279;
   --text-disabled: #c2bdb6;
 
-  /* Accent Colors - Warm Orange */
-  --accent-primary: #FF8C42;
-  --accent-primary-hover: #E67A35;
-  --accent-secondary: #FFB380;
-  --accent-tertiary: #FF6B1A;
+  /* Accent Colors - Teal Primary */
+  --accent-primary: #34625b;
+  --accent-primary-hover: #2a4f49;
+  --accent-secondary: #5a8a80;
+  --accent-tertiary: #1e4a42;
 
-  /* Gradients - Warm Orange */
-  --gradient-primary: linear-gradient(135deg, #FF8C42, #FF6B1A);
-  --gradient-secondary: linear-gradient(135deg, #FFB380, #FF8C42);
-  --gradient-warm: linear-gradient(135deg, #FF8C42, #FFB380);
+  /* Gradients - Teal */
+  --gradient-primary: linear-gradient(135deg, #34625b, #1e4a42);
+  --gradient-secondary: linear-gradient(135deg, #5a8a80, #34625b);
+  --gradient-warm: linear-gradient(135deg, #34625b, #5a8a80);
   --gradient-success: linear-gradient(135deg, #16a34a, #15803d);
 
   /* Borders */
@@ -39,7 +39,7 @@
   --shadow-md: 0 4px 12px rgba(26, 22, 20, 0.08);
   --shadow-lg: 0 8px 24px rgba(26, 22, 20, 0.1);
   --shadow-xl: 0 16px 48px rgba(26, 22, 20, 0.12);
-  --shadow-glow-orange: 0 4px 20px rgba(255, 140, 66, 0.25);
+  --shadow-glow-teal: 0 4px 20px rgba(52, 98, 91, 0.25);
 
   /* Spacing */
   --space-1: 0.25rem;
@@ -146,7 +146,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-primary:hover {
   background: var(--accent-primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 6px 24px rgba(52, 98, 91, 0.3);
 }
 
 .btn-secondary {
@@ -282,7 +282,7 @@ h1, h2, h3, h4, h5, h6 {
   right: -100px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(255, 140, 66, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(52, 98, 91, 0.15) 0%, transparent 70%);
   filter: blur(60px);
 }
 
@@ -291,7 +291,7 @@ h1, h2, h3, h4, h5, h6 {
   left: -100px;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(52, 98, 91, 0.12) 0%, transparent 70%);
   filter: blur(80px);
 }
 
@@ -306,7 +306,7 @@ h1, h2, h3, h4, h5, h6 {
   right: -100px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(52, 98, 91, 0.15) 0%, transparent 70%);
   filter: blur(60px);
 }
 
@@ -315,7 +315,7 @@ h1, h2, h3, h4, h5, h6 {
   left: -100px;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(8, 145, 178, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(52, 98, 91, 0.12) 0%, transparent 70%);
   filter: blur(80px);
 }
 
@@ -445,7 +445,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Generate Button */
 .btn-generate {
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #1e4a42 100%);
   border: none;
   border-radius: var(--radius-lg);
   color: white;
@@ -453,12 +453,12 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 15px rgba(52, 98, 91, 0.3);
 }
 
 .btn-generate:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 6px 20px rgba(52, 98, 91, 0.4);
 }
 
 /* Progress */

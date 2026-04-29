@@ -8,7 +8,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       appearance={{
         variables: {
           // Background & Surface — warm beige theme to match website
-          colorBackground: '#F5F0E6',
+          colorBackground: '#f5f1ee',
           colorInputBackground: '#ffffff',
           colorShimmer: '#e8e0d0',
 
@@ -18,10 +18,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           colorTextSecondary: '#7A6555',
           colorTextTertiary: '#A08060',
 
-          // Primary accent — warm orange
-          colorPrimary: '#FF8C42',
-          colorPrimaryHover: '#E67A35',
-          colorPrimaryBackground: '#FFF0E6',
+          // Primary accent — teal
+          colorPrimary: '#34625b',
+          colorPrimaryHover: '#2a4f49',
+          colorPrimaryBackground: '#E8F0EF',
 
           // Danger / Error
           colorDanger: '#DC4545',
@@ -42,17 +42,17 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           // Shadows — soft, warm
           shadowScreens: '0 8px 40px rgba(45, 36, 24, 0.12)',
           shadowScales: '0 4px 20px rgba(45, 36, 24, 0.08)',
-          shadowButtons: '0 2px 8px rgba(255, 140, 66, 0.20)',
+          shadowButtons: '0 2px 8px rgba(52, 98, 91, 0.20)',
 
           // Spacing
           paddingCircleButton: '12px',
           gapBetweenPages: '32px',
         },
         elements: {
-          // Main card — light with warm border
+          // Main card — light with teal border
           card: {
             background: '#FFFFFF',
-            border: '1px solid rgba(255, 140, 66, 0.20)',
+            border: '1px solid rgba(52, 98, 91, 0.20)',
             boxShadow: '0 8px 40px rgba(45, 36, 24, 0.10)',
             borderRadius: '16px',
           },
@@ -72,7 +72,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           // Social buttons
           socialButtonsBlockButton: {
             background: '#FFFFFF',
-            border: '1px solid rgba(255, 140, 66, 0.25)',
+            border: '1px solid rgba(52, 98, 91, 0.25)',
             color: '#2D2418',
             fontSize: '14px',
             fontWeight: 500,
@@ -82,13 +82,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             color: '#2D2418',
           },
           socialButtonsBlockButtonHover: {
-            background: '#FFF8F3',
-            border: '1px solid rgba(255, 140, 66, 0.35)',
+            background: '#F0F8F7',
+            border: '1px solid rgba(52, 98, 91, 0.35)',
           },
 
           // Divider
           dividerLine: {
-            background: 'rgba(255, 140, 66, 0.20)',
+            background: 'rgba(52, 98, 91, 0.20)',
           },
           dividerText: {
             color: '#7A6555',
@@ -97,8 +97,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
           // Form — Primary CTA button
           formButtonPrimary: {
-            background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B1A 100%)',
-            boxShadow: '0 4px 15px rgba(255, 140, 66, 0.30)',
+            background: 'linear-gradient(135deg, #34625b 0%, #1e4a42 100%)',
+            boxShadow: '0 4px 15px rgba(52, 98, 91, 0.30)',
             fontSize: '15px',
             fontWeight: 600,
             border: 'none',
@@ -107,12 +107,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             color: '#ffffff',
           },
           formButtonPrimaryHover: {
-            background: 'linear-gradient(135deg, #E67A35 0%, #E55A10 100%)',
-            boxShadow: '0 4px 20px rgba(255, 140, 66, 0.40)',
+            background: 'linear-gradient(135deg, #2a4f49 0%, #163832 100%)',
+            boxShadow: '0 4px 20px rgba(52, 98, 91, 0.40)',
           },
           formButtonSecondary: {
             background: '#FFFFFF',
-            border: '1px solid rgba(255, 140, 66, 0.25)',
+            border: '1px solid rgba(52, 98, 91, 0.25)',
             color: '#2D2418',
             fontSize: '14px',
             fontWeight: 500,
@@ -122,7 +122,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           // Inputs
           formFieldInput: {
             background: '#FFFFFF',
-            border: '1px solid rgba(255, 140, 66, 0.25)',
+            border: '1px solid rgba(52, 98, 91, 0.25)',
             color: '#2D2418',
             fontSize: '15px',
             padding: '12px 14px',
@@ -133,8 +133,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             background: '#FEF9F9',
           },
           formFieldInputFocus: {
-            border: '1px solid rgba(255, 140, 66, 0.60)',
-            boxShadow: '0 0 0 3px rgba(255, 140, 66, 0.12)',
+            border: '1px solid rgba(52, 98, 91, 0.60)',
+            boxShadow: '0 0 0 3px rgba(52, 98, 91, 0.12)',
           },
           formFieldLabel: {
             color: '#7A6555',
@@ -156,7 +156,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             fontSize: '14px',
           },
           identityPreviewEditButton: {
-            color: '#FF8C42',
+            color: '#34625b',
           },
 
           // Footer
@@ -164,12 +164,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             background: 'transparent',
           },
           footerActionLink: {
-            color: '#FF8C42',
+            color: '#34625b',
             fontWeight: 500,
             fontSize: '14px',
           },
           footerRequiredSymbol: {
-            color: '#FF8C42',
+            color: '#34625b',
           },
 
           // Logo
@@ -177,14 +177,14 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             display: 'none',
           },
           logoBox: {
-            background: 'linear-gradient(135deg, #FF8C42, #FF6B1A)',
+            background: 'linear-gradient(135deg, #34625b, #1e4a42)',
             borderRadius: '10px',
             padding: '10px',
           },
 
           // Alternative methods
           alternativeMethodsBlockButton: {
-            color: '#FF8C42',
+            color: '#34625b',
             fontSize: '14px',
             fontWeight: 500,
           },
@@ -192,7 +192,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           // Otp
           otpCodeFieldInput: {
             background: '#FFFFFF',
-            border: '1px solid rgba(255, 140, 66, 0.25)',
+            border: '1px solid rgba(52, 98, 91, 0.25)',
             color: '#2D2418',
             borderRadius: '10px',
           },

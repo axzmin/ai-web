@@ -44,7 +44,7 @@ export default function GalleryPage() {
         left: 0,
         right: 0,
         height: '400px',
-        background: 'radial-gradient(ellipse at 50% -20%, rgba(255, 140, 66, 0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse at 50% -20%, rgba(52, 98, 91, 0.08) 0%, transparent 70%)',
         pointerEvents: 'none',
         zIndex: 0,
       }} />
@@ -96,7 +96,7 @@ export default function GalleryPage() {
                 fontWeight: selectedCategory === category ? 600 : 500,
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                boxShadow: selectedCategory === category ? '0 2px 8px rgba(255, 140, 66, 0.25)' : 'none',
+                boxShadow: selectedCategory === category ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
               }}
             >
               {category}

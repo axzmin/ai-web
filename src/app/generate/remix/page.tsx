@@ -602,8 +602,8 @@ export default function RemixPage() {
               <div style={{
                 marginTop: '1.5rem',
                 padding: '1.5rem',
-                background: 'rgba(255, 140, 66, 0.08)',
-                border: '1px solid rgba(255, 140, 66, 0.15)',
+                background: 'rgba(52, 98, 91, 0.08)',
+                border: '1px solid rgba(52, 98, 91, 0.15)',
                 borderRadius: '14px',
                 textAlign: 'center'
               }}>

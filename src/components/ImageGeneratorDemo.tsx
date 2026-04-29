@@ -135,7 +135,7 @@ export default function ImageGeneratorDemo() {
         transform: 'translateX(-50%)',
         width: '900px',
         height: '600px',
-        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse, rgba(52, 98, 91, 0.08) 0%, transparent 70%)',
         filter: 'blur(80px)',
         pointerEvents: 'none'
       }} />
@@ -179,7 +179,7 @@ export default function ImageGeneratorDemo() {
               transition: 'all 0.2s ease',
               background: activeTab === 'text-to-image' ? 'var(--gradient-primary)' : 'transparent',
               color: activeTab === 'text-to-image' ? 'white' : 'var(--text-secondary)',
-              boxShadow: activeTab === 'text-to-image' ? '0 2px 8px rgba(255, 140, 66, 0.3)' : 'none',
+              boxShadow: activeTab === 'text-to-image' ? '0 2px 8px rgba(52, 98, 91, 0.3)' : 'none',
             }}
           >
             Text to Image
@@ -196,7 +196,7 @@ export default function ImageGeneratorDemo() {
               transition: 'all 0.2s ease',
               background: activeTab === 'image-to-image' ? 'var(--gradient-primary)' : 'transparent',
               color: activeTab === 'image-to-image' ? 'white' : 'var(--text-secondary)',
-              boxShadow: activeTab === 'image-to-image' ? '0 2px 8px rgba(255, 140, 66, 0.3)' : 'none',
+              boxShadow: activeTab === 'image-to-image' ? '0 2px 8px rgba(52, 98, 91, 0.3)' : 'none',
             }}
           >
             Image to Image
@@ -248,7 +248,7 @@ export default function ImageGeneratorDemo() {
                     justifyContent: 'space-between',
                     gap: '0.5rem',
                     transition: 'all 0.2s ease',
-                    boxShadow: modelDropdownOpen ? '0 0 0 3px rgba(255, 140, 66, 0.12)' : 'none',
+                    boxShadow: modelDropdownOpen ? '0 0 0 3px rgba(52, 98, 91, 0.12)' : 'none',
                   }}
                 >
                   <span style={{ fontWeight: 600 }}>
@@ -347,7 +347,7 @@ export default function ImageGeneratorDemo() {
                     }}
                     onFocus={(e) => {
                       e.currentTarget.style.borderColor = 'var(--accent-primary)';
-                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 140, 66, 0.12)';
+                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(52, 98, 91, 0.12)';
                     }}
                     onBlur={(e) => {
                       e.currentTarget.style.borderColor = 'var(--border-default)';
@@ -492,7 +492,7 @@ export default function ImageGeneratorDemo() {
                       fontSize: '0.75rem',
                       fontWeight: aspectRatio === ratio.value ? 600 : 400,
                       transition: 'all 0.2s ease',
-                      boxShadow: aspectRatio === ratio.value ? '0 2px 8px rgba(255, 140, 66, 0.25)' : 'none',
+                      boxShadow: aspectRatio === ratio.value ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
                     }}
                   >
                     {ratio.label}
@@ -530,7 +530,7 @@ export default function ImageGeneratorDemo() {
                       transition: 'all 0.2s ease',
                       fontWeight: quality === option.value ? 600 : 400,
                       fontSize: '0.8125rem',
-                      boxShadow: quality === option.value ? '0 2px 8px rgba(255, 140, 66, 0.25)' : 'none',
+                      boxShadow: quality === option.value ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
                     }}
                   >
                     <div style={{ fontWeight: 600, marginBottom: '0.125rem' }}>{option.label}</div>
@@ -570,7 +570,7 @@ export default function ImageGeneratorDemo() {
                       fontSize: '0.875rem',
                       fontWeight: numImages === num ? 600 : 400,
                       transition: 'all 0.2s ease',
-                      boxShadow: numImages === num ? '0 2px 8px rgba(255, 140, 66, 0.25)' : 'none',
+                      boxShadow: numImages === num ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
                     }}
                   >
                     {num}
@@ -596,7 +596,7 @@ export default function ImageGeneratorDemo() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.5rem',
-                  boxShadow: '0 4px 12px rgba(255, 140, 66, 0.3)',
+                  boxShadow: '0 4px 12px rgba(52, 98, 91, 0.3)',
                 }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
@@ -635,7 +635,7 @@ export default function ImageGeneratorDemo() {
                   transition: 'all 0.2s ease',
                   boxShadow: state.status === 'generating' || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage)
                     ? 'none'
-                    : '0 4px 12px rgba(255, 140, 66, 0.3)',
+                    : '0 4px 12px rgba(52, 98, 91, 0.3)',
                 }}
               >
                 {state.status === 'generating' ? (

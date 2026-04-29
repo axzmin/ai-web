@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer style={{
       padding: '4rem 0 2rem',
-      background: '#000000',
+      background: '#34625b',
       borderTop: '1px solid rgba(255,255,255,0.1)'
     }}>
       <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '0 2rem' }}>

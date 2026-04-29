@@ -55,14 +55,14 @@ export default function Hero() {
       background: 'var(--bg-primary)',
       overflow: 'hidden'
     }}>
-      {/* Warm Gradient Orbs - Blue/Teal instead of Purple */}
+      {/* Warm Gradient Orbs - Teal */}
       <div style={{
         position: 'absolute',
         top: '15%',
         left: '5%',
         width: '600px',
         height: '600px',
-        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(52, 98, 91, 0.12) 0%, transparent 70%)',
         filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
@@ -72,7 +72,7 @@ export default function Hero() {
         right: '10%',
         width: '500px',
         height: '500px',
-        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.1) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(52, 98, 91, 0.1) 0%, transparent 70%)',
         filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
@@ -86,8 +86,8 @@ export default function Hero() {
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.5rem 1rem',
-          background: 'rgba(255, 140, 66, 0.08)',
-          border: '1px solid rgba(255, 140, 66, 0.2)',
+          background: 'rgba(52, 98, 91, 0.08)',
+          border: '1px solid rgba(52, 98, 91, 0.2)',
           borderRadius: 'var(--radius-full)',
           marginBottom: '1.5rem',
           animation: 'float 3s ease-in-out infinite',

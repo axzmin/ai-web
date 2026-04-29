@@ -95,8 +95,8 @@ export default function Pricing() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(255, 140, 66, 0.08)',
-            border: '1px solid rgba(255, 140, 66, 0.15)',
+            background: 'rgba(52, 98, 91, 0.08)',
+            border: '1px solid rgba(52, 98, 91, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1rem',
             color: 'var(--accent-primary)'
@@ -205,7 +205,7 @@ export default function Pricing() {
                   borderRadius: '9999px',
                   fontSize: '0.75rem',
                   fontWeight: 600,
-                  boxShadow: '0 4px 12px rgba(255, 140, 66, 0.3)'
+                  boxShadow: '0 4px 12px rgba(52, 98, 91, 0.3)'
                 }}>
                   Most Popular
                 </div>

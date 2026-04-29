@@ -229,7 +229,7 @@ export default function Navbar() {
                   fontSize: '0.9375rem',
                   fontWeight: 600,
                   cursor: 'pointer',
-                  boxShadow: 'var(--shadow-glow-orange)',
+                  boxShadow: 'var(--shadow-glow-teal)',
                 }}
               >
                 Get Started

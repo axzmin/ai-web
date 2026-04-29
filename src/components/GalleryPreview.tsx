@@ -54,7 +54,7 @@ export default function GalleryPreview() {
         transform: 'translateX(-50%)',
         width: '800px',
         height: '500px',
-        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.07) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse, rgba(52, 98, 91, 0.07) 0%, transparent 70%)',
         filter: 'blur(80px)',
         pointerEvents: 'none'
       }} />
@@ -76,7 +76,7 @@ export default function GalleryPreview() {
         right: '5%',
         width: '400px',
         height: '300px',
-        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.05) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse, rgba(52, 98, 91, 0.05) 0%, transparent 70%)',
         filter: 'blur(60px)',
         pointerEvents: 'none'
       }} />
@@ -88,8 +88,8 @@ export default function GalleryPreview() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(255, 140, 66, 0.08)',
-            border: '1px solid rgba(255, 140, 66, 0.15)',
+            background: 'rgba(52, 98, 91, 0.08)',
+            border: '1px solid rgba(52, 98, 91, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1rem'
           }}>

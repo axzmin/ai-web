@@ -17,7 +17,7 @@ export default function CTASection() {
         transform: 'translate(-50%, 0%)',
         width: '1000px',
         height: '700px',
-        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse, rgba(52, 98, 91, 0.08) 0%, transparent 70%)',
         filter: 'blur(100px)',
         pointerEvents: 'none'
       }} />
@@ -37,7 +37,7 @@ export default function CTASection() {
         left: '20%',
         width: '600px',
         height: '400px',
-        background: 'radial-gradient(ellipse, rgba(255, 140, 66, 0.06) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse, rgba(52, 98, 91, 0.06) 0%, transparent 70%)',
         filter: 'blur(80px)',
         pointerEvents: 'none'
       }} />
@@ -50,8 +50,8 @@ export default function CTASection() {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(255, 140, 66, 0.08)',
-            border: '1px solid rgba(255, 140, 66, 0.15)',
+            background: 'rgba(52, 98, 91, 0.08)',
+            border: '1px solid rgba(52, 98, 91, 0.15)',
             borderRadius: 'var(--radius-full)',
             marginBottom: '1.5rem',
           }}>

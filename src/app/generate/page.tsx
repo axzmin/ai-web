@@ -139,7 +139,7 @@ export default function GeneratePage() {
         left: 0,
         right: 0,
         height: '400px',
-        background: 'radial-gradient(ellipse at 50% -20%, rgba(255, 140, 66, 0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse at 50% -20%, rgba(52, 98, 91, 0.08) 0%, transparent 70%)',
         pointerEvents: 'none',
         zIndex: 0,
       }} />
@@ -220,7 +220,7 @@ export default function GeneratePage() {
                   }}
                   onFocus={(e) => {
                     e.currentTarget.style.borderColor = 'var(--accent-primary)';
-                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(255, 140, 66, 0.12)';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(52, 98, 91, 0.12)';
                   }}
                   onBlur={(e) => {
                     e.currentTarget.style.borderColor = 'var(--border-default)';
@@ -284,7 +284,7 @@ export default function GeneratePage() {
                         transition: 'all 0.2s ease',
                         fontWeight: aspectRatio === ratio.value ? 600 : 400,
                         fontSize: '0.8125rem',
-                        boxShadow: aspectRatio === ratio.value ? '0 2px 8px rgba(255, 140, 66, 0.25)' : 'none',
+                        boxShadow: aspectRatio === ratio.value ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
                       }}
                     >
                       <div style={{ fontSize: '1.125rem', marginBottom: '0.125rem' }}>{ratio.icon}</div>
@@ -321,7 +321,7 @@ export default function GeneratePage() {
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       transition: 'all 0.2s ease',
-                      boxShadow: modelDropdownOpen ? '0 0 0 3px rgba(255, 140, 66, 0.12)' : 'none',
+                      boxShadow: modelDropdownOpen ? '0 0 0 3px rgba(52, 98, 91, 0.12)' : 'none',
                     }}
                   >
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -463,7 +463,7 @@ export default function GeneratePage() {
                         transition: 'all 0.2s ease',
                         fontWeight: quality === preset.value ? 600 : 400,
                         fontSize: '0.8125rem',
-                        boxShadow: quality === preset.value ? '0 2px 8px rgba(255, 140, 66, 0.25)' : 'none',
+                        boxShadow: quality === preset.value ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
                       }}
                     >
                       <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.125rem' }}>{preset.label}</div>
