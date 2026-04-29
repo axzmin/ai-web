@@ -1042,6 +1042,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
               marginBottom: '1rem',
               textTransform: 'uppercase',
               letterSpacing: '0.03em',
+              display: 'none',
             }}>
               Image Preview
             </label>
