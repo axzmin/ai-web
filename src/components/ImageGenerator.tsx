@@ -24,6 +24,169 @@ const MODEL_OPTIONS = [
   { label: 'Flux.1 Pro', value: 'flux-pro', description: 'Premium quality' },
 ];
 
+// ─── Comparison Slider Component ───────────────────────────────────────────
+function ComparisonSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [sliderX, setSliderX] = useState(50); // percentage 0–100
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const move = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = Math.min(Math.max(((e.clientX - rect.left) / rect.width) * 100, 0), 100);
+      setSliderX(x);
+    };
+    const up = () => {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+    };
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.min(Math.max(((e.touches[0].clientX - rect.left) / rect.width) * 100, 0), 100);
+    setSliderX(x);
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      onTouchMove={handleTouchMove}
+      style={{
+        position: 'relative',
+        width: '100%',
+        aspectRatio: '4/3',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        cursor: 'col-resize',
+        userSelect: 'none',
+        background: 'var(--bg-secondary)',
+        flexShrink: 0,
+      }}
+    >
+      {/* Before image (full width, underneath) */}
+      <img
+        src={beforeSrc}
+        alt="Before"
+        draggable={false}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+        }}
+      />
+
+      {/* After image (clipped by slider position, on top) */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: `${sliderX}%`,
+          height: '100%',
+          overflow: 'hidden',
+        }}
+      >
+        <img
+          src={afterSrc}
+          alt="After"
+          draggable={false}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: `${100 / (sliderX / 100)}%`,
+            height: '100%',
+            objectFit: 'cover',
+          }}
+        />
+      </div>
+
+      {/* Vertical divider line */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: `${sliderX}%`,
+          width: '2px',
+          background: 'white',
+          transform: 'translateX(-50%)',
+          boxShadow: '0 0 8px rgba(0,0,0,0.4)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Circle handle */}
+      <div
+        onMouseDown={handleMouseDown}
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: `${sliderX}%`,
+          transform: 'translate(-50%, -50%)',
+          width: '40px',
+          height: '40px',
+          borderRadius: '50%',
+          background: 'white',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'col-resize',
+          zIndex: 2,
+        }}
+      >
+        {/* Left arrow */}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2.5" style={{ marginRight: '2px' }}>
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        {/* Right arrow */}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2.5" style={{ marginLeft: '2px' }}>
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+
+      {/* Labels */}
+      <div style={{
+        position: 'absolute',
+        bottom: '10px',
+        left: '10px',
+        padding: '3px 10px',
+        background: 'rgba(0,0,0,0.55)',
+        borderRadius: '6px',
+        color: 'white',
+        fontSize: '0.6875rem',
+        fontWeight: 600,
+        letterSpacing: '0.04em',
+        textTransform: 'uppercase',
+        pointerEvents: 'none',
+      }}>
+        Original
+      </div>
+      <div style={{
+        position: 'absolute',
+        bottom: '10px',
+        right: '10px',
+        padding: '3px 10px',
+        background: 'rgba(0,0,0,0.55)',
+        borderRadius: '6px',
+        color: 'white',
+        fontSize: '0.6875rem',
+        fontWeight: 600,
+        letterSpacing: '0.04em',
+        textTransform: 'uppercase',
+        pointerEvents: 'none',
+      }}>
+        Enhanced
+      </div>
+    </div>
+  );
+}
 
 
 interface GenState {
@@ -50,6 +213,7 @@ export default function ImageGenerator() {
   const [state, setState] = useState<GenState>({
     status: 'idle', progress: 0, imageUrls: [], error: null
   });
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const modelRef = useRef<HTMLDivElement>(null);
   const aspectRatioRef = useRef<HTMLDivElement>(null);
@@ -793,30 +957,58 @@ export default function ImageGenerator() {
               </div>
             )}
 
-            {/* Generated Images */}
+            {/* Generated Images - Comparison Slider */}
             {state.status === 'complete' && state.imageUrls.length > 0 && (
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+
+                {/* Main Comparison Slider */}
+                <ComparisonSlider
+                  beforeSrc={uploadedImage || state.imageUrls[0]}
+                  afterSrc={state.imageUrls[0]}
+                />
+
+                {/* Thumbnail Strip */}
                 <div style={{
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  background: 'var(--bg-secondary)',
-                  marginBottom: '1rem',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(5, 1fr)',
+                  gap: '0.5rem',
+                  marginTop: '0.875rem',
+                  marginBottom: '0.875rem',
                 }}>
-                  <img
-                    src={state.imageUrls[0]}
-                    alt="Generated"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      maxHeight: '350px',
-                      objectFit: 'contain',
-                      display: 'block',
-                    }}
-                  />
+                  {state.imageUrls.map((url, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setSelectedIndex(i)}
+                      style={{
+                        position: 'relative',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        border: selectedIndex === i ? '2px solid var(--accent-primary)' : '2px solid transparent',
+                        cursor: 'pointer',
+                        padding: 0,
+                        background: 'var(--bg-secondary)',
+                        aspectRatio: '1/1',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      <img
+                        src={url}
+                        alt={`Thumb ${i + 1}`}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          display: 'block',
+                        }}
+                      />
+                    </button>
+                  ))}
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem' }}>
+
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <button
-                    onClick={() => handleDownload(state.imageUrls[0])}
+                    onClick={() => handleDownload(state.imageUrls[selectedIndex])}
                     style={{
                       flex: 1,
                       padding: '0.75rem',
@@ -830,15 +1022,56 @@ export default function ImageGenerator() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '0.5rem',
+                      gap: '0.375rem',
                     }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                       <polyline points="7 10 12 15 17 10"/>
                       <line x1="12" x2="12" y1="15" y2="3"/>
                     </svg>
                     Download
+                  </button>
+                  <button
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (ev) => {
+                            const newUrls = [...state.imageUrls];
+                            newUrls[selectedIndex] = ev.target?.result as string;
+                            setState({ ...state, imageUrls: newUrls });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      };
+                      input.click();
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: '0.75rem',
+                      background: 'var(--bg-secondary)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '10px',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.375rem',
+                    }}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Remix
                   </button>
                   <button
                     onClick={() => setState({ status: 'idle', progress: 0, imageUrls: [], error: null })}
@@ -855,10 +1088,70 @@ export default function ImageGenerator() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '0.5rem',
+                      gap: '0.375rem',
                     }}
                   >
-                    Create Another
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="12" y1="5" x2="12" y2="19"/>
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    New
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator.share({ url: state.imageUrls[selectedIndex] });
+                      } else {
+                        navigator.clipboard.writeText(state.imageUrls[selectedIndex]);
+                      }
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: '0.75rem',
+                      background: 'var(--bg-secondary)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '10px',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.375rem',
+                    }}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="18" cy="5" r="3"/>
+                      <circle cx="6" cy="12" r="3"/>
+                      <circle cx="18" cy="19" r="3"/>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
+                    Share
+                  </button>
+                  <button
+                    onClick={() => alert('Added to favorites!')}
+                    style={{
+                      flex: 1,
+                      padding: '0.75rem',
+                      background: 'var(--bg-secondary)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '10px',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.375rem',
+                    }}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                    Like
                   </button>
                 </div>
               </div>
