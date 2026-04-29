@@ -135,19 +135,53 @@ export default function Hero() {
         </p>
         
         {/* CTA Buttons */}
-        <div style={{ 
-          display: 'flex', 
-          gap: '1rem', 
+        <div style={{
+          display: 'flex',
+          gap: '1rem',
           justifyContent: 'center',
           flexWrap: 'wrap'
         }}>
-          <Link href="/generate" className="btn btn-primary btn-large">
+          <Link href="/generate" style={{
+            flex: '1 1 auto',
+            minWidth: '180px',
+            maxWidth: '240px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            padding: '0.875rem 1.75rem',
+            background: 'var(--gradient-primary)',
+            borderRadius: '12px',
+            color: 'white',
+            fontSize: '1rem',
+            fontWeight: 600,
+            textDecoration: 'none',
+            boxShadow: 'var(--shadow-glow-teal)',
+            transition: 'all 0.2s ease',
+          }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               {Icons.sparkles}
               Start Creating Free
             </span>
           </Link>
-          <Link href="/gallery" className="btn btn-secondary btn-large">
+          <Link href="/gallery" style={{
+            flex: '1 1 auto',
+            minWidth: '180px',
+            maxWidth: '240px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            padding: '0.875rem 1.75rem',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-default)',
+            borderRadius: '12px',
+            color: 'var(--text-primary)',
+            fontSize: '1rem',
+            fontWeight: 600,
+            textDecoration: 'none',
+            transition: 'all 0.2s ease',
+          }}>
             View Gallery
           </Link>
         </div>

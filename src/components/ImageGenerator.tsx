@@ -24,7 +24,7 @@ const MODEL_OPTIONS = [
   { label: 'Flux.1 Pro', value: 'flux-pro', description: 'Premium quality' },
 ];
 
-const NUM_IMAGES_OPTIONS = ['1', '2', '4'];
+
 
 interface GenState {
   status: 'idle' | 'generating' | 'complete' | 'error';
@@ -39,8 +39,10 @@ export default function ImageGenerator() {
   const [aspectRatio, setAspectRatio] = useState('1:1');
   const [quality, setQuality] = useState('standard');
   const [model, setModel] = useState('flux-schnell');
-  const [numImages, setNumImages] = useState('1');
+
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const [aspectRatioDropdownOpen, setAspectRatioDropdownOpen] = useState(false);
+  const [qualityDropdownOpen, setQualityDropdownOpen] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
   const [insufficientCredits, setInsufficientCredits] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -50,13 +52,21 @@ export default function ImageGenerator() {
   });
 
   const modelRef = useRef<HTMLDivElement>(null);
+  const aspectRatioRef = useRef<HTMLDivElement>(null);
+  const qualityRef = useRef<HTMLDivElement>(null);
   const { isSignedIn, userId } = useAuth();
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
       if (modelRef.current && !modelRef.current.contains(e.target as Node)) {
         setModelDropdownOpen(false);
+      }
+      if (aspectRatioRef.current && !aspectRatioRef.current.contains(e.target as Node)) {
+        setAspectRatioDropdownOpen(false);
+      }
+      if (qualityRef.current && !qualityRef.current.contains(e.target as Node)) {
+        setQualityDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleMouseDown);
@@ -481,28 +491,72 @@ export default function ImageGenerator() {
               }}>
                 Aspect Ratio
               </label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
-                {ASPECT_RATIOS.map((ratio) => (
-                  <button
-                    key={ratio.value}
-                    onClick={() => setAspectRatio(ratio.value)}
-                    style={{
-                      padding: '0.5rem 0.25rem',
-                      background: aspectRatio === ratio.value ? 'var(--accent-primary)' : 'var(--bg-primary)',
-                      border: aspectRatio === ratio.value ? '1px solid var(--accent-primary)' : '1px solid var(--border-default)',
-                      borderRadius: '8px',
-                      color: aspectRatio === ratio.value ? 'white' : 'var(--text-secondary)',
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      fontSize: '0.75rem',
-                      fontWeight: aspectRatio === ratio.value ? 600 : 400,
-                      transition: 'all 0.2s ease',
-                      boxShadow: aspectRatio === ratio.value ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
-                    }}
-                  >
-                    {ratio.label}
-                  </button>
-                ))}
+              <div ref={aspectRatioRef} style={{ position: 'relative', zIndex: 10 }}>
+                <button
+                  onClick={() => setAspectRatioDropdownOpen(!aspectRatioDropdownOpen)}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.625rem 0.875rem',
+                    background: 'var(--bg-primary)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: '8px',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.8125rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span style={{ fontWeight: 600 }}>{aspectRatio}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2">
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </button>
+                {aspectRatioDropdownOpen && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    left: 0,
+                    right: 0,
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: '10px',
+                    padding: '0.375rem',
+                    zIndex: 50,
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                  }}>
+                    {ASPECT_RATIOS.map((ratio) => (
+                      <button
+                        key={ratio.value}
+                        onClick={() => { setAspectRatio(ratio.value); setAspectRatioDropdownOpen(false); }}
+                        style={{
+                          width: '100%',
+                          padding: '0.625rem 0.75rem',
+                          background: aspectRatio === ratio.value ? 'var(--bg-tertiary)' : 'transparent',
+                          border: aspectRatio === ratio.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                          borderRadius: '8px',
+                          color: 'var(--text-primary)',
+                          fontSize: '0.8125rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginBottom: '2px',
+                        }}
+                      >
+                        <span style={{ fontWeight: 600 }}>{ratio.label}</span>
+                        {aspectRatio === ratio.value && (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -519,68 +573,77 @@ export default function ImageGenerator() {
               }}>
                 Quality
               </label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                {QUALITY_OPTIONS.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => setQuality(option.value)}
-                    style={{
-                      padding: '0.625rem 0.5rem',
-                      background: quality === option.value ? 'var(--accent-primary)' : 'var(--bg-primary)',
-                      border: quality === option.value ? '1px solid var(--accent-primary)' : '1px solid var(--border-default)',
-                      borderRadius: '8px',
-                      color: quality === option.value ? 'white' : 'var(--text-secondary)',
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      transition: 'all 0.2s ease',
-                      fontWeight: quality === option.value ? 600 : 400,
-                      fontSize: '0.8125rem',
-                      boxShadow: quality === option.value ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
-                    }}
-                  >
-                    <div style={{ fontWeight: 600, marginBottom: '0.125rem' }}>{option.label}</div>
-                    <div style={{ fontSize: '0.625rem', opacity: 0.8 }}>{option.desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Number of Images */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{
-                display: 'block',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                color: 'var(--text-secondary)',
-                marginBottom: '0.5rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.03em',
-              }}>
-                Number of Images
-              </label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                {NUM_IMAGES_OPTIONS.map((num) => (
-                  <button
-                    key={num}
-                    onClick={() => setNumImages(num)}
-                    style={{
-                      flex: 1,
-                      padding: '0.5rem',
-                      background: numImages === num ? 'var(--accent-primary)' : 'var(--bg-primary)',
-                      border: numImages === num ? '1px solid var(--accent-primary)' : '1px solid var(--border-default)',
-                      borderRadius: '8px',
-                      color: numImages === num ? 'white' : 'var(--text-secondary)',
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      fontSize: '0.875rem',
-                      fontWeight: numImages === num ? 600 : 400,
-                      transition: 'all 0.2s ease',
-                      boxShadow: numImages === num ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
-                    }}
-                  >
-                    {num}
-                  </button>
-                ))}
+              <div ref={qualityRef} style={{ position: 'relative', zIndex: 10 }}>
+                <button
+                  onClick={() => setQualityDropdownOpen(!qualityDropdownOpen)}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.625rem 0.875rem',
+                    background: 'var(--bg-primary)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: '8px',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.8125rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span style={{ fontWeight: 600 }}>
+                    {QUALITY_OPTIONS.find(q => q.value === quality)?.label || 'Standard'}
+                  </span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2">
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </button>
+                {qualityDropdownOpen && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    left: 0,
+                    right: 0,
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: '10px',
+                    padding: '0.375rem',
+                    zIndex: 50,
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                  }}>
+                    {QUALITY_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => { setQuality(option.value); setQualityDropdownOpen(false); }}
+                        style={{
+                          width: '100%',
+                          padding: '0.625rem 0.75rem',
+                          background: quality === option.value ? 'var(--bg-tertiary)' : 'transparent',
+                          border: quality === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                          borderRadius: '8px',
+                          color: 'var(--text-primary)',
+                          fontSize: '0.8125rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginBottom: '2px',
+                        }}
+                      >
+                        <span style={{ textAlign: 'left' }}>
+                          <span style={{ fontWeight: 600, display: 'block' }}>{option.label}</span>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.desc}</span>
+                        </span>
+                        {quality === option.value && (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

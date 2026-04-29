@@ -103,10 +103,13 @@ export default function CTASection() {
           }}>
             <SignUpButton mode="modal">
               <button
-                className="btn btn-primary btn-large"
                 style={{
+                  flex: '1 1 auto',
+                  minWidth: '200px',
+                  maxWidth: '280px',
                   display: 'inline-flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '0.5rem',
                   padding: '0.875rem 1.75rem',
                   background: 'var(--gradient-primary)',
@@ -116,13 +119,30 @@ export default function CTASection() {
                   fontSize: '1rem',
                   fontWeight: 700,
                   cursor: 'pointer',
-                  boxShadow: 'var(--shadow-glow-orange)',
+                  boxShadow: 'var(--shadow-glow-teal)',
                 }}
               >
                 ✨ Start Creating Free
               </button>
             </SignUpButton>
-            <a href="/gallery" className="btn btn-secondary btn-large">
+            <a href="/gallery" style={{
+              flex: '1 1 auto',
+              minWidth: '200px',
+              maxWidth: '280px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              padding: '0.875rem 1.75rem',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-default)',
+              borderRadius: '12px',
+              color: 'var(--text-primary)',
+              fontSize: '1rem',
+              fontWeight: 600,
+              textDecoration: 'none',
+              transition: 'all 0.2s ease',
+            }}>
               View Gallery
             </a>
           </div>
