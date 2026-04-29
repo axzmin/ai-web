@@ -24,28 +24,29 @@ const MODEL_OPTIONS = [
   { label: 'Flux.1 Pro', value: 'flux-pro', description: 'Premium quality' },
 ];
 
-// ─── Demo Data: 5 before/after image pairs ─────────────────────────────────
+// ─── Demo Data: 5 real before/after image pairs ─────────────────────────────────
+// before = blurry/low-quality, after = clean/enhanced
 const DEMO_PAIR = {
   imageUrls: [
     {
-      before: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=10',
-      after:  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80',
+      before: 'https://images.unsplash.com/photo-1575935686486-fd95cemba87e?w=600&q=40',
+      after:  'https://images.unsplash.com/photo-1575935686486-fd95cemba87e?w=800&q=85',
     },
     {
-      before: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=10',
-      after:  'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80',
+      before: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=600&q=40',
+      after:  'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=800&q=85',
     },
     {
-      before: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=10',
-      after:  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80',
+      before: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=40',
+      after:  'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=85',
     },
     {
-      before: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=10',
-      after:  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80',
+      before: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=40',
+      after:  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=85',
     },
     {
-      before: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=10',
-      after:  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
+      before: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=40',
+      after:  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85',
     },
   ],
 };
@@ -257,7 +258,7 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afte
       <img src={beforeSrc} alt="Before" draggable={false}
         style={{
           position: 'absolute', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover', filter: 'blur(8px) brightness(0.9)',
+          objectFit: 'cover',          filter: 'blur(4px) brightness(0.95)',
           transform: 'scale(1.05)', // prevent blur edges showing
         }} />
       <div style={{ position: 'absolute', inset: 0, width: `${sliderX}%`, height: '100%', overflow: 'hidden' }}>
