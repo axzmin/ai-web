@@ -193,10 +193,11 @@ interface GenState {
   status: 'idle' | 'generating' | 'complete' | 'error';
   progress: number;
   imageUrls: string[];
+  imageUrl: string | null;  // single image for demo mode
   error: string | null;
 }
 
-export default function ImageGenerator() {
+export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean }) {
   const [activeTab, setActiveTab] = useState<TabType>('text-to-image');
   const [prompt, setPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState('1:1');
@@ -211,7 +212,7 @@ export default function ImageGenerator() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [state, setState] = useState<GenState>({
-    status: 'idle', progress: 0, imageUrls: [], error: null
+    status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -271,7 +272,7 @@ export default function ImageGenerator() {
       return;
     }
 
-    setState({ status: 'generating', progress: 0, imageUrls: [], error: null });
+    setState({ status: 'generating', progress: 0, imageUrls: [], imageUrl: null, error: null });
     setInsufficientCredits(false);
 
     const interval = setInterval(() => {
@@ -291,20 +292,24 @@ export default function ImageGenerator() {
       clearInterval(interval);
 
       if (data.error) {
-        setState({ status: 'error', progress: 0, imageUrls: [], error: data.error });
+        setState({ status: 'error', progress: 0, imageUrls: [], imageUrl: null, error: data.error });
         if (data.error.includes('credits') || data.error.includes('Credit')) {
           setInsufficientCredits(true);
         }
       } else {
-        setState({ status: 'complete', progress: 100, imageUrls: [data.imageUrl], error: null });
-        setImageUrl(data.imageUrl);
+        if (isDemo) {
+          setState({ status: 'complete', progress: 100, imageUrls: [], imageUrl: data.imageUrl, error: null });
+        } else {
+          setState({ status: 'complete', progress: 100, imageUrls: [data.imageUrl], imageUrl: data.imageUrl, error: null });
+          setImageUrl(data.imageUrl);
+        }
         if (credits !== null) {
           setCredits(prev => prev !== null ? prev - 1 : null);
         }
       }
     } catch {
       clearInterval(interval);
-      setState({ status: 'error', progress: 0, imageUrls: [], error: 'Network error' });
+      setState({ status: 'error', progress: 0, imageUrls: [], imageUrl: null, error: 'Network error' });
     }
   };
 
@@ -963,8 +968,8 @@ export default function ImageGenerator() {
 
                 {/* Main Comparison Slider */}
                 <ComparisonSlider
-                  beforeSrc={uploadedImage || state.imageUrls[0]}
-                  afterSrc={state.imageUrls[0]}
+                  beforeSrc={uploadedImage || (isDemo ? state.imageUrl! : state.imageUrls[0])}
+                  afterSrc={isDemo ? state.imageUrl! : state.imageUrls[selectedIndex]}
                 />
 
                 {/* Thumbnail Strip */}
@@ -975,7 +980,7 @@ export default function ImageGenerator() {
                   marginTop: '0.875rem',
                   marginBottom: '0.875rem',
                 }}>
-                  {state.imageUrls.map((url, i) => (
+                  {(isDemo ? (state.imageUrl ? [state.imageUrl] : []) : state.imageUrls).map((url, i) => (
                     <button
                       key={i}
                       onClick={() => setSelectedIndex(i)}
@@ -1074,7 +1079,7 @@ export default function ImageGenerator() {
                     Remix
                   </button>
                   <button
-                    onClick={() => setState({ status: 'idle', progress: 0, imageUrls: [], error: null })}
+                    onClick={() => setState({ status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null })}
                     style={{
                       flex: 1,
                       padding: '0.75rem',
@@ -1174,7 +1179,7 @@ export default function ImageGenerator() {
                   {state.error}
                 </p>
                 <button
-                  onClick={() => setState({ status: 'idle', progress: 0, imageUrls: [], error: null })}
+                  onClick={() => setState({ status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null })}
                   style={{
                     padding: '0.625rem 1rem',
                     background: 'var(--bg-card)',
