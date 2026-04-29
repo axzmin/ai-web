@@ -268,7 +268,7 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afte
       }} />
       <div onMouseDown={handleMouseDown}
         style={{
-          position: 'absolute', top: '50%', left: `${sliderX}%`,
+          position: 'absolute', top: '65%', left: `${sliderX}%`,
           transform: 'translate(-50%, -50%)',
           width: '40px', height: '40px', borderRadius: '50%',
           background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
