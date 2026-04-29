@@ -23,7 +23,95 @@ const MODEL_OPTIONS = [
   { label: 'Flux.1 Pro', value: 'flux-pro', description: 'Premium quality' },
 ];
 
-const NUM_IMAGES_OPTIONS = ['1', '2', '4'];
+// ─── Comparison Slider Component ───────────────────────────────────────────
+function ComparisonSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [sliderX, setSliderX] = useState(50);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const move = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = Math.min(Math.max(((e.clientX - rect.left) / rect.width) * 100, 0), 100);
+      setSliderX(x);
+    };
+    const up = () => {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+    };
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.min(Math.max(((e.touches[0].clientX - rect.left) / rect.width) * 100, 0), 100);
+    setSliderX(x);
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      onTouchMove={handleTouchMove}
+      style={{
+        position: 'relative',
+        width: '100%',
+        aspectRatio: '4/3',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        cursor: 'col-resize',
+        userSelect: 'none',
+        background: 'var(--bg-secondary)',
+        flexShrink: 0,
+      }}
+    >
+      <img src={beforeSrc} alt="Before" draggable={false}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+      <div style={{ position: 'absolute', inset: 0, width: `${sliderX}%`, height: '100%', overflow: 'hidden' }}>
+        <img src={afterSrc} alt="After" draggable={false}
+          style={{ position: 'absolute', inset: 0, width: `${100 / (sliderX / 100)}%`, height: '100%', objectFit: 'cover' }} />
+      </div>
+      <div style={{
+        position: 'absolute', top: 0, bottom: 0, left: `${sliderX}%`, width: '2px',
+        background: 'white', transform: 'translateX(-50%)',
+        boxShadow: '0 0 8px rgba(0,0,0,0.4)', pointerEvents: 'none',
+      }} />
+      <div
+        onMouseDown={handleMouseDown}
+        style={{
+          position: 'absolute', top: '50%', left: `${sliderX}%`,
+          transform: 'translate(-50%, -50%)',
+          width: '40px', height: '40px', borderRadius: '50%',
+          background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'col-resize', zIndex: 2,
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2.5" style={{ marginRight: '2px' }}>
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2.5" style={{ marginLeft: '2px' }}>
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+      <div style={{
+        position: 'absolute', bottom: '10px', left: '10px',
+        padding: '3px 10px', background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
+        color: 'white', fontSize: '0.6875rem', fontWeight: 600,
+        letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none',
+      }}>Original</div>
+      <div style={{
+        position: 'absolute', bottom: '10px', right: '10px',
+        padding: '3px 10px', background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
+        color: 'white', fontSize: '0.6875rem', fontWeight: 600,
+        letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none',
+      }}>Enhanced</div>
+    </div>
+  );
+}
+
 
 interface GenState {
   status: 'idle' | 'generating' | 'complete' | 'error';
@@ -38,8 +126,9 @@ export default function ImageGeneratorDemo() {
   const [aspectRatio, setAspectRatio] = useState('1:1');
   const [quality, setQuality] = useState('standard');
   const [model, setModel] = useState('flux-schnell');
-  const [numImages, setNumImages] = useState('1');
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const [aspectRatioDropdownOpen, setAspectRatioDropdownOpen] = useState(false);
+  const [qualityDropdownOpen, setQualityDropdownOpen] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [state, setState] = useState<GenState>({
@@ -48,6 +137,8 @@ export default function ImageGeneratorDemo() {
   const [generationError, setGenerationError] = useState<string | null>(null);
 
   const modelRef = useRef<HTMLDivElement>(null);
+  const aspectRatioRef = useRef<HTMLDivElement>(null);
+  const qualityRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { isSignedIn } = useAuth();
 
@@ -56,6 +147,12 @@ export default function ImageGeneratorDemo() {
     const handleMouseDown = (e: MouseEvent) => {
       if (modelRef.current && !modelRef.current.contains(e.target as Node)) {
         setModelDropdownOpen(false);
+      }
+      if (aspectRatioRef.current && !aspectRatioRef.current.contains(e.target as Node)) {
+        setAspectRatioDropdownOpen(false);
+      }
+      if (qualityRef.current && !qualityRef.current.contains(e.target as Node)) {
+        setQualityDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleMouseDown);
@@ -476,28 +573,72 @@ export default function ImageGeneratorDemo() {
               }}>
                 Aspect Ratio
               </label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
-                {ASPECT_RATIOS.map((ratio) => (
-                  <button
-                    key={ratio.value}
-                    onClick={() => setAspectRatio(ratio.value)}
-                    style={{
-                      padding: '0.5rem 0.25rem',
-                      background: aspectRatio === ratio.value ? 'var(--accent-primary)' : 'var(--bg-primary)',
-                      border: aspectRatio === ratio.value ? '1px solid var(--accent-primary)' : '1px solid var(--border-default)',
-                      borderRadius: '8px',
-                      color: aspectRatio === ratio.value ? 'white' : 'var(--text-secondary)',
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      fontSize: '0.75rem',
-                      fontWeight: aspectRatio === ratio.value ? 600 : 400,
-                      transition: 'all 0.2s ease',
-                      boxShadow: aspectRatio === ratio.value ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
-                    }}
-                  >
-                    {ratio.label}
-                  </button>
-                ))}
+              <div ref={aspectRatioRef} style={{ position: 'relative', zIndex: 10 }}>
+                <button
+                  onClick={() => setAspectRatioDropdownOpen(!aspectRatioDropdownOpen)}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.625rem 0.875rem',
+                    background: 'var(--bg-primary)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: '8px',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.8125rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span style={{ fontWeight: 600 }}>{aspectRatio}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2">
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </button>
+                {aspectRatioDropdownOpen && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    left: 0,
+                    right: 0,
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: '10px',
+                    padding: '0.375rem',
+                    zIndex: 50,
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                  }}>
+                    {ASPECT_RATIOS.map((ratio) => (
+                      <button
+                        key={ratio.value}
+                        onClick={() => { setAspectRatio(ratio.value); setAspectRatioDropdownOpen(false); }}
+                        style={{
+                          width: '100%',
+                          padding: '0.625rem 0.75rem',
+                          background: aspectRatio === ratio.value ? 'var(--bg-tertiary)' : 'transparent',
+                          border: aspectRatio === ratio.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                          borderRadius: '8px',
+                          color: 'var(--text-primary)',
+                          fontSize: '0.8125rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginBottom: '2px',
+                        }}
+                      >
+                        <span style={{ fontWeight: 600 }}>{ratio.label}</span>
+                        {aspectRatio === ratio.value && (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -514,68 +655,77 @@ export default function ImageGeneratorDemo() {
               }}>
                 Quality
               </label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                {QUALITY_OPTIONS.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => setQuality(option.value)}
-                    style={{
-                      padding: '0.625rem 0.5rem',
-                      background: quality === option.value ? 'var(--accent-primary)' : 'var(--bg-primary)',
-                      border: quality === option.value ? '1px solid var(--accent-primary)' : '1px solid var(--border-default)',
-                      borderRadius: '8px',
-                      color: quality === option.value ? 'white' : 'var(--text-secondary)',
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      transition: 'all 0.2s ease',
-                      fontWeight: quality === option.value ? 600 : 400,
-                      fontSize: '0.8125rem',
-                      boxShadow: quality === option.value ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
-                    }}
-                  >
-                    <div style={{ fontWeight: 600, marginBottom: '0.125rem' }}>{option.label}</div>
-                    <div style={{ fontSize: '0.625rem', opacity: 0.8 }}>{option.desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Number of Images */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{
-                display: 'block',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                color: 'var(--text-secondary)',
-                marginBottom: '0.5rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.03em',
-              }}>
-                Number of Images
-              </label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                {NUM_IMAGES_OPTIONS.map((num) => (
-                  <button
-                    key={num}
-                    onClick={() => setNumImages(num)}
-                    style={{
-                      flex: 1,
-                      padding: '0.5rem',
-                      background: numImages === num ? 'var(--accent-primary)' : 'var(--bg-primary)',
-                      border: numImages === num ? '1px solid var(--accent-primary)' : '1px solid var(--border-default)',
-                      borderRadius: '8px',
-                      color: numImages === num ? 'white' : 'var(--text-secondary)',
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      fontSize: '0.875rem',
-                      fontWeight: numImages === num ? 600 : 400,
-                      transition: 'all 0.2s ease',
-                      boxShadow: numImages === num ? '0 2px 8px rgba(52, 98, 91, 0.25)' : 'none',
-                    }}
-                  >
-                    {num}
-                  </button>
-                ))}
+              <div ref={qualityRef} style={{ position: 'relative', zIndex: 10 }}>
+                <button
+                  onClick={() => setQualityDropdownOpen(!qualityDropdownOpen)}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.625rem 0.875rem',
+                    background: 'var(--bg-primary)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: '8px',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.8125rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span style={{ fontWeight: 600 }}>
+                    {QUALITY_OPTIONS.find(q => q.value === quality)?.label || 'Standard'}
+                  </span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2">
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </button>
+                {qualityDropdownOpen && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    left: 0,
+                    right: 0,
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: '10px',
+                    padding: '0.375rem',
+                    zIndex: 50,
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                  }}>
+                    {QUALITY_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => { setQuality(option.value); setQualityDropdownOpen(false); }}
+                        style={{
+                          width: '100%',
+                          padding: '0.625rem 0.75rem',
+                          background: quality === option.value ? 'var(--bg-tertiary)' : 'transparent',
+                          border: quality === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
+                          borderRadius: '8px',
+                          color: 'var(--text-primary)',
+                          fontSize: '0.8125rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginBottom: '2px',
+                        }}
+                      >
+                        <span style={{ textAlign: 'left' }}>
+                          <span style={{ fontWeight: 600, display: 'block' }}>{option.label}</span>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.desc}</span>
+                        </span>
+                        {quality === option.value && (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -728,70 +878,58 @@ export default function ImageGeneratorDemo() {
 
             {/* Generated Image */}
             {state.status === 'complete' && state.imageUrl && (
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+
+                {/* Comparison Slider */}
+                <ComparisonSlider
+                  beforeSrc={uploadedImage || state.imageUrl}
+                  afterSrc={state.imageUrl}
+                />
+
+                {/* 5 Thumbnails */}
                 <div style={{
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  background: 'var(--bg-secondary)',
-                  marginBottom: '1rem',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(5, 1fr)',
+                  gap: '0.5rem',
+                  marginTop: '0.875rem',
+                  marginBottom: '0.875rem',
                 }}>
-                  <img
-                    src={state.imageUrl}
-                    alt="Generated"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      maxHeight: '350px',
-                      objectFit: 'contain',
-                      display: 'block',
-                    }}
-                  />
+                  {[state.imageUrl].map((url, i) => (
+                    <button
+                      key={i}
+                      style={{
+                        position: 'relative',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        border: '2px solid var(--accent-primary)',
+                        cursor: 'pointer',
+                        padding: 0,
+                        background: 'var(--bg-secondary)',
+                        aspectRatio: '1/1',
+                      }}
+                    >
+                      <img src={url} alt={`Thumb ${i + 1}`}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                    </button>
+                  ))}
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem' }}>
-                  <button
-                    onClick={() => handleDownload(state.imageUrl!)}
-                    style={{
-                      flex: 1,
-                      padding: '0.75rem',
-                      background: 'var(--gradient-primary)',
-                      border: 'none',
-                      borderRadius: '10px',
-                      color: 'white',
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.5rem',
-                    }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                      <polyline points="7 10 12 15 17 10"/>
-                      <line x1="12" x2="12" y1="15" y2="3"/>
-                    </svg>
+
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button onClick={() => handleDownload(state.imageUrl!)}
+                    style={{ flex: 1, padding: '0.75rem', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: 'white', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                     Download
                   </button>
-                  <button
-                    onClick={() => setState({ status: 'idle', progress: 0, imageUrl: null, error: null })}
-                    style={{
-                      flex: 1,
-                      padding: '0.75rem',
-                      background: 'var(--bg-secondary)',
-                      border: '1px solid var(--border-default)',
-                      borderRadius: '10px',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.5rem',
-                    }}
-                  >
-                    Create Another
+                  <button onClick={() => setState({ status: 'idle', progress: 0, imageUrl: null, error: null })}
+                    style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    New
+                  </button>
+                  <button onClick={() => navigator.clipboard.writeText(state.imageUrl!)}
+                    style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    Share
                   </button>
                 </div>
               </div>
