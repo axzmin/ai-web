@@ -25,28 +25,28 @@ const MODEL_OPTIONS = [
 ];
 
 // ─── Demo Data: 5 real before/after image pairs ─────────────────────────────────
-// before = blurry/low-quality, after = clean/enhanced
+// before = low-quality/dark feel, after = enhanced/bright result (different photos)
 const DEMO_PAIR = {
   imageUrls: [
     {
-      before: 'https://images.unsplash.com/photo-1575935686486-fd95cemba87e?w=600&q=40',
-      after:  'https://images.unsplash.com/photo-1575935686486-fd95cemba87e?w=800&q=85',
+      before: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&q=40',
+      after:  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85',
     },
     {
-      before: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=600&q=40',
-      after:  'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=800&q=85',
+      before: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=800&q=40',
+      after:  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=85',
     },
     {
-      before: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=40',
+      before: 'https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=85',
     },
     {
-      before: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=40',
-      after:  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=85',
+      before: 'https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=800&q=40',
+      after:  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=85',
     },
     {
-      before: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=40',
-      after:  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85',
+      before: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=40',
+      after:  'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=85',
     },
   ],
 };
@@ -256,11 +256,7 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afte
       }}
     >
       <img src={beforeSrc} alt="Before" draggable={false}
-        style={{
-          position: 'absolute', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover',          filter: 'blur(4px) brightness(0.95)',
-          transform: 'scale(1.05)', // prevent blur edges showing
-        }} />
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
       <div style={{ position: 'absolute', inset: 0, width: `${sliderX}%`, height: '100%', overflow: 'hidden' }}>
         <img src={afterSrc} alt="After" draggable={false}
           style={{ position: 'absolute', inset: 0, width: `${100 / (sliderX / 100)}%`, height: '100%', objectFit: 'cover' }} />
