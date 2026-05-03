@@ -103,15 +103,15 @@ function getContainerStyle(aspectRatio: string, bgSrc?: string) {
     return {
       ...base,
       aspectRatio: ratio.css,
-      maxHeight: '500px',
-      width: 'auto',
+      maxHeight: '680px',
+      width: '100%',
       margin: '0 auto',
     };
   }
   return {
     ...base,
     aspectRatio: ratio.css,
-    maxHeight: '500px',
+    maxHeight: '680px',
     width: '100%',
   };
 }
@@ -282,7 +282,7 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', aft
 
   const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
   const containerBase: React.CSSProperties = ratio.isPortrait
-    ? { aspectRatio: ratio.css, maxHeight: '680px', width: 'auto', margin: '0 auto' }
+    ? { aspectRatio: ratio.css, maxHeight: '680px', width: '100%', margin: '0 auto' }
     : { aspectRatio: ratio.css, maxHeight: '680px', width: '100%' };
 
   return (
@@ -350,7 +350,7 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
 }) {
   const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
   const containerBase: React.CSSProperties = ratio.isPortrait
-    ? { aspectRatio: ratio.css, maxHeight: '680px', width: 'auto', margin: '0 auto' }
+    ? { aspectRatio: ratio.css, maxHeight: '680px', width: '100%', margin: '0 auto' }
     : { aspectRatio: ratio.css, maxHeight: '680px', width: '100%' };
 
   return (
