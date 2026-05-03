@@ -1590,45 +1590,48 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
             {state.status === 'idle' && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
+                {/* Preview label */}
+                <div style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: 'var(--text-secondary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  marginBottom: '0.5rem',
+                }}>
+                  Image Preview
+                </div>
+
                 {/* T2I idle: gallery — click thumbnail to browse full-size demo image */}
                 {activeTab === 'text-to-image' && previewMode === 'gallery' && (
-                  <SimpleImage
-                    src={DEMO_PAIR.imageUrls[galleryIndex].after}
-                    label="Gallery"
-                    aspectRatio={aspectRatio}
-                    bgSrc={DEMO_PAIR.imageUrls[galleryIndex].after}
-                  />
+                  <div style={{ aspectRatio: '1/1', width: '100%', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
+                    <SimpleImage
+                      src={DEMO_PAIR.imageUrls[galleryIndex].after}
+                      label="Gallery"
+                      aspectRatio="1:1"
+                      bgSrc={DEMO_PAIR.imageUrls[galleryIndex].after}
+                    />
+                  </div>
                 )}
 
                 {/* I2I idle + no upload: comparison demo slider */}
                 {activeTab === 'image-to-image' && previewMode === 'comparison' && (
-                  <ComparisonSliderDemo
-                    beforeSrc={DEMO_PAIR.imageUrls[selectedIndex].before}
-                    afterSrc={DEMO_PAIR.imageUrls[selectedIndex].after}
-                    aspectRatio={aspectRatio}
-                  />
+                  <div style={{ aspectRatio: '1/1', width: '100%', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
+                    <ComparisonSliderDemo
+                      beforeSrc={DEMO_PAIR.imageUrls[selectedIndex].before}
+                      afterSrc={DEMO_PAIR.imageUrls[selectedIndex].after}
+                      aspectRatio="1:1"
+                    />
+                  </div>
                 )}
 
-                {/* I2I idle + uploaded (no generation yet): single preview image — objectFit cover, fills container */}
+                {/* I2I idle + uploaded (no generation yet): single preview image — objectFit cover, 1:1 container */}
                 {activeTab === 'image-to-image' && previewMode === 'single' && uploadedImages.length > 0 && (
-                  <div style={{
-                    position: 'relative',
-                    width: '100%',
-                    height: '100%',
-                    minHeight: '280px',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    background: '#1a1614',
-                  }}>
+                  <div style={{ aspectRatio: '1/1', width: '100%', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
                     <img
                       src={uploadedImages[0]}
                       alt="Uploaded preview"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        display: 'block',
-                      }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                     />
                   </div>
                 )}
@@ -1724,9 +1727,14 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           onClick={(e) => {
                             e.stopPropagation();
                             pendingPromptRef.current = pair.prompt;
+                            const isAlreadyT2I = activeTab === 'text-to-image';
                             setActiveTab('text-to-image');
                             setPreviewMode('gallery');
                             setGalleryIndex(i);
+                            // If already on T2I, tab won't change — fill prompt directly
+                            if (isAlreadyT2I) {
+                              setTimeout(() => setPrompt(pair.prompt), 0);
+                            }
                           }}
                           title="Try this prompt"
                           style={{
@@ -1801,13 +1809,26 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
             {state.status === 'complete' && (state.imageUrls.length > 0 || !!state.imageUrl) && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
+                {/* Preview label */}
+                <div style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: 'var(--text-secondary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  marginBottom: '0.5rem',
+                }}>
+                  Image Preview
+                </div>
+
                 {/* T2I complete: single generated image with overlay buttons */}
                 {activeTab === 'text-to-image' && (
-                  <SimpleImage
-                    src={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
-                    label="Generated"
-                    aspectRatio={aspectRatio}
-                    overlay={
+                  <div style={{ aspectRatio: '1/1', width: '100%', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
+                    <SimpleImage
+                      src={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
+                      label="Generated"
+                      aspectRatio="1:1"
+                      overlay={
                       <>
                         <button
                           onClick={() => handleDownload(isDemo ? state.imageUrl! : state.imageUrls[selectedIndex])}
@@ -1822,18 +1843,20 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         </a>
                       </>
                     }
-                  />
+                    />
+                  </div>
                 )}
 
                 {/* I2I complete: comparison slider with overlay buttons */}
                 {activeTab === 'image-to-image' && (
-                  <ComparisonSlider
-                    beforeSrc={uploadedImages[0] || ''}
-                    afterSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
-                    beforeLabel="Original"
-                    afterLabel="Generated"
-                    aspectRatio={aspectRatio}
-                    overlay={
+                  <div style={{ aspectRatio: '1/1', width: '100%', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
+                    <ComparisonSlider
+                      beforeSrc={uploadedImages[0] || ''}
+                      afterSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
+                      beforeLabel="Original"
+                      afterLabel="Generated"
+                      aspectRatio="1:1"
+                      overlay={
                       <>
                         <button
                           onClick={() => handleDownload(isDemo ? state.imageUrl! : state.imageUrls[selectedIndex])}
@@ -1848,7 +1871,8 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         </a>
                       </>
                     }
-                  />
+                    />
+                  </div>
                 )}
 
                 {/* Fixed Demo Thumbnails */}
