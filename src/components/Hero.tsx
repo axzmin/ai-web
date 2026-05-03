@@ -69,19 +69,20 @@ export default function Hero() {
           alt=""
           style={{
             width: '100%',
-            height: '100%',
+            height: 'calc(100% + 60px)',
+            marginTop: '-60px',
             objectFit: 'cover',
             objectPosition: 'center top',
-            opacity: 0.5,
+            opacity: 0.65,
           }}
         />
-        {/* Frosted glass tint */}
+        {/* Frosted glass tint - light */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: 'rgba(245, 241, 230, 0.5)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
+          background: 'rgba(245, 241, 230, 0.2)',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
         }} />
       </div>
 
