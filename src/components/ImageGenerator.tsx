@@ -471,7 +471,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
   const [credits, setCredits] = useState<number | null>(null);
   const [insufficientCredits, setInsufficientCredits] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [state, setState] = useState<GenState>({
     status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null
   });
@@ -516,30 +516,36 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
     }
   }, [userId]);
 
-  // Sync previewMode when tab or uploaded image changes
+  // Sync previewMode when tab or uploaded images change
   useEffect(() => {
     if (activeTab === 'text-to-image') {
       setPreviewMode(state.status === 'idle' ? 'gallery' : 'single');
     } else {
       // image-to-image
       if (state.status === 'idle') {
-        setPreviewMode(uploadedImage ? 'single' : 'comparison');
+        setPreviewMode(uploadedImages.length > 0 ? 'single' : 'comparison');
       } else {
         setPreviewMode('comparison');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, uploadedImage, state.status]);
+  }, [activeTab, uploadedImages.length, state.status]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    const remaining = 5 - uploadedImages.length;
+    const toProcess = files.slice(0, remaining);
+    const newImages: string[] = [];
+    toProcess.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (ev) => {
-        setUploadedImage(ev.target?.result as string);
+        const result = ev.target?.result as string;
+        setUploadedImages(prev => [...prev, result].slice(0, 5));
       };
       reader.readAsDataURL(file);
-    }
+      newImages.push(''); // placeholder
+    });
   };
 
   const handleGenerate = async () => {
@@ -570,7 +576,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
           aspectRatio, 
           quality, 
           model,
-          inputImageUrl: activeTab === 'image-to-image' ? uploadedImage : undefined,
+          inputImageUrl: activeTab === 'image-to-image' ? uploadedImages[0] : undefined,
           resolution: quality === 'hd' ? '2K' : (quality === 'ultra' ? '4K' : '1K'),
         }),
       });
@@ -854,36 +860,84 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   textTransform: 'uppercase',
                   letterSpacing: '0.03em',
                 }}>
-                  Upload Image
+                  Upload Images (up to 5)
                 </label>
                 <div style={{
                   border: '2px dashed var(--border-default)',
                   borderRadius: '10px',
-                  padding: '2rem',
+                  padding: '1rem',
                   textAlign: 'center',
                   background: 'var(--bg-primary)',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                 }}>
-                  {uploadedImage ? (
-                    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                      <img
-                        src={uploadedImage}
-                        alt="Uploaded"
-                        style={{
-                          maxWidth: '100%',
-                          maxHeight: '150px',
-                          borderRadius: '8px',
-                          objectFit: 'contain',
-                        }}
-                      />
+                  {uploadedImages.length > 0 ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem' }}>
+                        {uploadedImages.map((img, idx) => (
+                          <div key={idx} style={{ position: 'relative', aspectRatio: '1/1' }}>
+                            <img
+                              src={img}
+                              alt={`Uploaded ${idx + 1}`}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: '6px',
+                                objectFit: 'cover',
+                              }}
+                            />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setUploadedImages(prev => prev.filter((_, i) => i !== idx));
+                              }}
+                              style={{
+                                position: 'absolute',
+                                top: '-6px',
+                                right: '-6px',
+                                width: '18px',
+                                height: '18px',
+                                borderRadius: '50%',
+                                background: '#EF4444',
+                                border: '1px solid white',
+                                color: 'white',
+                                fontSize: '10px',
+                                lineHeight: '18px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: 0,
+                              }}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      {uploadedImages.length < 5 && (
+                        <label
+                          htmlFor="image-upload"
+                          style={{
+                            display: 'inline-block',
+                            padding: '0.4rem 0.875rem',
+                            background: 'var(--bg-card)',
+                            border: '1px solid var(--border-default)',
+                            borderRadius: '8px',
+                            color: 'var(--text-primary)',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          + Add More
+                        </label>
+                      )}
                       <button
                         onClick={() => {
-                          setUploadedImage(null);
-                          setPreviewMode('comparison');
+                          setUploadedImages([]);
                         }}
                         style={{
-                          display: 'flex',
+                          display: 'inline-flex',
                           alignItems: 'center',
                           gap: '0.3rem',
                           padding: '0.3rem 0.75rem',
@@ -901,7 +955,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           <polyline points="3 6 5 6 21 6"/>
                           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
                         </svg>
-                        Remove
+                        Remove All
                       </button>
                     </div>
                   ) : (
@@ -912,11 +966,12 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
                       </svg>
                       <p style={{ color: 'var(--text-muted)', fontSize: '0.8125rem', marginBottom: '0.5rem' }}>
-                        Drop an image here or click to upload
+                        Drop images here or click to upload (up to 5)
                       </p>
                       <input
                         type="file"
                         accept="image/*"
+                        multiple
                         onChange={handleImageUpload}
                         style={{ display: 'none' }}
                         id="image-upload"
@@ -934,7 +989,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           cursor: 'pointer',
                         }}
                       >
-                        Choose File
+                        Choose Files
                       </label>
                     </>
                   )}
@@ -1164,28 +1219,28 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                 disabled={
                   state.status === 'generating' ||
                   (activeTab === 'text-to-image' && !prompt.trim()) ||
-                  (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                  (activeTab === 'image-to-image' && (uploadedImages.length === 0 || !prompt.trim()))
                 }
                 style={{
                   width: '100%',
                   padding: '0.875rem',
                   background: state.status === 'generating' ||
                     (activeTab === 'text-to-image' && !prompt.trim()) ||
-                    (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                    (activeTab === 'image-to-image' && (uploadedImages.length === 0 || !prompt.trim()))
                     ? 'var(--bg-tertiary)'
                     : 'var(--gradient-primary)',
                   border: 'none',
                   borderRadius: '10px',
                   color: state.status === 'generating' ||
                     (activeTab === 'text-to-image' && !prompt.trim()) ||
-                    (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                    (activeTab === 'image-to-image' && (uploadedImages.length === 0 || !prompt.trim()))
                     ? 'var(--text-muted)'
                     : 'white',
                   fontSize: '0.9375rem',
                   fontWeight: 600,
                   cursor: state.status === 'generating' ||
                     (activeTab === 'text-to-image' && !prompt.trim()) ||
-                    (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                    (activeTab === 'image-to-image' && (uploadedImages.length === 0 || !prompt.trim()))
                     ? 'not-allowed'
                     : 'pointer',
                   display: 'flex',
@@ -1195,7 +1250,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   transition: 'all 0.2s ease',
                   boxShadow: state.status === 'generating' ||
                     (activeTab === 'text-to-image' && !prompt.trim()) ||
-                    (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                    (activeTab === 'image-to-image' && (uploadedImages.length === 0 || !prompt.trim()))
                     ? 'none'
                     : '0 4px 12px rgba(52, 98, 91, 0.3)',
                 }}
@@ -1383,51 +1438,41 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   />
                 )}
 
-                {/* I2I idle + uploaded (no generation yet): single uploaded image — natural size, no aspect-ratio forcing */}
-                {activeTab === 'image-to-image' && previewMode === 'single' && uploadedImage && (
+                {/* I2I idle + uploaded (no generation yet): grid of uploaded images — no aspect-ratio forcing, object-fit cover */}
+                {activeTab === 'image-to-image' && previewMode === 'single' && uploadedImages.length > 0 && (
                   <div style={{
-                    position: 'relative',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    background: '#1a1614',
-                    maxHeight: '420px',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    gap: '0.5rem',
                     width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
                   }}>
-                    {/* Frosted glass bg */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      backgroundImage: `url(${uploadedImage})`,
-                      backgroundSize: 'cover', backgroundPosition: 'center',
-                      filter: 'blur(20px) saturate(150%)',
-                      transform: 'scale(1.06)',
-                      zIndex: 0,
-                    }} />
-                    <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(26,22,20,0.55)', zIndex: 1 }} />
-                    <img
-                      src={uploadedImage}
-                      alt="Your Image"
-                      draggable={false}
-                      style={{
+                    {uploadedImages.map((img, idx) => (
+                      <div key={idx} style={{
                         position: 'relative',
-                        maxWidth: '100%',
-                        maxHeight: '400px',
-                        width: 'auto',
-                        height: 'auto',
-                        borderRadius: '8px',
-                        objectFit: 'contain',
-                        zIndex: 2,
-                      }}
-                    />
-                    <div style={{
-                      position: 'absolute', bottom: '10px', left: '10px',
-                      padding: '3px 10px', background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
-                      color: 'white', fontSize: '0.6875rem', fontWeight: 600,
-                      letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none', zIndex: 3,
-                    }}>Your Image</div>
+                        borderRadius: '10px',
+                        overflow: 'hidden',
+                        background: '#1a1614',
+                        aspectRatio: '1/1',
+                      }}>
+                        <img
+                          src={img}
+                          alt={`Your Image ${idx + 1}`}
+                          draggable={false}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            display: 'block',
+                          }}
+                        />
+                        <div style={{
+                          position: 'absolute', bottom: '6px', left: '6px',
+                          padding: '2px 8px', background: 'rgba(0,0,0,0.55)', borderRadius: '4px',
+                          color: 'white', fontSize: '0.625rem', fontWeight: 600,
+                          letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none',
+                        }}>Image {idx + 1}</div>
+                      </div>
+                    ))}
                   </div>
                 )}
 
@@ -1456,8 +1501,12 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       <button
                         onClick={() => {
                           setSelectedIndex(i);
-                          setPreviewMode('comparison');
-                          if (activeTab === 'text-to-image') setGalleryIndex(i);
+                          if (activeTab === 'text-to-image') {
+                            setGalleryIndex(i);
+                            // Stay in gallery mode — don't force comparison
+                          } else {
+                            setPreviewMode('comparison');
+                          }
                         }}
                         style={{
                           display: 'block',
@@ -1639,7 +1688,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                 {/* I2I complete: comparison slider with overlay buttons */}
                 {activeTab === 'image-to-image' && (
                   <ComparisonSlider
-                    beforeSrc={uploadedImage || ''}
+                    beforeSrc={uploadedImages[0] || ''}
                     afterSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     beforeLabel="Original"
                     afterLabel="Generated"
