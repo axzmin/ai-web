@@ -1651,10 +1651,10 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   {DEMO_PAIR.imageUrls.map((pair, i) => (
                     <div
                       key={i}
+                      className="demo-thumb-container"
                       style={{
                         position: 'relative',
                         borderRadius: '16px',
-                        overflow: 'visible',
                         border: (previewMode === 'gallery' ? galleryIndex === i : selectedIndex === i)
                           ? '2px solid var(--accent-primary)'
                           : '2px solid var(--border-subtle)',
@@ -1663,17 +1663,8 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     >
                       {/* Image + hover overlay container */}
                       <div
+                        className="demo-thumb-inner"
                         style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden' }}
-                        onMouseOver={(e) => {
-                          const el = e.currentTarget;
-                          const actions = el.querySelector('.t2i-actions') as HTMLElement | null;
-                          if (actions) actions.style.opacity = '1';
-                        }}
-                        onMouseOut={(e) => {
-                          const el = e.currentTarget;
-                          const actions = el.querySelector('.t2i-actions') as HTMLElement | null;
-                          if (actions) actions.style.opacity = '0';
-                        }}
                       >
                         {/* Thumbnail image — clickable */}
                         <div
@@ -1702,7 +1693,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
 
                         {/* Hover overlay with Try It */}
                         <div
-                          className="t2i-actions"
+                          className="demo-thumb-actions"
                           style={{
                             position: 'absolute',
                             bottom: 0,
