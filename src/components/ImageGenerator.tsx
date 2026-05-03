@@ -849,7 +849,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   transition: 'all 0.2s ease',
                 }}>
                   {uploadedImage ? (
-                    <div style={{ position: 'relative' }}>
+                    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
                       <img
                         src={uploadedImage}
                         alt="Uploaded"
@@ -861,25 +861,30 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         }}
                       />
                       <button
-                        onClick={() => setUploadedImage(null)}
+                        onClick={() => {
+                          setUploadedImage(null);
+                          setPreviewMode('comparison');
+                        }}
                         style={{
-                          position: 'absolute',
-                          top: '-8px',
-                          right: '-8px',
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: '50%',
-                          background: 'var(--ship-red)',
-                          color: 'white',
-                          border: 'none',
-                          cursor: 'pointer',
-                          fontSize: '12px',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center',
+                          gap: '0.3rem',
+                          padding: '0.3rem 0.75rem',
+                          borderRadius: '8px',
+                          background: 'rgba(239,68,68,0.15)',
+                          border: '1px solid rgba(239,68,68,0.3)',
+                          color: '#EF4444',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
                         }}
                       >
-                        ×
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <polyline points="3 6 5 6 21 6"/>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                        </svg>
+                        Remove
                       </button>
                     </div>
                   ) : (
@@ -1361,14 +1366,52 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   />
                 )}
 
-                {/* I2I idle + uploaded (no generation yet): single uploaded image */}
+                {/* I2I idle + uploaded (no generation yet): single uploaded image — natural size, no aspect-ratio forcing */}
                 {activeTab === 'image-to-image' && previewMode === 'single' && uploadedImage && (
-                  <SimpleImage
-                    src={uploadedImage}
-                    label="Your Image"
-                    aspectRatio={aspectRatio}
-                    bgSrc={uploadedImage}
-                  />
+                  <div style={{
+                    position: 'relative',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    background: '#1a1614',
+                    maxHeight: '420px',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                    {/* Frosted glass bg */}
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      backgroundImage: `url(${uploadedImage})`,
+                      backgroundSize: 'cover', backgroundPosition: 'center',
+                      filter: 'blur(20px) saturate(150%)',
+                      transform: 'scale(1.06)',
+                      zIndex: 0,
+                    }} />
+                    <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(26,22,20,0.55)', zIndex: 1 }} />
+                    <img
+                      src={uploadedImage}
+                      alt="Your Image"
+                      draggable={false}
+                      style={{
+                        position: 'relative',
+                        maxWidth: '100%',
+                        maxHeight: '400px',
+                        width: 'auto',
+                        height: 'auto',
+                        borderRadius: '8px',
+                        objectFit: 'contain',
+                        zIndex: 2,
+                      }}
+                    />
+                    <div style={{
+                      position: 'absolute', bottom: '10px', left: '10px',
+                      padding: '3px 10px', background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
+                      color: 'white', fontSize: '0.6875rem', fontWeight: 600,
+                      letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none', zIndex: 3,
+                    }}>Your Image</div>
+                  </div>
                 )}
 
                 {/* Fixed Demo Thumbnails — always shown in idle */}
@@ -1384,7 +1427,8 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       key={i}
                       onClick={() => {
                         setSelectedIndex(i);
-                        if (previewMode === 'gallery') setGalleryIndex(i);
+                        setPreviewMode('comparison');
+                        if (activeTab === 'text-to-image') setGalleryIndex(i);
                       }}
                       style={{
                         position: 'relative',
