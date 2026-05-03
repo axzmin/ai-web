@@ -1652,96 +1652,83 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   {DEMO_PAIR.imageUrls.map((pair, i) => (
                     <div
                       key={i}
-                      className="demo-thumb-container"
                       style={{
-                        position: 'relative',
-                        borderRadius: '16px',
-                        border: (previewMode === 'gallery' ? galleryIndex === i : selectedIndex === i)
-                          ? '2px solid var(--accent-primary)'
-                          : '2px solid var(--border-subtle)',
-                        transition: 'all 0.2s ease',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.25rem',
                       }}
                     >
-                      {/* Image + hover overlay container */}
+                      {/* Thumbnail image — clickable for preview */}
                       <div
-                        className="demo-thumb-inner"
-                        style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden' }}
-                      >
-                        {/* Thumbnail image — clickable */}
-                        <div
-                          onClick={() => {
+                        onClick={() => {
+                          if (activeTab === 'text-to-image') {
+                            setGalleryIndex(i);
+                          } else {
                             setSelectedIndex(i);
-                            if (activeTab === 'text-to-image') {
-                              setGalleryIndex(i);
-                            } else {
-                              setPreviewMode('comparison');
-                            }
-                          }}
-                          style={{
-                            cursor: 'pointer',
-                            borderRadius: '16px',
-                            overflow: 'hidden',
-                            aspectRatio: '1/1',
-                            background: 'var(--bg-card)',
-                          }}
-                        >
-                          <img
-                            src={pair.after}
-                            alt={`Demo ${i + 1}`}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                          />
-                        </div>
-
-                        {/* Hover overlay with Try It */}
-                        <div
-                          className="demo-thumb-actions"
-                          style={{
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
-                            padding: '2rem 0.5rem 0.5rem',
-                            display: 'flex',
-                            gap: '0.25rem',
-                            opacity: 0,
-                            transition: 'opacity 0.2s ease',
-                            zIndex: 5,
-                          }}
-                        >
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Stay in I2I mode: fill i2i prompt and show comparison
-                              setSelectedIndex(i);
-                              setPreviewMode('comparison');
-                              setI2iPrompt(pair.prompt);
-                            }}
-                            title="Try this prompt"
-                            style={{
-                              flex: 1,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '0.3rem',
-                              padding: '0.35rem 0',
-                              background: 'var(--gradient-primary)',
-                              border: 'none',
-                              borderRadius: '6px',
-                              color: 'white',
-                              fontSize: '0.6875rem',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
-                            }}
-                          >
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                              <polygon points="5 3 19 12 5 21 5 3"/>
-                            </svg>
-                            Try It
-                          </button>
-                        </div>
+                          }
+                        }}
+                        className="demo-thumb-inner"
+                        style={{
+                          cursor: 'pointer',
+                          borderRadius: '16px',
+                          overflow: 'hidden',
+                          aspectRatio: '1/1',
+                          background: 'var(--bg-card)',
+                          border: (activeTab === 'text-to-image' ? galleryIndex === i : selectedIndex === i)
+                            ? '2px solid var(--accent-primary)'
+                            : '2px solid var(--border-subtle)',
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        <img
+                          src={pair.after}
+                          alt={`Demo ${i + 1}`}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        />
                       </div>
+                      {/* Try It button below thumbnail */}
+                      <button
+                        onClick={() => {
+                          if (activeTab === 'text-to-image') {
+                            setPrompt(pair.prompt);
+                            // Scroll to textarea smoothly
+                            promptRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            promptRef.current?.focus();
+                          } else {
+                            setI2iPrompt(pair.prompt);
+                          }
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.25rem',
+                          padding: '0.3rem 0',
+                          background: 'transparent',
+                          border: '1px solid var(--border-subtle)',
+                          borderRadius: '8px',
+                          color: 'var(--text-secondary)',
+                          fontSize: '0.6875rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.background = 'var(--bg-secondary)';
+                          e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                          e.currentTarget.style.color = 'var(--accent-primary)';
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.background = 'transparent';
+                          e.currentTarget.style.borderColor = 'var(--border-subtle)';
+                          e.currentTarget.style.color = 'var(--text-secondary)';
+                        }}
+                      >
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        Try It
+                      </button>
                     </div>
                   ))}
                 </div>
