@@ -57,6 +57,34 @@ export default function Hero() {
       paddingTop: '0.5rem',
       paddingBottom: '0.5rem'
     }}>
+      {/* Background Image - frosted glass overlay */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        zIndex: 0,
+        pointerEvents: 'none',
+      }}>
+        <img
+          src="/images/hero-bg.jpg"
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: 0.35,
+            filter: 'blur(2px)',
+          }}
+        />
+        {/* Frosted glass tint */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'rgba(245, 241, 230, 0.5)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+        }} />
+      </div>
+
       {/* Geometric Gradient Shapes - Orange Accent */}
       <div style={{
         position: 'absolute',
