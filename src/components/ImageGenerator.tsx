@@ -1713,9 +1713,10 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           onClick={(e) => {
                             e.stopPropagation();
                             setActiveTab('text-to-image');
-                            setPrompt(pair.prompt);
                             setPreviewMode('gallery');
                             setGalleryIndex(i);
+                            // set prompt after tab switch so textarea is mounted
+                            requestAnimationFrame(() => setPrompt(pair.prompt));
                           }}
                           title="Try this prompt"
                           style={{
