@@ -1404,7 +1404,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
             )}
 
             {/* Idle / Default Demo State — always show comparison slider as demo */}
-            {state.status === 'idle' && (
+            {state.status === 'idle' && isDemo && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
                 {/* Default Comparison Slider Demo */}
