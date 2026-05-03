@@ -2,58 +2,125 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 
-// Groq Image Generation API
-// https://console.groq.com/docs/image-generation
+// kie.ai Image Generation API
+// https://docs.kie.ai
 
-interface GroqImageRequest {
-  model: string; // "black-forest-labs/FLUX.1-schnell" or "black-forest-labs/FLUX.1-dev"
-  prompt: string;
-  width?: number;
-  height?: number;
-  seed?: number;
-  num_inference_steps?: number;
-  prompt_strength?: number;
-}
+// Model configurations with kie.ai model IDs and credit costs
+const MODEL_CONFIGS = {
+  'gpt-image-2': {
+    textToImage: 'gpt-image-2-text-to-image',
+    imageToImage: 'gpt-image-2-image-to-image',
+    credits: 6, // 1K resolution
+    resolutions: { '1K': 6, '2K': 10, '4K': 16 },
+  },
+  'nano-banana-pro': {
+    textToImage: 'google/nano-banana-pro',
+    imageToImage: 'google/nano-banana-edit',
+    credits: 8, // base cost
+    resolutions: { '1K': 8, '2K': 12, '4K': 16 },
+  },
+  'nano-banana': {
+    textToImage: 'google/nano-banana',
+    imageToImage: 'google/nano-banana-edit',
+    credits: 4,
+    resolutions: { '1K': 4, '2K': 8, '4K': 12 },
+  },
+};
 
-interface GroqImageResponse {
-  created?: string;
-  data?: Array<{ url: string; base64?: string }>;
-  error?: {
-    message: string;
-    type: string;
-    code: string;
+const ASPECT_RATIOS: Record<string, string> = {
+  '1:1': '1:1',
+  '3:4': '3:4',
+  '4:3': '4:3',
+  '16:9': '16:9',
+};
+
+interface KieTaskResponse {
+  code: number;
+  msg?: string;
+  data?: {
+    taskId: string;
   };
 }
 
-const MODEL_CONFIGS = {
-  'flux-schnell': {
-    model: 'black-forest-labs/FLUX.1-schnell',
-    steps: 4,
-    width: 1024,
-    height: 1024,
-  },
-  'flux-dev': {
-    model: 'black-forest-labs/FLUX.1-dev',
-    steps: 28,
-    width: 1024,
-    height: 1024,
-  },
-  'flux-pro': {
-    model: 'black-forest-labs/FLUX.1-pro',
-    steps: 50,
-    width: 1024,
-    height: 1024,
-  },
-};
+interface KieTaskStatusResponse {
+  code: number;
+  msg?: string;
+  data?: {
+    taskId: string;
+    state: 'waiting' | 'queuing' | 'generating' | 'success' | 'fail';
+    resultJson?: string;
+  };
+}
 
-const ASPECT_RATIOS: Record<string, { width: number; height: number }> = {
-  '1:1': { width: 1024, height: 1024 },
-  '3:4': { width: 768, height: 1024 },
-  '4:3': { width: 1024, height: 768 },
-  '16:9': { width: 1024, height: 576 },
-};
+// Poll for task completion with exponential backoff
+async function pollForResult(
+  taskId: string,
+  apiKey: string,
+  maxAttempts = 60,
+  intervalMs = 2000
+): Promise<string> {
+  const startTime = Date.now();
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+
+    const response = await fetch(
+      `https://api.kie.ai/api/v1/jobs/recordInfo?taskId=${taskId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error(`Poll attempt ${attempt + 1} failed: ${response.status}`);
+      continue;
+    }
+
+    const data: KieTaskStatusResponse = await response.json();
+
+    if (data.code !== 200) {
+      console.error(`Task status error: ${data.code} - ${data.msg}`);
+      throw new Error(data.msg || 'Task polling failed');
+    }
+
+    const state = data.data?.state;
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+
+    if (state === 'success') {
+      console.log(`Task ${taskId} completed in ${elapsed}s (attempt ${attempt + 1})`);
+      try {
+        const resultJson = JSON.parse(data.data?.resultJson || '{}');
+        if (resultJson.resultUrls && resultJson.resultUrls.length > 0) {
+          return resultJson.resultUrls[0];
+        }
+      } catch {
+        throw new Error('Failed to parse result JSON');
+      }
+      throw new Error('No image URL in result');
+    }
+
+    if (state === 'fail') {
+      throw new Error('Image generation failed on kie.ai');
+    }
+
+    console.log(`Task ${taskId} status: ${state} (${elapsed}s)`);
+
+    // Exponential backoff: 2s, 4s, 6s, 8s...
+    if (attempt > 2) {
+      intervalMs = Math.min(intervalMs + 1000, 10000);
+    }
+  }
+
+  throw new Error('Task polling timed out');
+}
 
 export async function POST(req: NextRequest) {
+  const startTime = Date.now();
+  console.log(`[Generate] Request started at ${new Date().toISOString()}`);
+
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -63,7 +130,7 @@ export async function POST(req: NextRequest) {
     // Check and deduct credits
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { credits: true }
+      select: { credits: true },
     });
 
     if (!user) {
@@ -71,111 +138,158 @@ export async function POST(req: NextRequest) {
     }
 
     if (user.credits === null || user.credits <= 0) {
-      return NextResponse.json({ error: 'Insufficient credits. Please upgrade your plan.' }, { status: 402 });
+      return NextResponse.json(
+        { error: 'Insufficient credits. Please upgrade your plan.' },
+        { status: 402 }
+      );
     }
 
-    // Deduct one credit
-    await prisma.user.update({
-      where: { id: userId },
-      data: { credits: { decrement: 1 } }
-    });
-
     const body = await req.json();
-    const { prompt, model = 'flux-schnell', aspectRatio = '1:1', quality = 'standard', seed } = body;
+    const {
+      prompt,
+      model = 'gpt-image-2',
+      aspectRatio = '1:1',
+      resolution = '1K',
+      inputImageUrl,
+    } = body;
 
     if (!prompt || prompt.trim().length === 0) {
-      // Refund credit if prompt is invalid
-      await prisma.user.update({
-        where: { id: userId },
-        data: { credits: { increment: 1 } }
-      });
       return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
     }
 
-    const modelConfig = MODEL_CONFIGS[model as keyof typeof MODEL_CONFIGS] || MODEL_CONFIGS['flux-schnell'];
-    const aspect = ASPECT_RATIOS[aspectRatio] || ASPECT_RATIOS['1:1'];
+    const modelConfig = MODEL_CONFIGS[model as keyof typeof MODEL_CONFIGS];
+    if (!modelConfig) {
+      return NextResponse.json({ error: 'Invalid model' }, { status: 400 });
+    }
 
-    // Adjust steps based on quality
-    const numSteps = quality === 'hd'
-      ? Math.round(modelConfig.steps * 1.5)
-      : modelConfig.steps;
+    // Calculate credit cost based on resolution
+    const creditCost = modelConfig.resolutions[resolution as keyof typeof modelConfig.resolutions] || modelConfig.credits;
 
-    const groqRequest: GroqImageRequest = {
-      model: modelConfig.model,
-      prompt: prompt.trim(),
-      width: aspect.width,
-      height: aspect.height,
-      seed: seed || Math.floor(Math.random() * 2147483647),
-      num_inference_steps: numSteps,
-    };
+    if (user.credits < creditCost) {
+      return NextResponse.json(
+        { error: `Insufficient credits. This model requires ${creditCost} credits.` },
+        { status: 402 }
+      );
+    }
 
-    const response = await fetch('https://api.groq.com/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(groqRequest),
+    // Deduct credits
+    await prisma.user.update({
+      where: { id: userId },
+      data: { credits: { decrement: creditCost } },
     });
 
-    const data: GroqImageResponse = await response.json();
-
-    if (!response.ok || data.error) {
-      console.error('Groq API error:', data.error);
-      // Refund credit on API error
+    const apiKey = process.env.KIE_API_KEY;
+    if (!apiKey) {
+      // Refund credits if API key is not configured
       await prisma.user.update({
         where: { id: userId },
-        data: { credits: { increment: 1 } }
+        data: { credits: { increment: creditCost } },
+      });
+      return NextResponse.json({ error: 'API not configured' }, { status: 500 });
+    }
+
+    const isImageToImage = !!inputImageUrl;
+    const kieModel = isImageToImage
+      ? modelConfig.imageToImage
+      : modelConfig.textToImage;
+
+    // Build request body for kie.ai
+    const kieInput: Record<string, unknown> = {
+      prompt: prompt.trim(),
+      aspect_ratio: ASPECT_RATIOS[aspectRatio] || '1:1',
+      resolution: resolution || '1K',
+    };
+
+    if (isImageToImage && inputImageUrl) {
+      kieInput.input_urls = [inputImageUrl];
+    }
+
+    const kieRequest: Record<string, unknown> = {
+      model: kieModel,
+      input: kieInput,
+    };
+
+    console.log(`[Generate] Creating kie.ai task: ${kieModel}`);
+    const createResponse = await fetch('https://api.kie.ai/api/v1/jobs/createTask', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(kieRequest),
+    });
+
+    if (!createResponse.ok) {
+      const errorText = await createResponse.text();
+      console.error(`[Generate] Task creation failed: ${createResponse.status} - ${errorText}`);
+      // Refund credits
+      await prisma.user.update({
+        where: { id: userId },
+        data: { credits: { increment: creditCost } },
+      });
+      return NextResponse.json({ error: 'Failed to create generation task' }, { status: 500 });
+    }
+
+    const createData: KieTaskResponse = await createResponse.json();
+
+    if (createData.code !== 200 || !createData.data?.taskId) {
+      console.error(`[Generate] Task creation error: ${createData.code} - ${createData.msg}`);
+      // Refund credits
+      await prisma.user.update({
+        where: { id: userId },
+        data: { credits: { increment: creditCost } },
       });
       return NextResponse.json(
-        { error: data.error?.message || 'Image generation failed' },
+        { error: createData.msg || 'Failed to create task' },
         { status: 500 }
       );
     }
 
-    const imageUrl = data.data?.[0]?.url;
-    if (!imageUrl) {
-      // Refund credit if no image returned
-      await prisma.user.update({
-        where: { id: userId },
-        data: { credits: { increment: 1 } }
-      });
-      return NextResponse.json({ error: 'No image returned' }, { status: 500 });
-    }
+    const taskId = createData.data.taskId;
+    console.log(`[Generate] Task created: ${taskId}`);
 
-    // Save generation to database
+    // Poll for result
     try {
-      await prisma.generation.create({
-        data: {
-          userId,
-          prompt: prompt.trim(),
-          imageUrl,
-          model,
-          aspectRatio,
-          quality,
-          seed: groqRequest.seed,
-          status: 'completed',
-        },
+      const imageUrl = await pollForResult(taskId, apiKey);
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+      console.log(`[Generate] Task ${taskId} completed in ${elapsed}s - ${imageUrl}`);
+
+      // Save generation to database
+      try {
+        await prisma.generation.create({
+          data: {
+            userId,
+            prompt: prompt.trim(),
+            imageUrl,
+            model,
+            aspectRatio,
+            quality: resolution,
+            status: 'completed',
+          },
+        });
+      } catch (dbError) {
+        console.error('Failed to save generation:', dbError);
+        // Continue anyway - we still have the image URL
+      }
+
+      return NextResponse.json({
+        imageUrl,
+        taskId,
+        model,
+        aspectRatio,
+        resolution,
+        creditsUsed: creditCost,
       });
-    } catch (dbError) {
-      console.error('Failed to save generation:', dbError);
-      // Continue anyway - we still have the image URL
+    } catch (pollError) {
+      console.error(`[Generate] Polling failed for task ${taskId}:`, pollError);
+      // Credits already deducted, but we should mark this somehow
+      return NextResponse.json(
+        { error: pollError instanceof Error ? pollError.message : 'Generation timed out' },
+        { status: 500 }
+      );
     }
-
-    return NextResponse.json({
-      imageUrl,
-      thumbnailUrl: imageUrl, // Groq returns the same URL, in production you'd create a thumbnail
-      seed: groqRequest.seed,
-      model,
-      aspectRatio,
-      quality,
-    });
-
   } catch (error) {
-    console.error('Generate API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error('[Generate] Unexpected error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

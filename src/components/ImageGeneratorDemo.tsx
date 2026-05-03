@@ -837,18 +837,6 @@ export default function ImageGeneratorDemo() {
             display: 'flex',
             flexDirection: 'column',
           }}>
-            <label style={{
-              display: 'block',
-              fontSize: '0.75rem',
-              fontWeight: 600,
-              color: 'var(--text-secondary)',
-              marginBottom: '1rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.03em',
-            }}>
-              Image Preview
-            </label>
-
             {/* Generating Progress */}
             {state.status === 'generating' && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>

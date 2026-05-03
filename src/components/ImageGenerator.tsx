@@ -19,9 +19,9 @@ const QUALITY_OPTIONS = [
 ];
 
 const MODEL_OPTIONS = [
-  { label: 'Flux.1 Schnell', value: 'flux-schnell', description: 'Fast, 4 steps' },
-  { label: 'Flux.1 Dev', value: 'flux-dev', description: 'Best quality' },
-  { label: 'Flux.1 Pro', value: 'flux-pro', description: 'Premium quality' },
+  { label: 'GPT Image 2', value: 'gpt-image-2', description: 'OpenAI GPT Image 2 - Best quality', cost: 6 },
+  { label: 'Nano Banana Pro', value: 'nano-banana-pro', description: 'Gemini 3 Pro - High quality', cost: 8 },
+  { label: 'Nano Banana', value: 'nano-banana', description: 'Gemini 2.5 Flash - Fast & efficient', cost: 4 },
 ];
 
 // ─── Demo Data: 5 real before/after image pairs ─────────────────────────────────
@@ -397,7 +397,14 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: currentPrompt, aspectRatio, quality, model }),
+        body: JSON.stringify({ 
+          prompt: currentPrompt, 
+          aspectRatio, 
+          quality, 
+          model,
+          inputImageUrl: activeTab === 'image-to-image' ? uploadedImage : undefined,
+          resolution: quality === 'hd' ? '2K' : '1K',
+        }),
       });
       const data = await res.json();
       clearInterval(interval);
@@ -414,8 +421,10 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
           setState({ status: 'complete', progress: 100, imageUrls: [data.imageUrl], imageUrl: data.imageUrl, error: null });
           setImageUrl(data.imageUrl);
         }
+        const selectedModel = MODEL_OPTIONS.find(m => m.value === model);
+        const cost = quality === 'hd' ? (selectedModel?.cost ? selectedModel.cost + 4 : 10) : (selectedModel?.cost || 6);
         if (credits !== null) {
-          setCredits(prev => prev !== null ? prev - 1 : null);
+          setCredits(prev => prev !== null ? prev - cost : null);
         }
       }
     } catch {
@@ -993,7 +1002,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                 alignItems: 'center',
                 fontSize: '0.8125rem',
               }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Cost 1 credit</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Cost {MODEL_OPTIONS.find(m => m.value === model)?.cost || 1} credits</span>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{credits} credits remaining</span>
               </div>
             )}
@@ -1035,7 +1044,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
             flexDirection: 'column',
           }}>
             <label style={{
-              display: 'block',
               fontSize: '0.75rem',
               fontWeight: 600,
               color: 'var(--text-secondary)',
