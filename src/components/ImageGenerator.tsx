@@ -342,8 +342,8 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', aft
         boxShadow: '0 0 8px rgba(0,0,0,0.4)', pointerEvents: 'none',
       }} />
       <div style={{
-        position: 'absolute', top: '50%', left: `${sliderX}%`,
-        transform: 'translate(-50%, -50%)',
+        position: 'absolute', bottom: '40px', left: `${sliderX}%`,
+        transform: 'translateX(-50%)',
         width: '40px', height: '40px', borderRadius: '50%',
         background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -606,6 +606,7 @@ interface GenState {
 export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean }) {
   const [activeTab, setActiveTab] = useState<TabType>('text-to-image');
   const [prompt, setPrompt] = useState('');
+  const [i2iPrompt, setI2iPrompt] = useState('');
   const promptRef = useRef<HTMLTextAreaElement>(null);
   const pendingPromptRef = useRef<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState('auto');
@@ -704,7 +705,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
   };
 
   const handleGenerate = async () => {
-    const currentPrompt = activeTab === 'text-to-image' ? prompt : 'Image transformation';
+    const currentPrompt = activeTab === 'text-to-image' ? prompt : i2iPrompt;
     if (activeTab === 'text-to-image' && !prompt.trim()) return;
 
     if (credits !== null && credits <= 0) {
@@ -961,8 +962,8 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                 </label>
                 <div style={{ position: 'relative' }}>
                   <textarea
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
+                    value={i2iPrompt}
+                    onChange={(e) => setI2iPrompt(e.target.value)}
                     placeholder="Describe how you want to transform this image..."
                     maxLength={3000}
                     style={{
@@ -997,7 +998,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     fontSize: '0.6875rem',
                     color: 'var(--text-muted)',
                   }}>
-                    {prompt.length}/3000
+                    {i2iPrompt.length}/3000
                   </span>
                 </div>
               </div>
@@ -1711,25 +1712,10 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              const targetPrompt = pair.prompt;
-                              const isAlreadyT2I = activeTab === 'text-to-image';
-                              setActiveTab('text-to-image');
-                              setPreviewMode('gallery');
-                              setGalleryIndex(i);
-                              setTimeout(() => {
-                                if (promptRef.current) {
-                                  promptRef.current.focus();
-                                  const nativeSetter = Object.getOwnPropertyDescriptor(
-                                    window.HTMLTextAreaElement.prototype, 'value'
-                                  )?.set;
-                                  nativeSetter?.call(promptRef.current, targetPrompt);
-                                  promptRef.current.dispatchEvent(
-                                    new Event('input', { bubbles: true, cancelable: true })
-                                  );
-                                } else {
-                                  setPrompt(targetPrompt);
-                                }
-                              }, isAlreadyT2I ? 0 : 50);
+                              // Stay in I2I mode: fill i2i prompt and show comparison
+                              setSelectedIndex(i);
+                              setPreviewMode('comparison');
+                              setI2iPrompt(pair.prompt);
                             }}
                             title="Try this prompt"
                             style={{
