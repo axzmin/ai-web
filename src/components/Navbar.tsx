@@ -53,16 +53,11 @@ function CreditsBadge({ credits }: { credits: number }) {
 }
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
   const { isSignedIn, isLoaded, user } = useUser();
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const handleNavClick = () => setMobileOpen(false);
 
   useEffect(() => {
     if (isSignedIn) {
@@ -75,7 +70,34 @@ export default function Navbar() {
     }
   }, [isSignedIn]);
 
-  const handleNavClick = () => setMobileOpen(false);
+  const NAV_ICONS: Record<string, React.ReactNode> = {
+    home: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    ),
+    gallery: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+        <circle cx="9" cy="9" r="2"/>
+        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+      </svg>
+    ),
+    pricing: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" x2="12" y1="2" y2="22"/>
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    ),
+    faq: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <path d="M12 17h.01"/>
+      </svg>
+    ),
+  };
 
   return (
     <>
@@ -86,9 +108,10 @@ export default function Navbar() {
         right: 0,
         zIndex: 100,
         padding: '0.75rem 1.5rem',
-        background: scrolled ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.85)',
-        backdropFilter: scrolled ? 'blur(20px)' : 'none',
-        borderBottom: scrolled ? 'none' : 'none',
+        background: 'rgba(245, 241, 230, 0.85)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(26, 22, 20, 0.06)',
         transition: 'all 0.3s ease'
       }}>
         <div style={{
@@ -134,16 +157,19 @@ export default function Navbar() {
             gap: '0.25rem'
           }} className="hide-mobile">
             {[
-              { href: '/#generator', label: 'Home' },
-              { href: '/gallery', label: 'Gallery' },
-              { href: '/#pricing', label: 'Pricing' },
-              { href: '/#faq', label: 'FAQ' }
+              { href: '/#generator', label: 'Generate', icon: 'home' },
+              { href: '/gallery', label: 'Gallery', icon: 'gallery' },
+              { href: '/#pricing', label: 'Pricing', icon: 'pricing' },
+              { href: '/#faq', label: 'FAQ', icon: 'faq' }
             ].map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 style={{
-                  padding: '0.5rem 1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.375rem',
+                  padding: '0.5rem 0.875rem',
                   color: 'var(--text-secondary)',
                   textDecoration: 'none',
                   fontSize: '0.875rem',
@@ -160,6 +186,7 @@ export default function Navbar() {
                   e.currentTarget.style.background = 'transparent';
                 }}
               >
+                <span style={{ display: 'flex', alignItems: 'center', opacity: 0.7 }}>{NAV_ICONS[link.icon]}</span>
                 {link.label}
               </Link>
             ))}
