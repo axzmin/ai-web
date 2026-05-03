@@ -454,15 +454,24 @@ function ThumbnailGrid({
                   justifyContent: 'center',
                   gap: '0.2rem',
                   padding: '0.3rem 0',
-                  background: 'rgba(255,255,255,0.15)',
-                  border: '1px solid rgba(255,255,255,0.25)',
-                  borderRadius: '6px',
-                  color: 'white',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '10px',
+                  color: 'var(--text-secondary)',
                   fontSize: '0.625rem',
                   fontWeight: 600,
                   cursor: 'pointer',
-                  backdropFilter: 'blur(8px)',
-                  transition: 'background 0.2s ease',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseOver={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = 'var(--accent-primary)';
+                  (e.currentTarget as HTMLElement).style.color = 'white';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent-primary)';
+                }}
+                onMouseOut={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = 'var(--bg-card)';
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)';
                 }}
               >
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -1724,12 +1733,14 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           transition: 'all 0.2s ease',
                         }}
                         onMouseOver={(e) => {
-                          (e.currentTarget as HTMLElement).style.background = 'var(--gradient-primary)';
+                          (e.currentTarget as HTMLElement).style.background = 'var(--accent-primary)';
                           (e.currentTarget as HTMLElement).style.color = 'white';
+                          (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent-primary)';
                         }}
                         onMouseOut={(e) => {
                           (e.currentTarget as HTMLElement).style.background = 'var(--bg-card)';
                           (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
+                          (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)';
                         }}
                       >
                         <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
