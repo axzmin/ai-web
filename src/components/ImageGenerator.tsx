@@ -1057,6 +1057,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         {uploadedImages.length < 5 && (
                           <label
                             htmlFor="image-upload"
+                            onClick={(e) => e.currentTarget.querySelector('input')?.click()}
                             style={{
                               width: '72px',
                               height: '72px',
@@ -1075,6 +1076,14 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           >
                             <span style={{ fontSize: '1.25rem', fontWeight: 300, lineHeight: 1 }}>+</span>
                             <span style={{ fontSize: '0.5625rem', fontWeight: 600, letterSpacing: '0.03em', textTransform: 'uppercase' }}>Add</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={handleImageUpload}
+                              style={{ display: 'none' }}
+                              id="image-upload"
+                            />
                           </label>
                         )}
                       </div>
@@ -1120,10 +1129,10 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         multiple
                         onChange={handleImageUpload}
                         style={{ display: 'none' }}
-                        id="image-upload"
+                        id="image-upload-choose"
                       />
                       <label
-                        htmlFor="image-upload"
+                        htmlFor="image-upload-choose"
                         style={{
                           display: 'inline-block',
                           padding: '0.5rem 1rem',
@@ -1589,66 +1598,27 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   />
                 )}
 
-                {/* I2I idle + uploaded (no generation yet): grid of uploaded images — no Try It, just display */}
+                {/* I2I idle + uploaded (no generation yet): single preview image — objectFit cover, fills container */}
                 {activeTab === 'image-to-image' && previewMode === 'single' && uploadedImages.length > 0 && (
                   <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
-                    gap: '0.5rem',
+                    position: 'relative',
                     width: '100%',
+                    height: '100%',
+                    minHeight: '280px',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    background: '#1a1614',
                   }}>
-                    {uploadedImages.map((img, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          position: 'relative',
-                          borderRadius: '16px',
-                          overflow: 'hidden',
-                          border: '2px solid var(--border-subtle)',
-                          transition: 'all 0.3s ease',
-                          background: 'var(--bg-card)',
-                          padding: 0,
-                        }}
-                      >
-                        <img
-                          src={img}
-                          alt={`Your Image ${idx + 1}`}
-                          style={{
-                            width: '100%',
-                            aspectRatio: '1/1',
-                            objectFit: 'cover',
-                            display: 'block',
-                            borderRadius: '14px',
-                          }}
-                        />
-
-                        {/* Remove button (top-right corner) */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setUploadedImages(prev => prev.filter((_, ni) => ni !== idx));
-                          }}
-                          style={{
-                            position: 'absolute',
-                            top: '-8px',
-                            right: '-8px',
-                            width: '24px',
-                            height: '24px',
-                            borderRadius: '50%',
-                            background: '#EF4444',
-                            color: 'white',
-                            border: '2px solid var(--bg-primary)',
-                            cursor: 'pointer',
-                            fontSize: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            zIndex: 10,
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                          }}
-                        >×</button>
-                      </div>
-                    ))}
+                    <img
+                      src={uploadedImages[0]}
+                      alt="Uploaded preview"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block',
+                      }}
+                    />
                   </div>
                 )}
 
@@ -1740,7 +1710,13 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         }}
                       >
                         <button
-                          onClick={(e) => { e.stopPropagation(); setPrompt(pair.prompt); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveTab('text-to-image');
+                            setPrompt(pair.prompt);
+                            setPreviewMode('gallery');
+                            setGalleryIndex(i);
+                          }}
                           title="Try this prompt"
                           style={{
                             display: 'flex',
