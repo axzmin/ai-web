@@ -440,7 +440,9 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
           setImageUrl(data.imageUrl);
         }
         const selectedModel = MODEL_OPTIONS.find(m => m.value === model);
-        const cost = selectedModel?.costByResolution[quality as keyof typeof selectedModel.costByResolution] || 1;
+        const resolutionMap: Record<string, string> = { standard: '1K', hd: '2K', ultra: '4K' };
+        const res = resolutionMap[quality] || '1K';
+        const cost = selectedModel?.costByResolution[res as keyof typeof selectedModel.costByResolution] || 1;
         if (credits !== null) {
           setCredits(prev => prev !== null ? prev - cost : null);
         }
@@ -1061,7 +1063,12 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
                       <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
                     </svg>
-                    {MODEL_OPTIONS.find(m => m.value === model)?.costByResolution[quality as keyof typeof MODEL_OPTIONS[0]['costByResolution']] || 1} Credits
+                    {(() => {
+                      const resolutionMap: Record<string, string> = { standard: '1K', hd: '2K', ultra: '4K' };
+                      const res = resolutionMap[quality] || '1K';
+                      const cost = MODEL_OPTIONS.find(m => m.value === model)?.costByResolution[res as keyof typeof MODEL_OPTIONS[0]['costByResolution']] || 1;
+                      return `${cost} Credits`;
+                    })()}
                   </>
                 )}
               </button>
