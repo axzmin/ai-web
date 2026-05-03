@@ -602,6 +602,7 @@ interface GenState {
 export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean }) {
   const [activeTab, setActiveTab] = useState<TabType>('text-to-image');
   const [prompt, setPrompt] = useState('');
+  const promptRef = useRef<HTMLTextAreaElement>(null);
   const [aspectRatio, setAspectRatio] = useState('auto');
   const [quality, setQuality] = useState('standard');
   const [model, setModel] = useState('gpt-image-2');
@@ -1168,6 +1169,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                 </label>
                 <div style={{ position: 'relative' }}>
                   <textarea
+                    ref={promptRef}
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="Describe the details of the image, such as color, shape, texture, etc."
@@ -1712,16 +1714,16 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            // First rAF: switch tab and gallery state
-                            requestAnimationFrame(() => {
-                              setActiveTab('text-to-image');
-                              setPreviewMode('gallery');
-                              setGalleryIndex(i);
-                              // Second rAF: set prompt AFTER tab has switched
-                              requestAnimationFrame(() => {
-                                setPrompt(pair.prompt);
-                              });
-                            });
+                            setActiveTab('text-to-image');
+                            setPreviewMode('gallery');
+                            setGalleryIndex(i);
+                            // Use ref to directly set DOM value after tab switch
+                            setTimeout(() => {
+                              if (promptRef.current) {
+                                promptRef.current.value = pair.prompt;
+                                promptRef.current.dispatchEvent(new Event('input', { bubbles: true }));
+                              }
+                            }, 0);
                           }}
                           title="Try this prompt"
                           style={{
