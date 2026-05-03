@@ -1081,7 +1081,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         {uploadedImages.length < 5 && (
                           <label
                             htmlFor="image-upload"
-                            onClick={(e) => e.currentTarget.querySelector('input')?.click()}
                             style={{
                               width: '72px',
                               height: '72px',
