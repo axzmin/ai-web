@@ -1063,17 +1063,18 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                               borderRadius: '12px',
                               border: '2px dashed var(--border-default)',
                               display: 'flex',
+                              flexDirection: 'column',
                               alignItems: 'center',
                               justifyContent: 'center',
+                              gap: '0.15rem',
                               cursor: 'pointer',
                               color: 'var(--text-muted)',
-                              fontSize: '1.5rem',
                               background: 'var(--bg-secondary)',
                               transition: 'all 0.2s',
-                              fontWeight: 300,
                             }}
                           >
-                            +
+                            <span style={{ fontSize: '1.25rem', fontWeight: 300, lineHeight: 1 }}>+</span>
+                            <span style={{ fontSize: '0.5625rem', fontWeight: 600, letterSpacing: '0.03em', textTransform: 'uppercase' }}>Add</span>
                           </label>
                         )}
                       </div>
@@ -1659,50 +1660,25 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           }}
                         >
                           <button
-                            onClick={(e) => { e.stopPropagation(); copyToClipboard(img); }}
-                            style={{
-                              flex: 1,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '0.2rem',
-                              padding: '0.3rem 0',
-                              background: 'rgba(255,255,255,0.15)',
-                              border: '1px solid rgba(255,255,255,0.25)',
-                              borderRadius: '6px',
-                              color: 'white',
-                              fontSize: '0.625rem',
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                              backdropFilter: 'blur(8px)',
-                            }}
-                          >
-                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                              <rect width="14" height="14" x="8" y="8" rx="2"/>
-                              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                            </svg>
-                            Copy
-                          </button>
-                          <button
                             onClick={(e) => { e.stopPropagation(); setPrompt(''); }}
                             style={{
-                              flex: 1,
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              gap: '0.2rem',
-                              padding: '0.3rem 0',
+                              gap: '0.3rem',
+                              width: '100%',
+                              padding: '0.35rem 0',
                               background: 'var(--gradient-primary)',
                               border: 'none',
                               borderRadius: '6px',
                               color: 'white',
-                              fontSize: '0.625rem',
+                              fontSize: '0.6875rem',
                               fontWeight: 700,
                               cursor: 'pointer',
                               boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
                             }}
                           >
-                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                               <polygon points="5 3 19 12 5 21 5 3"/>
                             </svg>
                             Try It
@@ -1827,52 +1803,26 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         }}
                       >
                         <button
-                          onClick={(e) => { e.stopPropagation(); copyToClipboard(pair.prompt); }}
-                          title="Copy prompt"
-                          style={{
-                            flex: 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.2rem',
-                            padding: '0.3rem 0',
-                            background: 'rgba(255,255,255,0.15)',
-                            border: '1px solid rgba(255,255,255,0.25)',
-                            borderRadius: '6px',
-                            color: 'white',
-                            fontSize: '0.625rem',
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            backdropFilter: 'blur(8px)',
-                          }}
-                        >
-                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <rect width="14" height="14" x="8" y="8" rx="2"/>
-                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                          </svg>
-                          Copy
-                        </button>
-                        <button
                           onClick={(e) => { e.stopPropagation(); setPrompt(pair.prompt); }}
                           title="Try this prompt"
                           style={{
-                            flex: 1,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '0.2rem',
-                            padding: '0.3rem 0',
+                            gap: '0.3rem',
+                            width: '100%',
+                            padding: '0.35rem 0',
                             background: 'var(--gradient-primary)',
                             border: 'none',
                             borderRadius: '6px',
                             color: 'white',
-                            fontSize: '0.625rem',
+                            fontSize: '0.6875rem',
                             fontWeight: 700,
                             cursor: 'pointer',
                             boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
                           }}
                         >
-                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                             <polygon points="5 3 19 12 5 21 5 3"/>
                           </svg>
                           Try It
