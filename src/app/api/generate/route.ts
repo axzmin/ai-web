@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
     // Check and deduct credits
     const user = await prisma.user.findUnique({
       where: { clerkId: userId },
-      select: { credits: true },
+      select: { id: true, credits: true },
     });
 
     if (!user) {
@@ -252,7 +252,7 @@ export async function POST(req: NextRequest) {
       try {
         await prisma.generation.create({
           data: {
-            userId,
+            userId: user.id,
             prompt: prompt.trim(),
             imageUrl,
             model,
