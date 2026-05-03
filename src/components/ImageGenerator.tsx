@@ -676,7 +676,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
 
   // Fill prompt when switching to T2I via Try It
   useEffect(() => {
-    if (activeTab === 'text-to-image' && pendingPromptRef.current !== null) {
+    if (activeTab === 'text-to-image' && pendingPromptRef.current) {
       setPrompt(pendingPromptRef.current);
       pendingPromptRef.current = null;
     }
@@ -1726,15 +1726,28 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            pendingPromptRef.current = pair.prompt;
+                            const targetPrompt = pair.prompt;
                             const isAlreadyT2I = activeTab === 'text-to-image';
                             setActiveTab('text-to-image');
                             setPreviewMode('gallery');
                             setGalleryIndex(i);
-                            // If already on T2I, tab won't change — fill prompt directly
-                            if (isAlreadyT2I) {
-                              setTimeout(() => setPrompt(pair.prompt), 0);
-                            }
+                            // Force fill via direct DOM — bypasses React synthetic event issues
+                            setTimeout(() => {
+                              if (promptRef.current) {
+                                promptRef.current.focus();
+                                // Use native setter to bypass React value override
+                                const nativeSetter = Object.getOwnPropertyDescriptor(
+                                  window.HTMLTextAreaElement.prototype, 'value'
+                                )?.set;
+                                nativeSetter?.call(promptRef.current, targetPrompt);
+                                // Fire input event so React synthetic handler picks it up
+                                promptRef.current.dispatchEvent(
+                                  new Event('input', { bubbles: true, cancelable: true })
+                                );
+                              } else {
+                                setPrompt(targetPrompt);
+                              }
+                            }, isAlreadyT2I ? 0 : 50);
                           }}
                           title="Try this prompt"
                           style={{
