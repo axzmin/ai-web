@@ -105,33 +105,35 @@ export default function Hero() {
         
         {/* Main Title */}
         <h1 style={{
-          fontSize: 'clamp(3rem, 8vw, 5rem)',
+          fontSize: 'clamp(2.5rem, 7vw, 5rem)',
           fontWeight: 700,
           letterSpacing: '-0.03em',
           lineHeight: 1.1,
           marginBottom: '1.5rem',
-          color: 'var(--text-primary)'
+          color: 'var(--text-primary)',
+          textAlign: 'center',
+          whiteSpace: 'normal',
+          wordBreak: 'break-word',
         }}>
           Create Stunning{' '}
-          <span style={{
-            color: 'var(--accent-primary)'
-          }}>
+          <span style={{ color: 'var(--accent-primary)' }}>
             AI Images
-          </span>
-          <br />
+          </span>{' '}
           in Seconds
         </h1>
-        
+
         {/* Subtitle */}
         <p style={{
-          fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
+          fontSize: 'clamp(0.9375rem, 2vw, 1.25rem)',
           color: 'var(--text-secondary)',
-          maxWidth: '600px',
+          maxWidth: '100%',
           margin: '0 auto 2.5rem',
-          lineHeight: 1.7
+          lineHeight: 1.7,
+          textAlign: 'center',
+          padding: '0 1rem',
+          wordBreak: 'break-word',
         }}>
-          Transform your ideas into breathtaking visuals with state-of-the-art AI. 
-          Text to image, image remix, and unlimited creativity.
+          Transform your ideas into breathtaking visuals with state-of-the-art AI. Text to image, image remix, and unlimited creativity.
         </p>
         
         {/* CTA Buttons */}
