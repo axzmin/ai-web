@@ -1545,7 +1545,12 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   {state.error}
                 </p>
                 <button
-                  onClick={() => setState({ status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null })}
+                  onClick={() => {
+                    setState({ status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null });
+                    setActiveTab('text-to-image');
+                    setPreviewMode('gallery');
+                    setGalleryIndex(0);
+                  }}
                   style={{
                     padding: '0.625rem 1rem',
                     background: 'var(--bg-card)',
@@ -1584,7 +1589,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   />
                 )}
 
-                {/* I2I idle + uploaded (no generation yet): grid of uploaded images with hover actions */}
+                {/* I2I idle + uploaded (no generation yet): grid of uploaded images — no Try It, just display */}
                 {activeTab === 'image-to-image' && previewMode === 'single' && uploadedImages.length > 0 && (
                   <div style={{
                     display: 'grid',
@@ -1595,95 +1600,27 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     {uploadedImages.map((img, idx) => (
                       <div
                         key={idx}
-                        className="i2i-thumb"
-                        onMouseOver={(e) => {
-                          const el = e.currentTarget as HTMLElement;
-                          el.style.transform = 'translateY(-4px)';
-                          el.style.boxShadow = '0 12px 32px rgba(0,0,0,0.35)';
-                          const actions = el.querySelector('.i2i-actions') as HTMLElement | null;
-                          if (actions) actions.style.opacity = '1';
-                        }}
-                        onMouseOut={(e) => {
-                          const el = e.currentTarget as HTMLElement;
-                          el.style.transform = 'translateY(0)';
-                          el.style.boxShadow = 'none';
-                          const actions = el.querySelector('.i2i-actions') as HTMLElement | null;
-                          if (actions) actions.style.opacity = '0';
-                        }}
                         style={{
                           position: 'relative',
                           borderRadius: '16px',
                           overflow: 'hidden',
                           border: '2px solid var(--border-subtle)',
                           transition: 'all 0.3s ease',
-                          cursor: 'pointer',
                           background: 'var(--bg-card)',
                           padding: 0,
                         }}
                       >
-                        <button
+                        <img
+                          src={img}
+                          alt={`Your Image ${idx + 1}`}
                           style={{
-                            display: 'block',
                             width: '100%',
-                            borderRadius: '14px',
-                            overflow: 'hidden',
-                            cursor: 'pointer',
-                            padding: 0,
-                            background: 'var(--bg-secondary)',
                             aspectRatio: '1/1',
-                            border: 'none',
+                            objectFit: 'cover',
+                            display: 'block',
+                            borderRadius: '14px',
                           }}
-                        >
-                          <img
-                            src={img}
-                            alt={`Your Image ${idx + 1}`}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                          />
-                        </button>
-
-                        {/* Action buttons */}
-                        <div
-                          className="i2i-actions"
-                          style={{
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
-                            padding: '2rem 0.25rem 0.375rem',
-                            display: 'flex',
-                            gap: '0.25rem',
-                            opacity: 0,
-                            transition: 'opacity 0.2s ease',
-                            pointerEvents: 'none',
-                            zIndex: 5,
-                          }}
-                        >
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setPrompt(''); }}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '0.3rem',
-                              width: '100%',
-                              padding: '0.35rem 0',
-                              background: 'var(--gradient-primary)',
-                              border: 'none',
-                              borderRadius: '6px',
-                              color: 'white',
-                              fontSize: '0.6875rem',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
-                            }}
-                          >
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                              <polygon points="5 3 19 12 5 21 5 3"/>
-                            </svg>
-                            Try It
-                          </button>
-                        </div>
+                        />
 
                         {/* Remove button (top-right corner) */}
                         <button
