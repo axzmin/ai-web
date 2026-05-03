@@ -49,25 +49,42 @@ const DEMO_PAIR = {
     {
       before: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85',
+      prompt: 'A majestic mountain landscape at sunrise, golden hour light spilling over snow-capped peaks, mist rising from the valleys below, dramatic clouds, nature photography, 8k resolution',
     },
     {
       before: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=85',
+      prompt: 'A serene forest path in autumn, vibrant orange and red foliage, sunlight filtering through the trees, fallen leaves on the ground, peaceful atmosphere, cinematic composition',
     },
     {
       before: 'https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=85',
+      prompt: 'An aerial view of a pristine lake surrounded by lush green forests, crystal clear blue water reflecting the sky, surrounded by mountains, peaceful nature scene',
     },
     {
       before: 'https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=85',
+      prompt: 'A cozy coffee shop interior with warm lighting, exposed brick walls, a wooden counter with latte art, people chatting in the background, inviting atmosphere',
     },
     {
       before: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=85',
+      prompt: 'A stunning sunset over the ocean beach, golden and pink hues across the sky, silhouette of palm trees, waves gently rolling onto the shore, peaceful tropical paradise',
     },
   ],
 };
+
+// ─── Helper: copy text to clipboard ────────────────────────────────────────────
+function copyToClipboard(text: string) {
+  navigator.clipboard.writeText(text).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
 
 // ─── Helper: map user ratio value → CSS aspect-ratio string + container hint ─────
 const RATIO_MAP: Record<string, { css: string; isPortrait: boolean }> = {
@@ -1423,35 +1440,131 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   marginBottom: '0.875rem',
                 }}>
                   {DEMO_PAIR.imageUrls.map((pair, i) => (
-                    <button
+                    <div
                       key={i}
-                      onClick={() => {
-                        setSelectedIndex(i);
-                        setPreviewMode('comparison');
-                        if (activeTab === 'text-to-image') setGalleryIndex(i);
-                      }}
                       style={{
                         position: 'relative',
                         borderRadius: '8px',
-                        overflow: 'hidden',
+                        overflow: 'visible',
                         border: (previewMode === 'gallery' ? galleryIndex === i : selectedIndex === i)
                           ? '2px solid var(--accent-primary)'
                           : '2px solid transparent',
-                        cursor: 'pointer',
-                        padding: 0,
-                        background: 'var(--bg-secondary)',
-                        aspectRatio: '1/1',
                         transition: 'all 0.2s ease',
                       }}
                     >
-                      <img
-                        src={pair.after}
-                        alt={`Demo ${i + 1}`}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                      />
-                    </button>
+                      {/* Thumbnail image */}
+                      <button
+                        onClick={() => {
+                          setSelectedIndex(i);
+                          setPreviewMode('comparison');
+                          if (activeTab === 'text-to-image') setGalleryIndex(i);
+                        }}
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          cursor: 'pointer',
+                          padding: 0,
+                          background: 'var(--bg-secondary)',
+                          aspectRatio: '1/1',
+                          transition: 'all 0.2s ease',
+                          position: 'relative',
+                        }}
+                      >
+                        <img
+                          src={pair.after}
+                          alt={`Demo ${i + 1}`}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        />
+                      </button>
+
+                      {/* Action buttons overlay — shown on hover */}
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)',
+                        padding: '1.5rem 0.25rem 0.25rem',
+                        display: 'flex',
+                        gap: '0.25rem',
+                        opacity: 0,
+                        transition: 'opacity 0.2s ease',
+                        pointerEvents: 'none',
+                        zIndex: 5,
+                      }}
+                        className="thumbnail-actions"
+                      >
+                        <button
+                          onClick={(e) => { e.stopPropagation(); copyToClipboard(pair.prompt); }}
+                          title="Copy prompt"
+                          style={{
+                            flex: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.2rem',
+                            padding: '0.3rem 0',
+                            background: 'rgba(255,255,255,0.15)',
+                            border: '1px solid rgba(255,255,255,0.25)',
+                            borderRadius: '6px',
+                            color: 'white',
+                            fontSize: '0.625rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            backdropFilter: 'blur(8px)',
+                            transition: 'background 0.2s ease',
+                          }}
+                        >
+                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <rect width="14" height="14" x="8" y="8" rx="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                          </svg>
+                          Copy
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPrompt(pair.prompt);
+                            // Switch to text-to-image tab if not already
+                            if (activeTab !== 'text-to-image') {
+                              // just stay, user is already in t2i
+                            }
+                          }}
+                          title="Try this prompt"
+                          style={{
+                            flex: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.2rem',
+                            padding: '0.3rem 0',
+                            background: 'var(--gradient-primary)',
+                            border: 'none',
+                            borderRadius: '6px',
+                            color: 'white',
+                            fontSize: '0.625rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
+                            transition: 'background 0.2s ease',
+                          }}
+                        >
+                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                          </svg>
+                          Try It
+                        </button>
+                      </div>
+                    </div>
                   ))}
                 </div>
+
+                <style>{`
+                  .thumbnail-actions { opacity: 0; pointer-events: none; }
+                  div:hover > .thumbnail-actions { opacity: 1; pointer-events: auto; }
+                `}</style>
 
                 {/* Hint text per mode */}
                 {activeTab === 'text-to-image' && previewMode === 'gallery' && (
