@@ -10,7 +10,7 @@ const MODEL_CONFIGS = {
   'gpt-image-2': {
     textToImage: 'gpt-image-2-text-to-image',
     imageToImage: 'gpt-image-2-image-to-image',
-    resolutions: { '1K': 6, '2K': 10, '4K': 16 },
+    resolutions: { '1K': 2, '2K': 3, '4K': 5 },
   },
   'nano-banana-pro': {
     textToImage: 'google/nano-banana-pro',
