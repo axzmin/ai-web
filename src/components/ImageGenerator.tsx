@@ -1194,24 +1194,51 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
               </button>
             )}
 
-            {/* Credits info */}
+            {/* Credits info + My Images — two separate actions */}
             {isSignedIn && credits !== null && (
-              <div style={{
-                marginTop: '0.75rem',
-                padding: '0.625rem 0.875rem',
-                background: 'var(--bg-secondary)',
-                borderRadius: '8px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                fontSize: '0.8125rem',
-                gap: '0.5rem',
-              }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M12 6v6l4 2"/>
-                </svg>
-                <span style={{ color: 'var(--text-secondary)' }}>{credits} credits remaining</span>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                {/* Credits balance */}
+                <div style={{
+                  flex: 1,
+                  padding: '0.625rem 0.875rem',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  fontSize: '0.8125rem',
+                  gap: '0.5rem',
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                  </svg>
+                  <span style={{ color: 'var(--text-secondary)' }}>{credits} credits</span>
+                </div>
+                {/* My Images link */}
+                <a href="/my-images" style={{
+                  flex: 1,
+                  padding: '0.625rem 0.875rem',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontSize: '0.8125rem',
+                  fontWeight: 500,
+                  color: 'var(--accent-primary)',
+                  textDecoration: 'none',
+                  border: '1px solid var(--border-default)',
+                  transition: 'all 0.2s ease',
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                    <circle cx="9" cy="9" r="2"/>
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                  </svg>
+                  My Images
+                </a>
               </div>
             )}
 
