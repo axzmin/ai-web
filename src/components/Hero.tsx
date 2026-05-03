@@ -59,35 +59,46 @@ export default function Hero() {
       {/* Geometric Gradient Shapes - Orange Accent */}
       <div style={{
         position: 'absolute',
-        top: '10%',
-        left: '8%',
-        width: '400px',
-        height: '400px',
-        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.15) 0%, transparent 60%)',
-        filter: 'blur(80px)',
+        top: '-5%',
+        left: '-10%',
+        width: '600px',
+        height: '600px',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.25) 0%, transparent 70%)',
+        filter: 'blur(60px)',
         borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
         pointerEvents: 'none'
       }} />
       <div style={{
         position: 'absolute',
-        bottom: '15%',
-        right: '5%',
-        width: '350px',
-        height: '350px',
-        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 60%)',
-        filter: 'blur(60px)',
+        bottom: '-10%',
+        right: '-5%',
+        width: '550px',
+        height: '550px',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.2) 0%, transparent 70%)',
+        filter: 'blur(50px)',
         borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%',
         pointerEvents: 'none'
       }} />
       <div style={{
         position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.06) 0%, transparent 70%)',
-        filter: 'blur(120px)',
+        top: '30%',
+        right: '-15%',
+        width: '400px',
+        height: '400px',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.18) 0%, transparent 70%)',
+        filter: 'blur(40px)',
+        borderRadius: '50% 50% 30% 70% / 40% 60% 40% 60%',
+        pointerEvents: 'none'
+      }} />
+      <div style={{
+        position: 'absolute',
+        top: '20%',
+        left: '60%',
+        width: '300px',
+        height: '300px',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.15) 0%, transparent 70%)',
+        filter: 'blur(30px)',
+        borderRadius: '70% 30% 70% 30% / 30% 70% 30% 70%',
         pointerEvents: 'none'
       }} />
       
