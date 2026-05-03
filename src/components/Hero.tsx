@@ -54,7 +54,7 @@ export default function Hero() {
       justifyContent: 'center',
       background: 'var(--bg-primary)',
       overflow: 'hidden',
-      paddingTop: '0.5rem',
+      paddingTop: '4.5rem',
       paddingBottom: '0.5rem'
     }}>
       {/* Background Image - frosted glass overlay */}
@@ -69,8 +69,7 @@ export default function Hero() {
           alt=""
           style={{
             width: '100%',
-            height: 'calc(100% + 60px)',
-            marginTop: '-60px',
+            height: '100%',
             objectFit: 'cover',
             objectPosition: 'center top',
             opacity: 0.65,
