@@ -1723,14 +1723,12 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           transition: 'all 0.2s ease',
                         }}
                         onMouseOver={(e) => {
-                          (e.currentTarget as HTMLElement).style.background = 'var(--accent-primary)';
+                          (e.currentTarget as HTMLElement).style.background = 'var(--gradient-primary)';
                           (e.currentTarget as HTMLElement).style.color = 'white';
-                          (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent-primary)';
                         }}
                         onMouseOut={(e) => {
                           (e.currentTarget as HTMLElement).style.background = 'var(--bg-card)';
                           (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
-                          (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)';
                         }}
                       >
                         <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

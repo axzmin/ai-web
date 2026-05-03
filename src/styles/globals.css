@@ -301,16 +301,16 @@ h1, h2, h3, h4, h5, h6 {
   pointer-events: none;
 }
 
-/* Demo thumbnail hover — image lift + actions fade in */
+/* Demo thumbnail hover — matches my-images card hover effect */
 .demo-thumb-container .demo-thumb-inner:hover .demo-thumb-actions {
   opacity: 1 !important;
 }
 .demo-thumb-container .demo-thumb-inner:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
 .demo-thumb-inner {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .generate-page .orb-1 {

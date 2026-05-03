@@ -391,10 +391,10 @@ export default function MyImagesPage() {
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'stretch',
-              maxWidth: '90vw',
-              maxHeight: '90vh',
-              width: '820px',
-              height: '520px',
+              maxWidth: '95vw',
+              maxHeight: '92vh',
+              width: '920px',
+              height: '560px',
               animation: 'scaleIn 0.3s ease',
               gap: '1.25rem',
               background: 'rgba(20, 16, 14, 0.95)',
@@ -404,8 +404,8 @@ export default function MyImagesPage() {
               overflow: 'hidden',
             }}
           >
-            {/* Left: image */}
-            <div style={{ flex: '0 0 55%', position: 'relative', borderRadius: '12px', overflow: 'hidden', background: '#1a1614' }}>
+            {/* Left: image — larger (65%) */}
+            <div style={{ flex: '0 0 65%', position: 'relative', borderRadius: '12px', overflow: 'hidden', background: '#1a1614' }}>
               <img
                 src={selected.imageUrl}
                 alt={selected.prompt}
@@ -418,8 +418,8 @@ export default function MyImagesPage() {
               />
             </div>
 
-            {/* Right: prompt info panel */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.875rem', overflow: 'hidden' }}>
+            {/* Right: prompt info panel — 35% */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem', overflow: 'hidden' }}>
               {/* Model + quality badges */}
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                 <span style={{ padding: '0.25rem 0.625rem', background: 'rgba(52,98,91,0.25)', border: '1px solid rgba(52,98,91,0.5)', borderRadius: '6px', color: 'rgba(52,98,91,1)', fontSize: '0.6875rem', fontWeight: 700 }}>
