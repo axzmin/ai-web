@@ -53,7 +53,8 @@ export default function Hero() {
       alignItems: 'center',
       justifyContent: 'center',
       background: 'var(--bg-primary)',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      paddingBottom: '2rem'
     }}>
       {/* Warm Gradient Orbs - Teal */}
       <div style={{
@@ -226,19 +227,6 @@ export default function Hero() {
           ))}
         </div>
       </div>
-      </div>
-      
-      {/* Scroll Indicator */}
-      <div style={{
-        position: 'absolute',
-        bottom: '2rem',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        animation: 'float 2s ease-in-out infinite'
-      }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)">
-          <path d="M12 5v14M5 12l7 7 7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
       </div>
     </section>
   );

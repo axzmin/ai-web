@@ -603,6 +603,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
   const [activeTab, setActiveTab] = useState<TabType>('text-to-image');
   const [prompt, setPrompt] = useState('');
   const promptRef = useRef<HTMLTextAreaElement>(null);
+  const pendingPromptRef = useRef<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState('auto');
   const [quality, setQuality] = useState('standard');
   const [model, setModel] = useState('gpt-image-2');
@@ -672,6 +673,14 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, uploadedImages.length, state.status]);
+
+  // Fill prompt when switching to T2I via Try It
+  useEffect(() => {
+    if (activeTab === 'text-to-image' && pendingPromptRef.current !== null) {
+      setPrompt(pendingPromptRef.current);
+      pendingPromptRef.current = null;
+    }
+  }, [activeTab]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -1714,16 +1723,10 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            pendingPromptRef.current = pair.prompt;
                             setActiveTab('text-to-image');
                             setPreviewMode('gallery');
                             setGalleryIndex(i);
-                            // Use ref to directly set DOM value after tab switch
-                            setTimeout(() => {
-                              if (promptRef.current) {
-                                promptRef.current.value = pair.prompt;
-                                promptRef.current.dispatchEvent(new Event('input', { bubbles: true }));
-                              }
-                            }, 0);
                           }}
                           title="Try this prompt"
                           style={{
