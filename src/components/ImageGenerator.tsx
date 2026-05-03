@@ -464,9 +464,9 @@ function ThumbnailGrid({
                   transition: 'all 0.2s ease',
                 }}
                 onMouseOver={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = 'var(--accent-primary)';
-                  (e.currentTarget as HTMLElement).style.color = 'white';
-                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent-primary)';
+                  (e.currentTarget as HTMLElement).style.background = 'var(--bg-secondary)';
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)';
                 }}
                 onMouseOut={(e) => {
                   (e.currentTarget as HTMLElement).style.background = 'var(--bg-card)';
@@ -498,14 +498,14 @@ function ThumbnailGrid({
                   borderRadius: '10px',
                   color: 'var(--text-secondary)',
                   fontSize: '0.625rem',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                 }}
                 onMouseOver={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = 'var(--accent-primary)';
-                  (e.currentTarget as HTMLElement).style.color = 'white';
-                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent-primary)';
+                  (e.currentTarget as HTMLElement).style.background = 'var(--bg-secondary)';
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
+                  (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)';
                 }}
                 onMouseOut={(e) => {
                   (e.currentTarget as HTMLElement).style.background = 'var(--bg-card)';
@@ -1733,9 +1733,9 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           transition: 'all 0.2s ease',
                         }}
                         onMouseOver={(e) => {
-                          (e.currentTarget as HTMLElement).style.background = 'var(--accent-primary)';
-                          (e.currentTarget as HTMLElement).style.color = 'white';
-                          (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent-primary)';
+                          (e.currentTarget as HTMLElement).style.background = 'var(--bg-secondary)';
+                          (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
+                          (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-default)';
                         }}
                         onMouseOut={(e) => {
                           (e.currentTarget as HTMLElement).style.background = 'var(--bg-card)';
