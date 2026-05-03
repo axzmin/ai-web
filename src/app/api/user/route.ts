@@ -14,9 +14,9 @@ export async function GET(req: NextRequest) {
     const clerk = await clerkClient();
     const clerkUser = await clerk.users.getUser(userId);
 
-    // Get or create user in our database
+    // Get or create user in our database (by clerkId)
     let dbUser = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { clerkId: userId },
       include: {
         _count: {
           select: { generations: true }
@@ -41,11 +41,12 @@ export async function GET(req: NextRequest) {
       // Create user in database with free credits
       dbUser = await prisma.user.create({
         data: {
-          id: userId,
+          clerkId: userId,
           email: clerkUser.emailAddresses[0]?.emailAddress || '',
           name: clerkUser.fullName || clerkUser.firstName || null,
           image: clerkUser.imageUrl || null,
           credits: 25, // Default free credits on registration
+          lastLoginAt: new Date(),
         },
         include: {
           _count: { select: { generations: true } },
@@ -58,10 +59,12 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       id: dbUser.id,
+      clerkId: dbUser.clerkId,
       email: dbUser.email,
       name: dbUser.name,
       image: dbUser.image,
       credits: dbUser.credits,
+      lastLoginAt: dbUser.lastLoginAt,
       generationsCount: dbUser._count.generations,
       recentGenerations: dbUser.generations,
     });
