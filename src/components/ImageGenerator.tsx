@@ -249,8 +249,8 @@ function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overla
 }
 
 // ─── Comparison Slider Demo — resets to 50% when switching thumbnails ────────────
-function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', afterLabel = 'After' }: {
-  beforeSrc: string; afterSrc: string; beforeLabel?: string; afterLabel?: string;
+function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', afterLabel = 'After', aspectRatio = 'auto' }: {
+  beforeSrc: string; afterSrc: string; beforeLabel?: string; afterLabel?: string; aspectRatio?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sliderX, setSliderX] = useState(50);
@@ -280,6 +280,11 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', aft
     setSliderX(x);
   };
 
+  const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
+  const containerBase: React.CSSProperties = ratio.isPortrait
+    ? { aspectRatio: ratio.css, maxHeight: '680px', width: 'auto', margin: '0 auto' }
+    : { aspectRatio: ratio.css, maxHeight: '680px', width: '100%' };
+
   return (
     <div
       ref={containerRef}
@@ -287,21 +292,20 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', aft
       onTouchMove={handleTouchMove}
       style={{
         position: 'relative',
-        width: '100%',
-        aspectRatio: '4/3',
         borderRadius: '12px',
         overflow: 'hidden',
         cursor: 'col-resize',
         userSelect: 'none',
         background: '#1a1614',
         flexShrink: 0,
+        ...containerBase,
       }}
     >
       <img src={beforeSrc} alt="Before" draggable={false}
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }} />
       <div style={{ position: 'absolute', inset: 0, width: `${sliderX}%`, height: '100%', overflow: 'hidden' }}>
         <img src={afterSrc} alt="After" draggable={false}
-          style={{ position: 'absolute', inset: 0, width: `${100 / (sliderX / 100)}%`, height: '100%', objectFit: 'cover' }} />
+          style={{ position: 'absolute', inset: 0, width: `${100 / (sliderX / 100)}%`, height: '100%', objectFit: 'contain' }} />
       </div>
       <div style={{
         position: 'absolute', top: 0, bottom: 0, left: `${sliderX}%`, width: '2px',
@@ -339,11 +343,10 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', aft
   );
 }
 
-
 // ─── Simple Image Component — no slider, just a clean image ─────────────────
-function SimpleImage({ src, label, overlay, aspectRatio = 'auto' }: {
+function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
   src: string; label?: string; overlay?: React.ReactNode;
-  aspectRatio?: string;
+  aspectRatio?: string; bgSrc?: string;
 }) {
   const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
   const containerBase: React.CSSProperties = ratio.isPortrait
@@ -356,9 +359,31 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto' }: {
       borderRadius: '12px',
       overflow: 'hidden',
       flexShrink: 0,
-      background: '#1a1614',
       ...containerBase,
     }}>
+      {/* Frosted glass background layer */}
+      {bgSrc && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${bgSrc})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(20px) saturate(150%)',
+          transform: 'scale(1.06)',
+          zIndex: 0,
+        }} />
+      )}
+      {/* Dark overlay on top of blurred bg */}
+      {bgSrc && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(26, 22, 20, 0.55)',
+          zIndex: 1,
+        }} />
+      )}
+      {/* Actual image — always on top of everything */}
       <img
         src={src}
         alt={label || 'Image'}
@@ -369,7 +394,8 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto' }: {
           width: '100%',
           height: '100%',
           objectFit: 'contain',
-          zIndex: 1,
+          background: bgSrc ? 'transparent' : '#1a1614',
+          zIndex: 2,
         }}
       />
       {label && (
@@ -385,7 +411,7 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto' }: {
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
           pointerEvents: 'none',
-          zIndex: 2,
+          zIndex: 3,
         }}>
           {label}
         </div>
@@ -396,7 +422,7 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto' }: {
           top: '10px', right: '10px',
           display: 'flex',
           gap: '0.5rem',
-          zIndex: 2,
+          zIndex: 3,
         }}>
           {overlay}
         </div>
@@ -406,6 +432,7 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto' }: {
 }
 
 
+// ─── Types ────────────────────────────────────────────────────────────────────
 interface GenState {
   status: 'idle' | 'generating' | 'complete' | 'error';
   progress: number;
@@ -1321,6 +1348,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     src={DEMO_PAIR.imageUrls[galleryIndex].after}
                     label="Gallery"
                     aspectRatio={aspectRatio}
+                    bgSrc={DEMO_PAIR.imageUrls[galleryIndex].after}
                   />
                 )}
 
@@ -1329,6 +1357,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   <ComparisonSliderDemo
                     beforeSrc={DEMO_PAIR.imageUrls[selectedIndex].before}
                     afterSrc={DEMO_PAIR.imageUrls[selectedIndex].after}
+                    aspectRatio={aspectRatio}
                   />
                 )}
 
@@ -1338,6 +1367,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     src={uploadedImage}
                     label="Your Image"
                     aspectRatio={aspectRatio}
+                    bgSrc={uploadedImage}
                   />
                 )}
 
@@ -1430,6 +1460,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     src={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     label="Generated"
                     aspectRatio={aspectRatio}
+                    bgSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     overlay={
                       <>
                         <button
