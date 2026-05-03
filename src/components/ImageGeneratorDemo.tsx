@@ -7,14 +7,16 @@ type TabType = 'text-to-image' | 'image-to-image';
 
 const ASPECT_RATIOS = [
   { label: '1:1', value: '1:1' },
-  { label: '3:4', value: '3:4' },
-  { label: '4:3', value: '4:3' },
+  { label: '2:3', value: '2:3' },
+  { label: '3:2', value: '3:2' },
+  { label: '9:16', value: '9:16' },
   { label: '16:9', value: '16:9' },
 ];
 
 const QUALITY_OPTIONS = [
-  { label: 'Standard', value: 'standard', desc: 'Fast generation' },
-  { label: 'HD', value: 'hd', desc: 'Enhanced quality' },
+  { label: 'Standard', value: 'standard', desc: '1K resolution' },
+  { label: 'HD', value: 'hd', desc: '2K resolution' },
+  { label: 'Ultra', value: 'ultra', desc: '4K resolution' },
 ];
 
 const MODEL_OPTIONS = [
