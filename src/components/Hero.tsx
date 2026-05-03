@@ -141,29 +141,33 @@ export default function Hero() {
           justifyContent: 'center',
           flexWrap: 'wrap'
         }}>
-          <Link href="/generate" style={{
-            flex: '1 1 auto',
-            minWidth: '180px',
-            maxWidth: '240px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem',
-            padding: '0.875rem 1.75rem',
-            background: 'var(--gradient-primary)',
-            borderRadius: '12px',
-            color: 'white',
-            fontSize: '1rem',
-            fontWeight: 600,
-            textDecoration: 'none',
-            boxShadow: 'var(--shadow-glow-teal)',
-            transition: 'all 0.2s ease',
-          }}>
+          <button
+            onClick={() => document.getElementById('ai-generator')?.scrollIntoView({ behavior: 'smooth' })}
+            style={{
+              flex: '1 1 auto',
+              minWidth: '180px',
+              maxWidth: '240px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              padding: '0.875rem 1.75rem',
+              background: 'var(--gradient-primary)',
+              borderRadius: '12px',
+              color: 'white',
+              fontSize: '1rem',
+              fontWeight: 600,
+              textDecoration: 'none',
+              boxShadow: 'var(--shadow-glow-teal)',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer',
+              border: 'none',
+            }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               {Icons.sparkles}
               Start Creating Free
             </span>
-          </Link>
+          </button>
           <Link href="/gallery" style={{
             flex: '1 1 auto',
             minWidth: '180px',

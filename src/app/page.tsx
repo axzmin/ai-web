@@ -12,7 +12,9 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <ImageGenerator isDemo />
+      <div id="ai-generator">
+        <ImageGenerator isDemo />
+      </div>
       <Features />
       <Gallery />
       <Pricing />
