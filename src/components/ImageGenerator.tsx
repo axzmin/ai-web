@@ -49,27 +49,27 @@ const DEMO_PAIR = {
     {
       before: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85',
-      prompt: 'A majestic mountain landscape at sunrise, golden hour light spilling over snow-capped peaks, mist rising from the valleys below, dramatic clouds, nature photography, 8k resolution',
-    },
-    {
-      before: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=800&q=40',
-      after:  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=85',
-      prompt: 'A serene forest path in autumn, vibrant orange and red foliage, sunlight filtering through the trees, fallen leaves on the ground, peaceful atmosphere, cinematic composition',
+      prompt: "Ultra-realistic 8K full-body portrait of a stylish young man leaning casually against a clean light-gray wall. He is wearing a mustard yellow V-neck sweater with black-and-white striped trim on the neckline and cuffs, slim-fit black trousers, mustard-colored socks, and black sneakers with white soles. Hands in pockets, one leg crossed over the other, relaxed confident pose. The man has a well-groomed beard and voluminous styled hair, sharp and natural look. On the wall next to him, create a bold black-and-white stylized vector portrait of the same man with modern geometric elements. Below the graphic, add clean bold text: 'PROMPTHERO' in large letters, and beneath it, 'Facebook: @GptHive' in smaller font. Lighting: soft, even, professional studio quality. Mood: modern, minimalistic, premium personal branding aesthetic.",
     },
     {
       before: 'https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=85',
-      prompt: 'An aerial view of a pristine lake surrounded by lush green forests, crystal clear blue water reflecting the sky, surrounded by mountains, peaceful nature scene',
+      prompt: "Ultra-realistic 8K full-body portrait of a stylish young man leaning casually against a clean light-gray wall. He is wearing a mustard yellow V-neck sweater with black-and-white striped trim on the neckline and cuffs, slim-fit black trousers, mustard-colored socks, and black sneakers with white soles. Hands in pockets, one leg crossed over the other, relaxed confident pose. The man has a well-groomed beard and voluminous styled hair, sharp and natural look. On the wall next to him, create a bold black-and-white stylized vector portrait of the same man with modern geometric elements. Below the graphic, add clean bold text: 'PROMPTHERO' in large letters, and beneath it, 'Facebook: @GptHive' in smaller font. Lighting: soft, even, professional studio quality. Mood: modern, minimalistic, premium personal branding aesthetic.",
+    },
+    {
+      before: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=800&q=40',
+      after:  'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=85',
+      prompt: "Ultra-realistic 8K full-body portrait of a stylish young man leaning casually against a clean light-gray wall. He is wearing a mustard yellow V-neck sweater with black-and-white striped trim on the neckline and cuffs, slim-fit black trousers, mustard-colored socks, and black sneakers with white soles. Hands in pockets, one leg crossed over the other, relaxed confident pose. The man has a well-groomed beard and voluminous styled hair, sharp and natural look. On the wall next to him, create a bold black-and-white stylized vector portrait of the same man with modern geometric elements. Below the graphic, add clean bold text: 'PROMPTHERO' in large letters, and beneath it, 'Facebook: @GptHive' in smaller font. Lighting: soft, even, professional studio quality. Mood: modern, minimalistic, premium personal branding aesthetic.",
     },
     {
       before: 'https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=85',
-      prompt: 'A cozy coffee shop interior with warm lighting, exposed brick walls, a wooden counter with latte art, people chatting in the background, inviting atmosphere',
+      prompt: "Ultra-realistic 8K full-body portrait of a stylish young man leaning casually against a clean light-gray wall. He is wearing a mustard yellow V-neck sweater with black-and-white striped trim on the neckline and cuffs, slim-fit black trousers, mustard-colored socks, and black sneakers with white soles. Hands in pockets, one leg crossed over the other, relaxed confident pose. The man has a well-groomed beard and voluminous styled hair, sharp and natural look. On the wall next to him, create a bold black-and-white stylized vector portrait of the same man with modern geometric elements. Below the graphic, add clean bold text: 'PROMPTHERO' in large letters, and beneath it, 'Facebook: @GptHive' in smaller font. Lighting: soft, even, professional studio quality. Mood: modern, minimalistic, premium personal branding aesthetic.",
     },
     {
       before: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=40',
       after:  'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=85',
-      prompt: 'A stunning sunset over the ocean beach, golden and pink hues across the sky, silhouette of palm trees, waves gently rolling onto the shore, peaceful tropical paradise',
+      prompt: "Ultra-realistic 8K full-body portrait of a stylish young man leaning casually against a clean light-gray wall. He is wearing a mustard yellow V-neck sweater with black-and-white striped trim on the neckline and cuffs, slim-fit black trousers, mustard-colored socks, and black sneakers with white soles. Hands in pockets, one leg crossed over the other, relaxed confident pose. The man has a well-groomed beard and voluminous styled hair, sharp and natural look. On the wall next to him, create a bold black-and-white stylized vector portrait of the same man with modern geometric elements. Below the graphic, add clean bold text: 'PROMPTHERO' in large letters, and beneath it, 'Facebook: @GptHive' in smaller font. Lighting: soft, even, professional studio quality. Mood: modern, minimalistic, premium personal branding aesthetic.",
     },
   ],
 };
@@ -1613,7 +1613,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         style={{
                           position: 'relative',
                           borderRadius: '16px',
-                          overflow: 'visible',
+                          overflow: 'hidden',
                           border: '2px solid var(--border-subtle)',
                           transition: 'all 0.3s ease',
                           cursor: 'pointer',
@@ -1744,7 +1744,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       style={{
                         position: 'relative',
                         borderRadius: '16px',
-                        overflow: 'visible',
+                        overflow: 'hidden',
                         border: (previewMode === 'gallery' ? galleryIndex === i : selectedIndex === i)
                           ? '2px solid var(--accent-primary)'
                           : '2px solid var(--border-subtle)',
