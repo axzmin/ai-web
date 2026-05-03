@@ -81,29 +81,6 @@ export default function Hero() {
       {/* Content */}
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
       <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', maxWidth: '900px', margin: '0 auto' }}>
-        {/* Badge */}
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          padding: '0.5rem 1rem',
-          background: 'rgba(52, 98, 91, 0.08)',
-          border: '1px solid rgba(52, 98, 91, 0.2)',
-          borderRadius: 'var(--radius-full)',
-          marginBottom: '1.5rem',
-          animation: 'float 3s ease-in-out infinite',
-          color: 'var(--accent-primary)'
-        }}>
-          <span style={{ display: 'flex', color: 'var(--accent-primary)' }}>{Icons.sparkles}</span>
-          <span style={{ 
-            fontSize: '0.875rem', 
-            fontWeight: 600,
-            color: 'var(--accent-primary)'
-          }}>
-            Powered by Flux.1 Dev
-          </span>
-        </div>
-        
         {/* Main Title */}
         <h1 style={{
           fontSize: 'clamp(2.5rem, 7vw, 5rem)',
@@ -223,6 +200,40 @@ export default function Hero() {
             >
               <span style={{ display: 'flex', color: 'var(--accent-primary)' }}>{Icons[item.icon as keyof typeof Icons]}</span>
               <span>{item.text}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Decorative AI Pattern — bottom of hero */}
+        <div style={{
+          marginTop: '2.5rem',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '0.5rem',
+          opacity: 0.4,
+        }}>
+          {['AI', 'Image', 'Generator'].map((word, i) => (
+            <div key={i} style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              padding: '0.25rem 0.75rem',
+              background: 'rgba(52, 98, 91, 0.08)',
+              border: '1px solid rgba(52, 98, 91, 0.2)',
+              borderRadius: '6px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              color: 'var(--accent-primary)',
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+            }}>
+              {i > 0 && (
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity: 0.5 }}>
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              )}
+              {word}
             </div>
           ))}
         </div>
