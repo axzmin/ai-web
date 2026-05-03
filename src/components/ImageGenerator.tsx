@@ -347,8 +347,8 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
 }) {
   const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
   const containerBase: React.CSSProperties = ratio.isPortrait
-    ? { aspectRatio: ratio.css, maxHeight: '500px', width: 'auto', margin: '0 auto' }
-    : { aspectRatio: ratio.css, maxHeight: '500px', width: '100%' };
+    ? { aspectRatio: ratio.css, maxHeight: '600px', width: 'auto', margin: '0 auto' }
+    : { aspectRatio: ratio.css, maxHeight: '600px', width: '100%' };
 
   return (
     <div style={{
@@ -356,28 +356,30 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
       borderRadius: '12px',
       overflow: 'hidden',
       flexShrink: 0,
+      background: '#1a1614',
       backgroundImage: bgSrc ? `url(${bgSrc})` : undefined,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      filter: bgSrc ? 'blur(24px) saturate(160%)' : undefined,
-      transform: bgSrc ? 'scale(1.08)' : undefined,
+      filter: bgSrc ? 'blur(20px) saturate(150%)' : undefined,
+      transform: bgSrc ? 'scale(1.06)' : undefined,
       ...containerBase,
     }}>
       {/* Dark overlay on top of blurred bg */}
       {bgSrc && (
         <div style={{
           position: 'absolute', inset: 0,
-          backgroundColor: 'rgba(26, 22, 20, 0.62)',
+          backgroundColor: 'rgba(26, 22, 20, 0.55)',
           zIndex: 1,
         }} />
       )}
-      {/* Actual image — always on top */}
+      {/* Actual image — fills container, on top of blurred bg */}
       <img
         src={src}
         alt={label || 'Image'}
         draggable={false}
         style={{
-          position: 'relative',
+          position: 'absolute',
+          inset: 0,
           width: '100%',
           height: '100%',
           objectFit: 'contain',
