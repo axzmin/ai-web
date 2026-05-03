@@ -646,89 +646,53 @@ export default function ImageGeneratorDemo() {
             </div>
 
             {/* Quality */}
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
               <label style={{
                 display: 'block',
                 fontSize: '0.75rem',
                 fontWeight: 600,
                 color: 'var(--text-secondary)',
-                marginBottom: '0.5rem',
+                marginBottom: '0.625rem',
                 textTransform: 'uppercase',
                 letterSpacing: '0.03em',
               }}>
                 Quality
               </label>
-              <div ref={qualityRef} style={{ position: 'relative', zIndex: 10 }}>
-                <button
-                  onClick={() => setQualityDropdownOpen(!qualityDropdownOpen)}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0.625rem 0.875rem',
-                    background: 'var(--bg-primary)',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: '8px',
-                    color: 'var(--text-primary)',
-                    fontSize: '0.8125rem',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <span style={{ fontWeight: 600 }}>
-                    {QUALITY_OPTIONS.find(q => q.value === quality)?.label || 'Standard'}
-                  </span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2">
-                    <path d="M6 9l6 6 6-6"/>
-                  </svg>
-                </button>
-                {qualityDropdownOpen && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 'calc(100% + 6px)',
-                    left: 0,
-                    right: 0,
-                    background: 'var(--bg-card)',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: '10px',
-                    padding: '0.375rem',
-                    zIndex: 50,
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
-                    maxHeight: '200px',
-                    overflowY: 'auto',
-                  }}>
-                    {QUALITY_OPTIONS.map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => { setQuality(option.value); setQualityDropdownOpen(false); }}
-                        style={{
-                          width: '100%',
-                          padding: '0.625rem 0.75rem',
-                          background: quality === option.value ? 'var(--bg-tertiary)' : 'transparent',
-                          border: quality === option.value ? '1px solid var(--border-default)' : '1px solid transparent',
-                          borderRadius: '8px',
-                          color: 'var(--text-primary)',
-                          fontSize: '0.8125rem',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          marginBottom: '2px',
-                        }}
-                      >
-                        <span style={{ textAlign: 'left' }}>
-                          <span style={{ fontWeight: 600, display: 'block' }}>{option.label}</span>
-                          <span style={{ color: 'var(--text-muted)', fontSize: '0.6875rem' }}>{option.desc}</span>
-                        </span>
-                        {quality === option.value && (
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5">
-                            <polyline points="20 6 9 17 4 12"/>
-                          </svg>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '0.5rem',
+              }}>
+                {QUALITY_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setQuality(option.value)}
+                    style={{
+                      padding: '0.625rem 0.5rem',
+                      background: quality === option.value ? 'var(--accent-primary)' : 'var(--bg-card)',
+                      border: quality === option.value ? '1px solid var(--accent-primary)' : '1px solid var(--border-default)',
+                      borderRadius: '10px',
+                      color: quality === option.value ? 'white' : 'var(--text-primary)',
+                      fontSize: '0.8125rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '2px',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <span>{option.label}</span>
+                    <span style={{
+                      fontSize: '0.6875rem',
+                      fontWeight: 400,
+                      opacity: quality === option.value ? 0.8 : 0.6,
+                    }}>
+                      {option.desc}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
 
