@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useAuth, UserButton } from '@clerk/nextjs';
+import { useAuth, UserButton, SignInButton } from '@clerk/nextjs';
 import Link from 'next/link';
 
 type TabType = 'text-to-image' | 'image-to-image';
@@ -618,8 +618,8 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
               </div>
             </div>
 
-            {/* Prompt - only for Text to Image */}
-            {activeTab === 'text-to-image' && (
+            {/* Image-to-Image Prompt — shown after Model dropdown, before Image Upload */}
+            {activeTab === 'image-to-image' && (
               <div style={{ marginBottom: '1.25rem' }}>
                 <label style={{
                   display: 'block',
@@ -636,11 +636,11 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Describe the details of the image, such as color, shape, texture, etc."
+                    placeholder="Describe how you want to transform this image..."
                     maxLength={3000}
                     style={{
                       width: '100%',
-                      minHeight: '120px',
+                      minHeight: '100px',
                       padding: '0.875rem 1rem',
                       paddingBottom: '2rem',
                       background: 'var(--bg-primary)',
@@ -767,6 +767,64 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       </label>
                     </>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Prompt - only for Text to Image */}
+            {activeTab === 'text-to-image' && (
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  color: 'var(--text-secondary)',
+                  marginBottom: '0.5rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.03em',
+                }}>
+                  Prompt
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="Describe the details of the image, such as color, shape, texture, etc."
+                    maxLength={3000}
+                    style={{
+                      width: '100%',
+                      minHeight: '120px',
+                      padding: '0.875rem 1rem',
+                      paddingBottom: '2rem',
+                      background: 'var(--bg-primary)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '10px',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.875rem',
+                      fontFamily: 'inherit',
+                      lineHeight: 1.6,
+                      resize: 'vertical',
+                      outline: 'none',
+                      transition: 'border-color 0.2s, box-shadow 0.2s',
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(52, 98, 91, 0.12)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--border-default)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  />
+                  <span style={{
+                    position: 'absolute',
+                    bottom: '0.5rem',
+                    right: '0.75rem',
+                    fontSize: '0.6875rem',
+                    color: 'var(--text-muted)',
+                  }}>
+                    {prompt.length}/3000
+                  </span>
                 </div>
               </div>
             )}
@@ -905,73 +963,114 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
             </div>
 
             {/* Generate Button */}
-            <button
-              onClick={handleGenerate}
-              disabled={(activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'}
-              style={{
-                width: '100%',
-                padding: '0.875rem',
-                background: (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
-                  ? 'var(--bg-tertiary)'
-                  : 'var(--gradient-primary)',
-                border: 'none',
-                borderRadius: '10px',
-                color: (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
-                  ? 'var(--text-muted)'
-                  : 'white',
-                fontSize: '0.9375rem',
-                fontWeight: 600,
-                cursor: (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
-                  ? 'not-allowed'
-                  : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                transition: 'all 0.2s ease',
-                boxShadow: (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage) || state.status === 'generating'
-                  ? 'none'
-                  : '0 4px 12px rgba(52, 98, 91, 0.3)',
-              }}
-            >
-              {state.status === 'generating' ? (
-                <>
-                  <span style={{
-                    width: '16px',
-                    height: '16px',
-                    border: '2px solid var(--text-muted)',
-                    borderTopColor: 'var(--accent-primary)',
-                    borderRadius: '50%',
-                    animation: 'spin 0.8s linear infinite',
-                  }} />
-                  Generating...
-                </>
-              ) : !isSignedIn ? (
-                'Sign In to Generate'
-              ) : (
-                <>
+            {!isSignedIn ? (
+              <SignInButton mode="modal">
+                <button style={{
+                  width: '100%',
+                  padding: '0.875rem',
+                  background: 'var(--gradient-primary)',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '0.9375rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  boxShadow: '0 4px 12px rgba(52, 98, 91, 0.3)',
+                }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 3l1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
                   </svg>
-                  Generate Image
-                </>
-              )}
-            </button>
+                  Sign In to Generate
+                </button>
+              </SignInButton>
+            ) : (
+              <button
+                onClick={handleGenerate}
+                disabled={
+                  state.status === 'generating' ||
+                  (activeTab === 'text-to-image' && !prompt.trim()) ||
+                  (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                }
+                style={{
+                  width: '100%',
+                  padding: '0.875rem',
+                  background: state.status === 'generating' ||
+                    (activeTab === 'text-to-image' && !prompt.trim()) ||
+                    (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                    ? 'var(--bg-tertiary)'
+                    : 'var(--gradient-primary)',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: state.status === 'generating' ||
+                    (activeTab === 'text-to-image' && !prompt.trim()) ||
+                    (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                    ? 'var(--text-muted)'
+                    : 'white',
+                  fontSize: '0.9375rem',
+                  fontWeight: 600,
+                  cursor: state.status === 'generating' ||
+                    (activeTab === 'text-to-image' && !prompt.trim()) ||
+                    (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                    ? 'not-allowed'
+                    : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  transition: 'all 0.2s ease',
+                  boxShadow: state.status === 'generating' ||
+                    (activeTab === 'text-to-image' && !prompt.trim()) ||
+                    (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
+                    ? 'none'
+                    : '0 4px 12px rgba(52, 98, 91, 0.3)',
+                }}
+              >
+                {state.status === 'generating' ? (
+                  <>
+                    <span style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid rgba(255,255,255,0.4)',
+                      borderTopColor: 'white',
+                      borderRadius: '50%',
+                      animation: 'spin 0.8s linear infinite',
+                    }} />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                      <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+                    </svg>
+                    {MODEL_OPTIONS.find(m => m.value === model)?.cost || 1} Credits
+                  </>
+                )}
+              </button>
+            )}
 
             {/* Credits info */}
             {isSignedIn && credits !== null && (
               <div style={{
-                marginTop: '1rem',
-                padding: '0.75rem',
+                marginTop: '0.75rem',
+                padding: '0.625rem 0.875rem',
                 background: 'var(--bg-secondary)',
                 borderRadius: '8px',
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: 'center',
                 alignItems: 'center',
                 fontSize: '0.8125rem',
+                gap: '0.5rem',
               }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Cost {MODEL_OPTIONS.find(m => m.value === model)?.cost || 1} credits</span>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{credits} credits remaining</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+                <span style={{ color: 'var(--text-secondary)' }}>{credits} credits remaining</span>
               </div>
             )}
 

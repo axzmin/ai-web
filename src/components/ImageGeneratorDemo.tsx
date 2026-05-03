@@ -563,6 +563,64 @@ export default function ImageGeneratorDemo() {
               </div>
             )}
 
+            {/* Prompt for Image to Image */}
+            {activeTab === 'image-to-image' && (
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  color: 'var(--text-secondary)',
+                  marginBottom: '0.5rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.03em',
+                }}>
+                  Prompt
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="Describe how you want to transform this image..."
+                    maxLength={3000}
+                    style={{
+                      width: '100%',
+                      minHeight: '100px',
+                      padding: '0.875rem 1rem',
+                      paddingBottom: '2rem',
+                      background: 'var(--bg-primary)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: '10px',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.875rem',
+                      fontFamily: 'inherit',
+                      lineHeight: 1.6,
+                      resize: 'vertical',
+                      outline: 'none',
+                      transition: 'border-color 0.2s, box-shadow 0.2s',
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(52, 98, 91, 0.12)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--border-default)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  />
+                  <span style={{
+                    position: 'absolute',
+                    bottom: '0.5rem',
+                    right: '0.75rem',
+                    fontSize: '0.6875rem',
+                    color: 'var(--text-muted)',
+                  }}>
+                    {prompt.length}/3000
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Aspect Ratio */}
             <div style={{ marginBottom: '1.25rem' }}>
               <label style={{
@@ -727,22 +785,22 @@ export default function ImageGeneratorDemo() {
                 disabled={
                   state.status === 'generating' ||
                   (activeTab === 'text-to-image' && !prompt.trim()) ||
-                  (activeTab === 'image-to-image' && !uploadedImage)
+                  (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
                 }
                 style={{
                   width: '100%',
                   padding: '0.875rem',
-                  background: state.status === 'generating' || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage)
+                  background: state.status === 'generating' || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
                     ? 'var(--bg-tertiary)'
                     : 'var(--gradient-primary)',
                   border: 'none',
                   borderRadius: '10px',
-                  color: state.status === 'generating' || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage)
+                  color: state.status === 'generating' || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
                     ? 'var(--text-muted)'
                     : 'white',
                   fontSize: '0.9375rem',
                   fontWeight: 600,
-                  cursor: state.status === 'generating' || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage)
+                  cursor: state.status === 'generating' || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
                     ? 'not-allowed'
                     : 'pointer',
                   display: 'flex',
@@ -750,7 +808,7 @@ export default function ImageGeneratorDemo() {
                   justifyContent: 'center',
                   gap: '0.5rem',
                   transition: 'all 0.2s ease',
-                  boxShadow: state.status === 'generating' || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && !uploadedImage)
+                  boxShadow: state.status === 'generating' || (activeTab === 'text-to-image' && !prompt.trim()) || (activeTab === 'image-to-image' && (!uploadedImage || !prompt.trim()))
                     ? 'none'
                     : '0 4px 12px rgba(52, 98, 91, 0.3)',
                 }}
@@ -760,8 +818,8 @@ export default function ImageGeneratorDemo() {
                     <span style={{
                       width: '16px',
                       height: '16px',
-                      border: '2px solid var(--text-muted)',
-                      borderTopColor: 'var(--accent-primary)',
+                      border: '2px solid rgba(255,255,255,0.4)',
+                      borderTopColor: 'white',
                       borderRadius: '50%',
                       animation: 'spin 0.8s linear infinite',
                     }} />
@@ -771,6 +829,7 @@ export default function ImageGeneratorDemo() {
                   <>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                      <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
                     </svg>
                     Generate Image
                   </>
