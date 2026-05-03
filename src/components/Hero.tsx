@@ -56,25 +56,38 @@ export default function Hero() {
       overflow: 'hidden',
       paddingBottom: '0.5rem'
     }}>
-      {/* Warm Gradient Orbs - Teal */}
+      {/* Geometric Gradient Shapes - Orange Accent */}
       <div style={{
         position: 'absolute',
-        top: '15%',
-        left: '5%',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(52, 98, 91, 0.12) 0%, transparent 70%)',
-        filter: 'blur(100px)',
+        top: '10%',
+        left: '8%',
+        width: '400px',
+        height: '400px',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.15) 0%, transparent 60%)',
+        filter: 'blur(80px)',
+        borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
         pointerEvents: 'none'
       }} />
       <div style={{
         position: 'absolute',
-        bottom: '20%',
-        right: '10%',
-        width: '500px',
-        height: '500px',
-        background: 'radial-gradient(circle, rgba(52, 98, 91, 0.1) 0%, transparent 70%)',
-        filter: 'blur(100px)',
+        bottom: '15%',
+        right: '5%',
+        width: '350px',
+        height: '350px',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.12) 0%, transparent 60%)',
+        filter: 'blur(60px)',
+        borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%',
+        pointerEvents: 'none'
+      }} />
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '600px',
+        height: '600px',
+        background: 'radial-gradient(circle, rgba(255, 140, 66, 0.06) 0%, transparent 70%)',
+        filter: 'blur(120px)',
         pointerEvents: 'none'
       }} />
       
@@ -200,40 +213,6 @@ export default function Hero() {
             >
               <span style={{ display: 'flex', color: 'var(--accent-primary)' }}>{Icons[item.icon as keyof typeof Icons]}</span>
               <span>{item.text}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Decorative AI Pattern — bottom of hero */}
-        <div style={{
-          marginTop: '2.5rem',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '0.5rem',
-          opacity: 0.4,
-        }}>
-          {['AI', 'Image', 'Generator'].map((word, i) => (
-            <div key={i} style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.25rem',
-              padding: '0.25rem 0.75rem',
-              background: 'rgba(52, 98, 91, 0.08)',
-              border: '1px solid rgba(52, 98, 91, 0.2)',
-              borderRadius: '6px',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              color: 'var(--accent-primary)',
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-            }}>
-              {i > 0 && (
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity: 0.5 }}>
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              )}
-              {word}
             </div>
           ))}
         </div>
