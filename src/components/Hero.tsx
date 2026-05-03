@@ -54,7 +54,7 @@ export default function Hero() {
       justifyContent: 'center',
       background: 'var(--bg-primary)',
       overflow: 'hidden',
-      paddingBottom: '2rem'
+      paddingBottom: '0.5rem'
     }}>
       {/* Warm Gradient Orbs - Teal */}
       <div style={{
