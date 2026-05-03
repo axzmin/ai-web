@@ -1,5 +1,3 @@
-'use client';
-
 import { NextResponse } from 'next/server';
 import { Webhook } from 'svix';
 import { prisma } from '@/lib/prisma';
