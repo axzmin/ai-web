@@ -54,7 +54,7 @@ export default function Hero() {
       justifyContent: 'center',
       background: 'var(--bg-primary)',
       overflow: 'hidden',
-      paddingTop: '2rem',
+      paddingTop: '0.5rem',
       paddingBottom: '0.5rem'
     }}>
       {/* Geometric Gradient Shapes - Orange Accent */}

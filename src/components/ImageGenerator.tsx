@@ -1649,95 +1649,122 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   marginBottom: '0.875rem',
                 }}>
                   {DEMO_PAIR.imageUrls.map((pair, i) => (
-                    <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-                      {/* Thumbnail image only */}
+                    <div
+                      key={i}
+                      style={{
+                        position: 'relative',
+                        borderRadius: '16px',
+                        overflow: 'visible',
+                        border: (previewMode === 'gallery' ? galleryIndex === i : selectedIndex === i)
+                          ? '2px solid var(--accent-primary)'
+                          : '2px solid var(--border-subtle)',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {/* Image + hover overlay container */}
                       <div
-                        className="t2i-thumb"
-                        onClick={() => {
-                          setSelectedIndex(i);
-                          if (activeTab === 'text-to-image') {
-                            setGalleryIndex(i);
-                          } else {
-                            setPreviewMode('comparison');
-                          }
-                        }}
+                        style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden' }}
                         onMouseOver={(e) => {
-                          const el = e.currentTarget as HTMLElement;
-                          el.style.transform = 'translateY(-3px)';
-                          el.style.boxShadow = '0 8px 24px rgba(0,0,0,0.25)';
+                          const el = e.currentTarget;
+                          const actions = el.querySelector('.t2i-actions') as HTMLElement | null;
+                          if (actions) actions.style.opacity = '1';
                         }}
                         onMouseOut={(e) => {
-                          const el = e.currentTarget as HTMLElement;
-                          el.style.transform = 'translateY(0)';
-                          el.style.boxShadow = 'none';
-                        }}
-                        style={{
-                          position: 'relative',
-                          borderRadius: '16px',
-                          overflow: 'hidden',
-                          border: (previewMode === 'gallery' ? galleryIndex === i : selectedIndex === i)
-                            ? '2px solid var(--accent-primary)'
-                            : '2px solid var(--border-subtle)',
-                          transition: 'all 0.2s ease',
-                          cursor: 'pointer',
-                          background: 'var(--bg-card)',
+                          const el = e.currentTarget;
+                          const actions = el.querySelector('.t2i-actions') as HTMLElement | null;
+                          if (actions) actions.style.opacity = '0';
                         }}
                       >
-                        <div style={{ aspectRatio: '1/1' }}>
+                        {/* Thumbnail image — clickable */}
+                        <div
+                          onClick={() => {
+                            setSelectedIndex(i);
+                            if (activeTab === 'text-to-image') {
+                              setGalleryIndex(i);
+                            } else {
+                              setPreviewMode('comparison');
+                            }
+                          }}
+                          style={{
+                            cursor: 'pointer',
+                            borderRadius: '16px',
+                            overflow: 'hidden',
+                            aspectRatio: '1/1',
+                            background: 'var(--bg-card)',
+                          }}
+                        >
                           <img
                             src={pair.after}
                             alt={`Demo ${i + 1}`}
                             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                           />
                         </div>
-                      </div>
 
-                      {/* Try It button below the image */}
-                      <button
-                        onClick={() => {
-                          const targetPrompt = pair.prompt;
-                          const isAlreadyT2I = activeTab === 'text-to-image';
-                          setActiveTab('text-to-image');
-                          setPreviewMode('gallery');
-                          setGalleryIndex(i);
-                          setTimeout(() => {
-                            if (promptRef.current) {
-                              promptRef.current.focus();
-                              const nativeSetter = Object.getOwnPropertyDescriptor(
-                                window.HTMLTextAreaElement.prototype, 'value'
-                              )?.set;
-                              nativeSetter?.call(promptRef.current, targetPrompt);
-                              promptRef.current.dispatchEvent(
-                                new Event('input', { bubbles: true, cancelable: true })
-                              );
-                            } else {
-                              setPrompt(targetPrompt);
-                            }
-                          }, isAlreadyT2I ? 0 : 50);
-                        }}
-                        title="Try this prompt"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '0.3rem',
-                          width: '100%',
-                          padding: '0.35rem 0',
-                          background: 'var(--gradient-primary)',
-                          border: 'none',
-                          borderRadius: '8px',
-                          color: 'white',
-                          fontSize: '0.6875rem',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          boxShadow: '0 2px 8px rgba(255,140,66,0.3)',
-                        }}
-                      >
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <polygon points="5 3 19 12 5 21 5 3"/>
-                        </svg>
-                        Try It
-                      </button>
+                        {/* Hover overlay with Try It */}
+                        <div
+                          className="t2i-actions"
+                          style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
+                            padding: '2rem 0.5rem 0.5rem',
+                            display: 'flex',
+                            gap: '0.25rem',
+                            opacity: 0,
+                            transition: 'opacity 0.2s ease',
+                            zIndex: 5,
+                          }}
+                        >
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const targetPrompt = pair.prompt;
+                              const isAlreadyT2I = activeTab === 'text-to-image';
+                              setActiveTab('text-to-image');
+                              setPreviewMode('gallery');
+                              setGalleryIndex(i);
+                              setTimeout(() => {
+                                if (promptRef.current) {
+                                  promptRef.current.focus();
+                                  const nativeSetter = Object.getOwnPropertyDescriptor(
+                                    window.HTMLTextAreaElement.prototype, 'value'
+                                  )?.set;
+                                  nativeSetter?.call(promptRef.current, targetPrompt);
+                                  promptRef.current.dispatchEvent(
+                                    new Event('input', { bubbles: true, cancelable: true })
+                                  );
+                                } else {
+                                  setPrompt(targetPrompt);
+                                }
+                              }, isAlreadyT2I ? 0 : 50);
+                            }}
+                            title="Try this prompt"
+                            style={{
+                              flex: 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '0.3rem',
+                              padding: '0.35rem 0',
+                              background: 'var(--gradient-primary)',
+                              border: 'none',
+                              borderRadius: '6px',
+                              color: 'white',
+                              fontSize: '0.6875rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
+                            }}
+                          >
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            Try It
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
