@@ -266,7 +266,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Generator Section - used on homepage */
 .generator-section {
   position: relative;
-  padding: 6rem 0;
+  padding: 3rem 0;
   background: var(--bg-primary);
   overflow: hidden;
 }
