@@ -70,7 +70,7 @@ const DEMO_PAIR = {
 };
 
 // ─── Comparison Slider Component ───────────────────────────────────────────
-function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel }: { beforeSrc: string; afterSrc: string; beforeLabel?: string; afterLabel?: string }) {
+function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overlay }: { beforeSrc: string; afterSrc: string; beforeLabel?: string; afterLabel?: string; overlay?: React.ReactNode }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sliderX, setSliderX] = useState(50); // percentage 0–100
 
@@ -229,6 +229,20 @@ function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel }: { be
       }}>
         {afterLabel || 'Enhanced'}
       </div>
+
+      {/* Overlay buttons */}
+      {overlay && (
+        <div style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          display: 'flex',
+          gap: '0.5rem',
+          zIndex: 3,
+        }}>
+          {overlay}
+        </div>
+      )}
     </div>
   );
 }
@@ -319,7 +333,7 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afte
 
 
 // ─── Simple Image Component — no slider, just a clean image ─────────────────
-function SimpleImage({ src, label }: { src: string; label?: string }) {
+function SimpleImage({ src, label, overlay }: { src: string; label?: string; overlay?: React.ReactNode }) {
   return (
     <div style={{
       position: 'relative',
@@ -358,6 +372,17 @@ function SimpleImage({ src, label }: { src: string; label?: string }) {
           pointerEvents: 'none',
         }}>
           {label}
+        </div>
+      )}
+      {overlay && (
+        <div style={{
+          position: 'absolute',
+          bottom: '10px',
+          right: '10px',
+          display: 'flex',
+          gap: '0.5rem',
+        }}>
+          {overlay}
         </div>
       )}
     </div>
@@ -1356,21 +1381,51 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
             {state.status === 'complete' && (state.imageUrls.length > 0 || !!state.imageUrl) && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
-                {/* T2I complete: single generated image */}
+                {/* T2I complete: single generated image with overlay buttons */}
                 {activeTab === 'text-to-image' && (
                   <SimpleImage
                     src={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     label="Generated"
+                    overlay={
+                      <>
+                        <button
+                          onClick={() => handleDownload(isDemo ? state.imageUrl! : state.imageUrls[selectedIndex])}
+                          style={{ padding: '0.5rem 0.875rem', background: 'rgba(0,0,0,0.55)', border: 'none', borderRadius: '8px', color: 'white', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', backdropFilter: 'blur(8px)' }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                          Download
+                        </button>
+                        <a href="/gallery"
+                          style={{ padding: '0.5rem 0.875rem', background: 'rgba(0,0,0,0.55)', border: 'none', borderRadius: '8px', color: 'white', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', textDecoration: 'none', backdropFilter: 'blur(8px)' }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                          My Images
+                        </a>
+                      </>
+                    }
                   />
                 )}
 
-                {/* I2I complete: comparison slider (uploaded vs generated) */}
+                {/* I2I complete: comparison slider with overlay buttons */}
                 {activeTab === 'image-to-image' && (
                   <ComparisonSlider
                     beforeSrc={uploadedImage || ''}
                     afterSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     beforeLabel="Original"
                     afterLabel="Generated"
+                    overlay={
+                      <>
+                        <button
+                          onClick={() => handleDownload(isDemo ? state.imageUrl! : state.imageUrls[selectedIndex])}
+                          style={{ padding: '0.5rem 0.875rem', background: 'rgba(0,0,0,0.55)', border: 'none', borderRadius: '8px', color: 'white', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', backdropFilter: 'blur(8px)' }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                          Download
+                        </button>
+                        <a href="/gallery"
+                          style={{ padding: '0.5rem 0.875rem', background: 'rgba(0,0,0,0.55)', border: 'none', borderRadius: '8px', color: 'white', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', textDecoration: 'none', backdropFilter: 'blur(8px)' }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                          My Images
+                        </a>
+                      </>
+                    }
                   />
                 )}
 
@@ -1380,7 +1435,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   gridTemplateColumns: 'repeat(5, 1fr)',
                   gap: '0.5rem',
                   marginTop: '0.875rem',
-                  marginBottom: '0.875rem',
                 }}>
                   {DEMO_PAIR.imageUrls.map((pair, i) => (
                     <button
@@ -1405,34 +1459,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       />
                     </button>
                   ))}
-                </div>
-
-                {/* Action Buttons */}
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button
-                    onClick={() => handleDownload(isDemo ? state.imageUrl! : state.imageUrls[selectedIndex])}
-                    style={{ flex: 1, padding: '0.75rem', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: 'white', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                    Download
-                  </button>
-                  <button
-                    onClick={() => setState({ status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null })}
-                    style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    New
-                  </button>
-                  <button
-                    onClick={() => navigator.clipboard.writeText(isDemo ? state.imageUrl! : state.imageUrls[selectedIndex])}
-                    style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-                    Share
-                  </button>
-                  <button
-                    onClick={() => {}}
-                    style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                    Like
-                  </button>
                 </div>
               </div>
             )}

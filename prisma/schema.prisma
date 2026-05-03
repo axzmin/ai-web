@@ -21,25 +21,44 @@ model User {
   updatedAt DateTime @updatedAt
   lastLoginAt DateTime?
   generations Generation[]
+  creditLogs  CreditLog[]
 }
 
 model Generation {
-  id          String   @id @default(cuid())
-  prompt      String
-  imageUrl    String
+  id           String   @id @default(cuid())
+  prompt       String
+  imageUrl     String
   thumbnailUrl String?
-  model       String   @default("flux-dev")
-  aspectRatio String   @default("1:1")
-  quality     String   @default("standard")
-  seed        Int?
-  steps       Int?
-  status      String   @default("completed")
-  userId      String?
-  user        User?    @relation(fields: [userId], references: [id])
+  model        String   @default("gpt-image-2")
+  aspectRatio  String   @default("auto")
+  quality      String   @default("1K")
+  creditsCost  Int      @default(2)   // Credits spent on this generation
+  seed         Int?
+  steps        Int?
+  status       String   @default("completed")
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  isPublic     Boolean  @default(false)
+  galleryItem  GalleryItem?
+  creditLog    CreditLog?
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// Credits流水日志 / Credit transaction ledger
+model CreditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        String   // 'earn' | 'spend' | 'refund' | 'bonus'
+  amount      Int      // 正数 = 增加, 负数 = 减少 (spend用负数记录)
+  balanceAfter Int     // 变动后余额
+  description String   @default("") // 备注
+  generationId String? @unique
+  generation  Generation? @relation(fields: [generationId], references: [id])
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  isPublic    Boolean  @default(false)
-  galleryItem GalleryItem?
   @@index([userId])
   @@index([createdAt])
 }

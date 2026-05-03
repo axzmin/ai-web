@@ -242,15 +242,16 @@ export async function POST(req: NextRequest) {
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
       console.log(`[Generate] Task ${taskId} completed in ${elapsed}s - ${imageUrl}`);
 
-      // Deduct credits AFTER successful generation
-      await prisma.user.update({
-        where: { clerkId: userId },
-        data: { credits: { decrement: creditCost } },
-      });
+      // Deduct credits + save generation + write credit log — all in one transaction
+      const generation = await prisma.$transaction(async (tx) => {
+        // Atomic credit deduction
+        const updatedUser = await tx.user.update({
+          where: { clerkId: userId },
+          data: { credits: { decrement: creditCost } },
+        });
 
-      // Save generation to database
-      try {
-        await prisma.generation.create({
+        // Create generation record with creditsCost
+        const gen = await tx.generation.create({
           data: {
             userId: user.id,
             prompt: prompt.trim(),
@@ -258,13 +259,25 @@ export async function POST(req: NextRequest) {
             model,
             aspectRatio,
             quality: resolution,
+            creditsCost: creditCost,
             status: 'completed',
           },
         });
-      } catch (dbError) {
-        console.error('Failed to save generation:', dbError);
-        // Continue anyway - we still have the image URL
-      }
+
+        // Write credit log
+        await tx.creditLog.create({
+          data: {
+            userId: user.id,
+            type: 'spend',
+            amount: -creditCost,
+            balanceAfter: updatedUser.credits,
+            description: `生成图片: ${model} ${resolution}`,
+            generationId: gen.id,
+          },
+        });
+
+        return gen;
+      });
 
       return NextResponse.json({
         imageUrl,

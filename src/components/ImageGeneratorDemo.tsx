@@ -27,7 +27,7 @@ const MODEL_OPTIONS = [
 ];
 
 // ─── Comparison Slider Component ───────────────────────────────────────────
-function ComparisonSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc: string }) {
+function ComparisonSlider({ beforeSrc, afterSrc, overlay }: { beforeSrc: string; afterSrc: string; overlay?: React.ReactNode }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sliderX, setSliderX] = useState(50);
 
@@ -111,6 +111,14 @@ function ComparisonSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc
         color: 'white', fontSize: '0.6875rem', fontWeight: 600,
         letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none',
       }}>Enhanced</div>
+      {overlay && (
+        <div style={{
+          position: 'absolute', top: '10px', right: '10px',
+          display: 'flex', gap: '0.5rem', zIndex: 3,
+        }}>
+          {overlay}
+        </div>
+      )}
     </div>
   );
 }
@@ -894,10 +902,25 @@ export default function ImageGeneratorDemo() {
             {state.status === 'complete' && state.imageUrl && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
-                {/* Comparison Slider */}
+                {/* Comparison Slider with overlay buttons */}
                 <ComparisonSlider
                   beforeSrc={uploadedImage || state.imageUrl}
                   afterSrc={state.imageUrl}
+                  overlay={
+                    <>
+                      <button
+                        onClick={() => handleDownload(state.imageUrl!)}
+                        style={{ padding: '0.5rem 0.875rem', background: 'rgba(0,0,0,0.55)', border: 'none', borderRadius: '8px', color: 'white', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', backdropFilter: 'blur(8px)' }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                        Download
+                      </button>
+                      <a href="/gallery"
+                        style={{ padding: '0.5rem 0.875rem', background: 'rgba(0,0,0,0.55)', border: 'none', borderRadius: '8px', color: 'white', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', textDecoration: 'none', backdropFilter: 'blur(8px)' }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        My Images
+                      </a>
+                    </>
+                  }
                 />
 
                 {/* 5 Thumbnails */}
@@ -906,7 +929,6 @@ export default function ImageGeneratorDemo() {
                   gridTemplateColumns: 'repeat(5, 1fr)',
                   gap: '0.5rem',
                   marginTop: '0.875rem',
-                  marginBottom: '0.875rem',
                 }}>
                   {[state.imageUrl].map((url, i) => (
                     <button
@@ -926,25 +948,6 @@ export default function ImageGeneratorDemo() {
                         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                     </button>
                   ))}
-                </div>
-
-                {/* Action Buttons */}
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button onClick={() => handleDownload(state.imageUrl!)}
-                    style={{ flex: 1, padding: '0.75rem', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: 'white', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                    Download
-                  </button>
-                  <button onClick={() => setState({ status: 'idle', progress: 0, imageUrl: null, error: null })}
-                    style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    New
-                  </button>
-                  <button onClick={() => navigator.clipboard.writeText(state.imageUrl!)}
-                    style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-                    Share
-                  </button>
                 </div>
               </div>
             )}
