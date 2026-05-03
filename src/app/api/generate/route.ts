@@ -10,7 +10,7 @@ const MODEL_CONFIGS = {
   'gpt-image-2': {
     textToImage: 'gpt-image-2-text-to-image',
     imageToImage: 'gpt-image-2-image-to-image',
-    resolutions: { '1K': 2, '2K': 3, '4K': 5 },
+    resolutions: { '1K': 6, '2K': 10, '4K': 16 },
   },
   'nano-banana-pro': {
     textToImage: 'google/nano-banana-pro',
@@ -92,10 +92,19 @@ async function pollForResult(
       console.log(`Task ${taskId} completed in ${elapsed}s (attempt ${attempt + 1})`);
       try {
         const resultJson = JSON.parse(data.data?.resultJson || '{}');
-        if (resultJson.resultUrls && resultJson.resultUrls.length > 0) {
-          return resultJson.resultUrls[0];
+        console.log(`[Poll] resultJson raw:`, JSON.stringify(resultJson));
+        // Try common image URL patterns
+        const imageUrl = resultJson.resultUrls?.[0]
+          || resultJson.image_url
+          || resultJson.url
+          || resultJson.output?.url
+          || resultJson.outputUrl
+          || resultJson.images?.[0]?.url;
+        if (imageUrl) {
+          return imageUrl;
         }
-      } catch {
+      } catch (e) {
+        console.error(`[Poll] Parse error:`, e);
         throw new Error('Failed to parse result JSON');
       }
       throw new Error('No image URL in result');
@@ -164,27 +173,12 @@ export async function POST(req: NextRequest) {
     // Calculate credit cost based on resolution
     const creditCost = modelConfig.resolutions[resolution as keyof typeof modelConfig.resolutions] || 2;
 
+    // Check credits but DON'T deduct yet — deduct only after successful generation
     if (user.credits < creditCost) {
       return NextResponse.json(
         { error: `Insufficient credits. This model requires ${creditCost} credits.` },
         { status: 402 }
       );
-    }
-
-    // Deduct credits
-    await prisma.user.update({
-      where: { clerkId: userId },
-      data: { credits: { decrement: creditCost } },
-    });
-
-    const apiKey = process.env.KIE_API_KEY;
-    if (!apiKey) {
-      // Refund credits if API key is not configured
-      await prisma.user.update({
-        where: { clerkId: userId },
-        data: { credits: { increment: creditCost } },
-      });
-      return NextResponse.json({ error: 'API not configured' }, { status: 500 });
     }
 
     const isImageToImage = !!inputImageUrl;
@@ -208,6 +202,11 @@ export async function POST(req: NextRequest) {
       input: kieInput,
     };
 
+    const apiKey = process.env.KIE_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: 'API not configured' }, { status: 500 });
+    }
+
     console.log(`[Generate] Creating kie.ai task: ${kieModel}`);
     const createResponse = await fetch('https://api.kie.ai/api/v1/jobs/createTask', {
       method: 'POST',
@@ -221,11 +220,6 @@ export async function POST(req: NextRequest) {
     if (!createResponse.ok) {
       const errorText = await createResponse.text();
       console.error(`[Generate] Task creation failed: ${createResponse.status} - ${errorText}`);
-      // Refund credits
-      await prisma.user.update({
-        where: { clerkId: userId },
-        data: { credits: { increment: creditCost } },
-      });
       return NextResponse.json({ error: 'Failed to create generation task' }, { status: 500 });
     }
 
@@ -233,11 +227,6 @@ export async function POST(req: NextRequest) {
 
     if (createData.code !== 200 || !createData.data?.taskId) {
       console.error(`[Generate] Task creation error: ${createData.code} - ${createData.msg}`);
-      // Refund credits
-      await prisma.user.update({
-        where: { clerkId: userId },
-        data: { credits: { increment: creditCost } },
-      });
       return NextResponse.json(
         { error: createData.msg || 'Failed to create task' },
         { status: 500 }
@@ -252,6 +241,12 @@ export async function POST(req: NextRequest) {
       const imageUrl = await pollForResult(taskId, apiKey);
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
       console.log(`[Generate] Task ${taskId} completed in ${elapsed}s - ${imageUrl}`);
+
+      // Deduct credits AFTER successful generation
+      await prisma.user.update({
+        where: { clerkId: userId },
+        data: { credits: { decrement: creditCost } },
+      });
 
       // Save generation to database
       try {
