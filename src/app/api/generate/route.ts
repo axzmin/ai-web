@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
 
     // Check and deduct credits
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { clerkId: userId },
       select: { credits: true },
     });
 
@@ -176,7 +176,7 @@ export async function POST(req: NextRequest) {
 
     // Deduct credits
     await prisma.user.update({
-      where: { id: userId },
+      where: { clerkId: userId },
       data: { credits: { decrement: creditCost } },
     });
 
@@ -184,7 +184,7 @@ export async function POST(req: NextRequest) {
     if (!apiKey) {
       // Refund credits if API key is not configured
       await prisma.user.update({
-        where: { id: userId },
+        where: { clerkId: userId },
         data: { credits: { increment: creditCost } },
       });
       return NextResponse.json({ error: 'API not configured' }, { status: 500 });
@@ -226,7 +226,7 @@ export async function POST(req: NextRequest) {
       console.error(`[Generate] Task creation failed: ${createResponse.status} - ${errorText}`);
       // Refund credits
       await prisma.user.update({
-        where: { id: userId },
+        where: { clerkId: userId },
         data: { credits: { increment: creditCost } },
       });
       return NextResponse.json({ error: 'Failed to create generation task' }, { status: 500 });
@@ -238,7 +238,7 @@ export async function POST(req: NextRequest) {
       console.error(`[Generate] Task creation error: ${createData.code} - ${createData.msg}`);
       // Refund credits
       await prisma.user.update({
-        where: { id: userId },
+        where: { clerkId: userId },
         data: { credits: { increment: creditCost } },
       });
       return NextResponse.json(
