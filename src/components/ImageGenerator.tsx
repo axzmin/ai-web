@@ -345,40 +345,49 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
   src: string; label?: string; overlay?: React.ReactNode;
   aspectRatio?: string; bgSrc?: string;
 }) {
-  const containerStyle = getContainerStyle(aspectRatio, bgSrc);
+  const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
+  const containerBase: React.CSSProperties = ratio.isPortrait
+    ? { aspectRatio: ratio.css, maxHeight: '500px', width: 'auto', margin: '0 auto' }
+    : { aspectRatio: ratio.css, maxHeight: '500px', width: '100%' };
+
   return (
     <div style={{
       position: 'relative',
-      ...containerStyle,
+      borderRadius: '12px',
+      overflow: 'hidden',
+      flexShrink: 0,
+      backgroundImage: bgSrc ? `url(${bgSrc})` : undefined,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      filter: bgSrc ? 'blur(24px) saturate(160%)' : undefined,
+      transform: bgSrc ? 'scale(1.08)' : undefined,
+      ...containerBase,
     }}>
-      {/* Frosted glass overlay (when bgSrc is set) */}
+      {/* Dark overlay on top of blurred bg */}
       {bgSrc && (
         <div style={{
           position: 'absolute', inset: 0,
-          backgroundColor: 'rgba(26, 22, 20, 0.65)',
-          backdropFilter: 'blur(1px)',
+          backgroundColor: 'rgba(26, 22, 20, 0.62)',
           zIndex: 1,
         }} />
       )}
+      {/* Actual image — always on top */}
       <img
         src={src}
         alt={label || 'Image'}
         draggable={false}
         style={{
-          position: 'absolute',
-          inset: 0,
+          position: 'relative',
           width: '100%',
           height: '100%',
           objectFit: 'contain',
-          background: bgSrc ? 'transparent' : '#1a1614',
           zIndex: 2,
         }}
       />
       {label && (
         <div style={{
           position: 'absolute',
-          bottom: '10px',
-          left: '10px',
+          bottom: '10px', left: '10px',
           padding: '3px 10px',
           background: 'rgba(0,0,0,0.55)',
           borderRadius: '6px',
@@ -388,6 +397,7 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
           pointerEvents: 'none',
+          zIndex: 3,
         }}>
           {label}
         </div>
@@ -395,10 +405,10 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
       {overlay && (
         <div style={{
           position: 'absolute',
-          bottom: '10px',
-          right: '10px',
+          top: '10px', right: '10px',
           display: 'flex',
           gap: '0.5rem',
+          zIndex: 3,
         }}>
           {overlay}
         </div>
