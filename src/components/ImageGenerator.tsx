@@ -341,9 +341,9 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', aft
 
 
 // ─── Simple Image Component — no slider, just a clean image ─────────────────
-function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
+function SimpleImage({ src, label, overlay, aspectRatio = 'auto' }: {
   src: string; label?: string; overlay?: React.ReactNode;
-  aspectRatio?: string; bgSrc?: string;
+  aspectRatio?: string;
 }) {
   const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
   const containerBase: React.CSSProperties = ratio.isPortrait
@@ -357,22 +357,8 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
       overflow: 'hidden',
       flexShrink: 0,
       background: '#1a1614',
-      backgroundImage: bgSrc ? `url(${bgSrc})` : undefined,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      filter: bgSrc ? 'blur(20px) saturate(150%)' : undefined,
-      transform: bgSrc ? 'scale(1.06)' : undefined,
       ...containerBase,
     }}>
-      {/* Dark overlay on top of blurred bg */}
-      {bgSrc && (
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundColor: 'rgba(26, 22, 20, 0.55)',
-          zIndex: 1,
-        }} />
-      )}
-      {/* Actual image — fills container, on top of blurred bg */}
       <img
         src={src}
         alt={label || 'Image'}
@@ -383,7 +369,7 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
           width: '100%',
           height: '100%',
           objectFit: 'contain',
-          zIndex: 2,
+          zIndex: 1,
         }}
       />
       {label && (
@@ -399,7 +385,7 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
           pointerEvents: 'none',
-          zIndex: 3,
+          zIndex: 2,
         }}>
           {label}
         </div>
@@ -410,7 +396,7 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
           top: '10px', right: '10px',
           display: 'flex',
           gap: '0.5rem',
-          zIndex: 3,
+          zIndex: 2,
         }}>
           {overlay}
         </div>
@@ -1335,7 +1321,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     src={DEMO_PAIR.imageUrls[galleryIndex].after}
                     label="Gallery"
                     aspectRatio={aspectRatio}
-                    bgSrc={DEMO_PAIR.imageUrls[galleryIndex].after}
                   />
                 )}
 
@@ -1353,7 +1338,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     src={uploadedImage}
                     label="Your Image"
                     aspectRatio={aspectRatio}
-                    bgSrc={uploadedImage}
                   />
                 )}
 
@@ -1446,7 +1430,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     src={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     label="Generated"
                     aspectRatio={aspectRatio}
-                    bgSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     overlay={
                       <>
                         <button
@@ -1473,7 +1456,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     beforeLabel="Original"
                     afterLabel="Generated"
                     aspectRatio={aspectRatio}
-                    bgSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     overlay={
                       <>
                         <button

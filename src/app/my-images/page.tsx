@@ -392,12 +392,13 @@ export default function MyImagesPage() {
               flexDirection: 'column',
               alignItems: 'center',
               maxWidth: '90vw',
-              maxHeight: '90vh',
+              maxHeight: '95vh',
               width: '100%',
               animation: 'scaleIn 0.3s ease',
+              gap: '1rem',
             }}
           >
-            {/* Full image */}
+            {/* Full image only */}
             <img
               src={selected.imageUrl}
               alt={selected.prompt}
@@ -416,110 +417,40 @@ export default function MyImagesPage() {
               }}
             />
 
-            {/* Info bar */}
+            {/* Action buttons row */}
             <div style={{
-              marginTop: '1.25rem',
-              background: 'var(--bg-card)',
-              borderRadius: '16px',
-              padding: '1.25rem',
-              border: '1px solid var(--border-subtle)',
-              width: '100%',
-              maxWidth: '900px',
-              maxHeight: '30vh',
-              overflowY: 'auto',
               display: 'flex',
-              flexDirection: 'column',
-              gap: '0.875rem',
+              gap: '0.75rem',
+              justifyContent: 'center',
+              flexShrink: 0,
             }}>
-              {/* Prompt */}
-              <div style={{
-                padding: '0.875rem 1rem',
-                background: 'var(--bg-secondary)',
-                borderRadius: '10px',
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '0.75rem',
-                flexShrink: 0,
-              }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" style={{ flexShrink: 0, marginTop: '2px' }}>
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <button
+                onClick={() => { copyToClipboard(selected.prompt); const t = document.getElementById('lc-text'); if (t) { t.textContent = 'Copied!'; setTimeout(() => { if (t) t.textContent = 'Copy Prompt'; }, 2000); } }}
+                style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '10px', color: 'white', fontSize: '0.8125rem', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', backdropFilter: 'blur(8px)' }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect width="14" height="14" x="8" y="8" rx="2"/>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
                 </svg>
-                <p id="prompt-text" style={{
-                  fontWeight: 500,
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  lineHeight: 1.6,
-                  flex: 1,
-                  wordBreak: 'break-word',
-                }}>
-                  {selected.prompt}
-                </p>
-                <button
-                  id="copy-btn"
-                  onClick={() => {
-                    copyToClipboard(selected.prompt);
-                    const btn = document.getElementById('copy-btn');
-                    const text = document.getElementById('copy-text');
-                    if (btn) { btn.style.background = 'var(--accent-primary)'; btn.style.color = 'white'; btn.style.borderColor = 'var(--accent-primary)'; }
-                    if (text) text.textContent = 'Copied!';
-                    setTimeout(() => {
-                      if (btn) { btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; }
-                      if (text) text.textContent = 'Copy';
-                    }, 2000);
-                  }}
-                  title="Copy prompt"
-                  style={{
-                    flexShrink: 0,
-                    padding: '0.3rem 0.625rem',
-                    background: 'var(--bg-primary)',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: '8px',
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.75rem',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.3rem',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  <svg id="copy-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect width="14" height="14" x="8" y="8" rx="2"/>
-                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                  </svg>
-                  <span id="copy-text">Copy</span>
-                </button>
-              </div>
-
-              {/* Meta + actions */}
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-                <span style={{ padding: '0.25rem 0.625rem', background: 'var(--bg-secondary)', borderRadius: '9999px', fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{MODEL_LABELS[selected.model] || selected.model}</span>
-                <span style={{ padding: '0.25rem 0.625rem', background: 'var(--bg-secondary)', borderRadius: '9999px', fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{selected.aspectRatio}</span>
-                <span style={{ padding: '0.25rem 0.625rem', background: 'var(--bg-secondary)', borderRadius: '9999px', fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{QUALITY_LABELS[selected.quality] || selected.quality}</span>
-                <span style={{ padding: '0.25rem 0.625rem', background: 'rgba(255,140,66,0.1)', borderRadius: '9999px', fontSize: '0.75rem', color: '#FF8C42', fontWeight: 600 }}>-{selected.creditsCost} credits</span>
-                <span style={{ padding: '0.25rem 0.625rem', background: 'var(--bg-secondary)', borderRadius: '9999px', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>{formatDate(selected.createdAt)}</span>
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-                <button
-                  onClick={() => downloadImage(selected.imageUrl, `ai-image-${selected.id}.png`)}
-                  style={{ padding: '0.625rem 1.25rem', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: 'white', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', boxShadow: 'var(--shadow-glow-orange)' }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" x2="12" y1="15" y2="3"/>
-                  </svg>
-                  Download
-                </button>
-                <button
-                  onClick={() => setSelected(null)}
-                  style={{ padding: '0.625rem 1.25rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-default)', borderRadius: '10px', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500 }}
-                >
-                  Close
-                </button>
-              </div>
+                <span id="lc-text">Copy Prompt</span>
+              </button>
+              <button
+                onClick={() => downloadImage(selected.imageUrl, `ai-image-${selected.id}.png`)}
+                style={{ padding: '0.5rem 1rem', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: 'white', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', boxShadow: 'var(--shadow-glow-orange)' }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
+                Download
+              </button>
+              <button
+                onClick={() => setSelected(null)}
+                style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '10px', color: 'white', fontSize: '0.8125rem', fontWeight: 500, cursor: 'pointer', backdropFilter: 'blur(8px)' }}
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
