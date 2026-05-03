@@ -79,35 +79,60 @@ const RATIO_MAP: Record<string, { css: string; isPortrait: boolean }> = {
   '16:9': { css: '16/9', isPortrait: false },
 };
 
-function getContainerStyle(aspectRatio: string) {
+// Preview container — taller to show images fully; bgSrc enables frosted-glass backdrop
+function getContainerStyle(aspectRatio: string, bgSrc?: string) {
   const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
+  const base: React.CSSProperties = {
+    borderRadius: '12px',
+    overflow: 'hidden',
+    flexShrink: 0,
+  };
+  if (bgSrc) {
+    // Frosted glass: blurred image as background + dark overlay
+    return {
+      ...base,
+      position: 'relative' as const,
+      backgroundImage: `url(${bgSrc})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      filter: 'blur(24px) saturate(160%)',
+      transform: 'scale(1.05)', // slight scale to hide blurred edges
+    };
+  }
   if (ratio.isPortrait) {
     return {
+      ...base,
       aspectRatio: ratio.css,
-      maxHeight: '420px',
+      maxHeight: '500px',
       width: 'auto',
       margin: '0 auto',
     };
   }
   return {
+    ...base,
     aspectRatio: ratio.css,
-    maxWidth: '100%',
+    maxHeight: '500px',
     width: '100%',
   };
 }
 
-// ─── Simple Image Component ──────────────────────────────────────────────────
-function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overlay, aspectRatio = 'auto' }: { beforeSrc: string; afterSrc: string; beforeLabel?: string; afterLabel?: string; overlay?: React.ReactNode; aspectRatio?: string }) {
+// ─── Comparison Slider — drag to reveal before/after ──────────────────────────
+function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overlay, aspectRatio = 'auto', bgSrc }: {
+  beforeSrc: string; afterSrc: string; beforeLabel?: string; afterLabel?: string;
+  overlay?: React.ReactNode; aspectRatio?: string; bgSrc?: string;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [sliderX, setSliderX] = useState(50); // percentage 0–100
-  const containerStyle = getContainerStyle(aspectRatio);
+  const [sliderX, setSliderX] = useState(50);
+  const containerStyle = getContainerStyle(aspectRatio, bgSrc);
+
+  useEffect(() => { setSliderX(50); }, [beforeSrc, afterSrc]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
-    const move = (e: MouseEvent) => {
+    const move = (ev: MouseEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const x = Math.min(Math.max(((e.clientX - rect.left) / rect.width) * 100, 0), 100);
+      const x = Math.min(Math.max(((ev.clientX - rect.left) / rect.width) * 100, 0), 100);
       setSliderX(x);
     };
     const up = () => {
@@ -128,146 +153,93 @@ function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overla
   return (
     <div
       ref={containerRef}
+      onMouseDown={handleMouseDown}
       onTouchMove={handleTouchMove}
       style={{
         position: 'relative',
-        borderRadius: '12px',
-        overflow: 'hidden',
         cursor: 'col-resize',
         userSelect: 'none',
-        background: '#1a1614',
         flexShrink: 0,
         ...containerStyle,
       }}
     >
-      {/* Before image (full width, underneath) */}
-      <img
-        src={beforeSrc}
-        alt="Before"
-        draggable={false}
+      {bgSrc && (
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${bgSrc})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(24px) saturate(160%)',
+          transform: 'scale(1.05)',
+          zIndex: 0,
+        }} />
+      )}
+      {bgSrc && (
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundColor: 'rgba(26, 22, 20, 0.65)',
+          zIndex: 1,
+        }} />
+      )}
+      <img src={beforeSrc} alt="Before" draggable={false}
         style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
+          position: 'absolute', inset: 0,
+          width: '100%', height: '100%',
           objectFit: 'contain',
-          background: '#1a1614',
+          background: bgSrc ? 'transparent' : '#1a1614',
+          zIndex: 2,
         }}
       />
-
-      {/* After image (clipped by slider position, on top) */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: `${sliderX}%`,
-          height: '100%',
-          overflow: 'hidden',
-        }}
-      >
-        <img
-          src={afterSrc}
-          alt="After"
-          draggable={false}
+      <div style={{
+        position: 'absolute', inset: 0,
+        width: `${sliderX}%`, height: '100%',
+        overflow: 'hidden',
+      }}>
+        <img src={afterSrc} alt="After" draggable={false}
           style={{
-            position: 'absolute',
-            inset: 0,
-            width: `${100 / (sliderX / 100)}%`,
-            height: '100%',
+            position: 'absolute', inset: 0,
+            width: `${100 / (sliderX / 100)}%`, height: '100%',
             objectFit: 'contain',
-            background: '#1a1614',
+            background: bgSrc ? 'transparent' : '#1a1614',
           }}
         />
       </div>
-
-      {/* Vertical divider line */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: `${sliderX}%`,
-          width: '2px',
-          background: 'white',
-          transform: 'translateX(-50%)',
-          boxShadow: '0 0 8px rgba(0,0,0,0.4)',
-          pointerEvents: 'none',
-        }}
-      />
-
-      {/* Circle handle */}
-      <div
-        onMouseDown={handleMouseDown}
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: `${sliderX}%`,
-          transform: 'translate(-50%, -50%)',
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          background: 'white',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'col-resize',
-          zIndex: 2,
-        }}
-      >
-        {/* Left arrow */}
+      <div style={{
+        position: 'absolute', top: 0, bottom: 0, left: `${sliderX}%`, width: '2px',
+        background: 'white', transform: 'translateX(-50%)',
+        boxShadow: '0 0 8px rgba(0,0,0,0.4)', pointerEvents: 'none', zIndex: 3,
+      }} />
+      <div style={{
+        position: 'absolute', top: '50%', left: `${sliderX}%`,
+        transform: 'translate(-50%, -50%)',
+        width: '40px', height: '40px', borderRadius: '50%',
+        background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'col-resize', zIndex: 4,
+      }}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2.5" style={{ marginRight: '2px' }}>
           <polyline points="15 18 9 12 15 6"/>
         </svg>
-        {/* Right arrow */}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2.5" style={{ marginLeft: '2px' }}>
           <polyline points="9 18 15 12 9 6"/>
         </svg>
       </div>
-
-      {/* Labels */}
       <div style={{
-        position: 'absolute',
-        bottom: '10px',
-        left: '10px',
-        padding: '3px 10px',
-        background: 'rgba(0,0,0,0.55)',
-        borderRadius: '6px',
-        color: 'white',
-        fontSize: '0.6875rem',
-        fontWeight: 600,
-        letterSpacing: '0.04em',
-        textTransform: 'uppercase',
-        pointerEvents: 'none',
-      }}>
-        {beforeLabel || 'Original'}
-      </div>
+        position: 'absolute', bottom: '10px', left: '10px',
+        padding: '3px 10px', background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
+        color: 'white', fontSize: '0.6875rem', fontWeight: 600,
+        letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none', zIndex: 3,
+      }}>{beforeLabel || 'Original'}</div>
       <div style={{
-        position: 'absolute',
-        bottom: '10px',
-        right: '10px',
-        padding: '3px 10px',
-        background: 'rgba(0,0,0,0.55)',
-        borderRadius: '6px',
-        color: 'white',
-        fontSize: '0.6875rem',
-        fontWeight: 600,
-        letterSpacing: '0.04em',
-        textTransform: 'uppercase',
-        pointerEvents: 'none',
-      }}>
-        {afterLabel || 'Enhanced'}
-      </div>
-
-      {/* Overlay buttons */}
+        position: 'absolute', bottom: '10px', right: '10px',
+        padding: '3px 10px', background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
+        color: 'white', fontSize: '0.6875rem', fontWeight: 600,
+        letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none', zIndex: 3,
+      }}>{afterLabel || 'Generated'}</div>
       {overlay && (
         <div style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          display: 'flex',
-          gap: '0.5rem',
-          zIndex: 3,
+          position: 'absolute', top: '10px', right: '10px',
+          display: 'flex', gap: '0.5rem', zIndex: 5,
         }}>
           {overlay}
         </div>
@@ -276,13 +248,13 @@ function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overla
   );
 }
 
-
-// ─── Comparison Slider Demo — resets to 50% when switching thumbnails ────────
-function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc: string }) {
+// ─── Comparison Slider Demo — resets to 50% when switching thumbnails ────────────
+function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', afterLabel = 'After' }: {
+  beforeSrc: string; afterSrc: string; beforeLabel?: string; afterLabel?: string;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sliderX, setSliderX] = useState(50);
 
-  // Reset slider to middle when switching thumbnails
   useEffect(() => { setSliderX(50); }, [beforeSrc, afterSrc]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -301,9 +273,18 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afte
     document.addEventListener('mouseup', up);
   };
 
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.min(Math.max(((e.touches[0].clientX - rect.left) / rect.width) * 100, 0), 100);
+    setSliderX(x);
+  };
+
   return (
     <div
       ref={containerRef}
+      onMouseDown={handleMouseDown}
+      onTouchMove={handleTouchMove}
       style={{
         position: 'relative',
         width: '100%',
@@ -312,7 +293,7 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afte
         overflow: 'hidden',
         cursor: 'col-resize',
         userSelect: 'none',
-        background: 'var(--bg-secondary)',
+        background: '#1a1614',
         flexShrink: 0,
       }}
     >
@@ -327,16 +308,14 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afte
         background: 'white', transform: 'translateX(-50%)',
         boxShadow: '0 0 8px rgba(0,0,0,0.4)', pointerEvents: 'none',
       }} />
-      <div onMouseDown={handleMouseDown}
-        style={{
-          position: 'absolute', top: '75%', left: `${sliderX}%`,
-          transform: 'translate(-50%, -50%)',
-          width: '40px', height: '40px', borderRadius: '50%',
-          background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'col-resize', zIndex: 2,
-        }}
-      >
+      <div style={{
+        position: 'absolute', top: '50%', left: `${sliderX}%`,
+        transform: 'translate(-50%, -50%)',
+        width: '40px', height: '40px', borderRadius: '50%',
+        background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'col-resize', zIndex: 2,
+      }}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2.5" style={{ marginRight: '2px' }}>
           <polyline points="15 18 9 12 15 6"/>
         </svg>
@@ -349,30 +328,38 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afte
         padding: '3px 10px', background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
         color: 'white', fontSize: '0.6875rem', fontWeight: 600,
         letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none',
-      }}>Before</div>
+      }}>{beforeLabel}</div>
       <div style={{
         position: 'absolute', bottom: '10px', right: '10px',
         padding: '3px 10px', background: 'rgba(0,0,0,0.55)', borderRadius: '6px',
         color: 'white', fontSize: '0.6875rem', fontWeight: 600,
         letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none',
-      }}>After</div>
+      }}>{afterLabel}</div>
     </div>
   );
 }
 
 
 // ─── Simple Image Component — no slider, just a clean image ─────────────────
-function SimpleImage({ src, label, overlay, aspectRatio = 'auto' }: { src: string; label?: string; overlay?: React.ReactNode; aspectRatio?: string }) {
-  const containerStyle = getContainerStyle(aspectRatio);
+function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
+  src: string; label?: string; overlay?: React.ReactNode;
+  aspectRatio?: string; bgSrc?: string;
+}) {
+  const containerStyle = getContainerStyle(aspectRatio, bgSrc);
   return (
     <div style={{
       position: 'relative',
-      borderRadius: '12px',
-      overflow: 'hidden',
-      background: 'var(--bg-secondary)',
-      flexShrink: 0,
       ...containerStyle,
     }}>
+      {/* Frosted glass overlay (when bgSrc is set) */}
+      {bgSrc && (
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundColor: 'rgba(26, 22, 20, 0.65)',
+          backdropFilter: 'blur(1px)',
+          zIndex: 1,
+        }} />
+      )}
       <img
         src={src}
         alt={label || 'Image'}
@@ -383,7 +370,8 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto' }: { src: strin
           width: '100%',
           height: '100%',
           objectFit: 'contain',
-          background: '#1a1614',
+          background: bgSrc ? 'transparent' : '#1a1614',
+          zIndex: 2,
         }}
       />
       {label && (
@@ -1335,6 +1323,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     src={DEMO_PAIR.imageUrls[galleryIndex].after}
                     label="Gallery"
                     aspectRatio={aspectRatio}
+                    bgSrc={DEMO_PAIR.imageUrls[galleryIndex].after}
                   />
                 )}
 
@@ -1348,7 +1337,12 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
 
                 {/* I2I idle + uploaded (no generation yet): single uploaded image */}
                 {activeTab === 'image-to-image' && previewMode === 'single' && uploadedImage && (
-                  <SimpleImage src={uploadedImage} label="Your Image" aspectRatio={aspectRatio} />
+                  <SimpleImage
+                    src={uploadedImage}
+                    label="Your Image"
+                    aspectRatio={aspectRatio}
+                    bgSrc={uploadedImage}
+                  />
                 )}
 
                 {/* Fixed Demo Thumbnails — always shown in idle */}
@@ -1440,6 +1434,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     src={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     label="Generated"
                     aspectRatio={aspectRatio}
+                    bgSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     overlay={
                       <>
                         <button
@@ -1466,6 +1461,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     beforeLabel="Original"
                     afterLabel="Generated"
                     aspectRatio={aspectRatio}
+                    bgSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     overlay={
                       <>
                         <button

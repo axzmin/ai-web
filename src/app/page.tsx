@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <div id="ai-generator">
+      <div id="ai-generator" style={{ marginTop: '-2.5rem', position: 'relative', zIndex: 2 }}>
         <ImageGenerator isDemo />
       </div>
       <Features />
