@@ -914,7 +914,7 @@ export default function ImageGeneratorDemo() {
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                         Download
                       </button>
-                      <a href="/gallery"
+                      <a href="/my-images"
                         style={{ padding: '0.5rem 0.875rem', background: 'rgba(0,0,0,0.55)', border: 'none', borderRadius: '8px', color: 'white', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', textDecoration: 'none', backdropFilter: 'blur(8px)' }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                         My Images

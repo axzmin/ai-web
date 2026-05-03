@@ -30,6 +30,8 @@ export async function GET(req: NextRequest) {
             imageUrl: true,
             model: true,
             aspectRatio: true,
+            quality: true,
+            creditsCost: true,
             createdAt: true,
             isPublic: true,
           }
@@ -51,7 +53,7 @@ export async function GET(req: NextRequest) {
         include: {
           _count: { select: { generations: true } },
           generations: { take: 10, orderBy: { createdAt: 'desc' }, select: {
-            id: true, prompt: true, imageUrl: true, model: true, aspectRatio: true, createdAt: true, isPublic: true,
+            id: true, prompt: true, imageUrl: true, model: true, aspectRatio: true, quality: true, creditsCost: true, createdAt: true, isPublic: true,
           }}
         }
       });
