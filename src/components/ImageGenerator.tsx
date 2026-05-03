@@ -1650,13 +1650,15 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                 )}
 
                 {/* Fixed Demo Thumbnails — always shown in idle */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(5, 1fr)',
-                  gap: '0.5rem',
-                  marginTop: '0.875rem',
-                  marginBottom: '0.875rem',
-                }}>
+                <div
+                  className="demo-thumb-container"
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(5, 1fr)',
+                    gap: '0.5rem',
+                    marginTop: '0.875rem',
+                    marginBottom: '0.875rem',
+                  }}>
                   {DEMO_PAIR.imageUrls.map((pair, i) => (
                     <div
                       key={i}
