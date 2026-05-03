@@ -22,9 +22,24 @@ const QUALITY_OPTIONS = [
 ];
 
 const MODEL_OPTIONS = [
-  { label: 'GPT Image 2', value: 'gpt-image-2', description: 'OpenAI GPT Image 2 - Best quality', cost: 6 },
-  { label: 'Nano Banana Pro', value: 'nano-banana-pro', description: 'Gemini 3 Pro - High quality', cost: 8 },
-  { label: 'Nano Banana', value: 'nano-banana', description: 'Gemini 2.5 Flash - Fast & efficient', cost: 4 },
+  {
+    label: 'GPT Image 2',
+    value: 'gpt-image-2',
+    description: 'OpenAI GPT Image 2 - Best quality',
+    costByResolution: { '1K': 2, '2K': 3, '4K': 5 },
+  },
+  {
+    label: 'Nano Banana Pro',
+    value: 'nano-banana-pro',
+    description: 'Gemini 3 Pro - High quality',
+    costByResolution: { '1K': 1, '2K': 2, '4K': 3 },
+  },
+  {
+    label: 'Nano Banana',
+    value: 'nano-banana',
+    description: 'Gemini 2.5 Flash - Fast & efficient',
+    costByResolution: { '1K': 1, '2K': 1, '4K': 2 },
+  },
 ];
 
 // ─── Demo Data: 5 real before/after image pairs ─────────────────────────────────
@@ -425,8 +440,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
           setImageUrl(data.imageUrl);
         }
         const selectedModel = MODEL_OPTIONS.find(m => m.value === model);
-        const costMultiplier = quality === 'ultra' ? 2.5 : (quality === 'hd' ? 1.5 : 1);
-        const cost = selectedModel?.cost ? Math.round(selectedModel.cost * costMultiplier) : 10;
+        const cost = selectedModel?.costByResolution[quality as keyof typeof selectedModel.costByResolution] || 1;
         if (credits !== null) {
           setCredits(prev => prev !== null ? prev - cost : null);
         }
@@ -1047,7 +1061,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
                       <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
                     </svg>
-                    {MODEL_OPTIONS.find(m => m.value === model)?.cost || 1} Credits
+                    {MODEL_OPTIONS.find(m => m.value === model)?.costByResolution[quality as keyof typeof MODEL_OPTIONS[0]['costByResolution']] || 1} Credits
                   </>
                 )}
               </button>

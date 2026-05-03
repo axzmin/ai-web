@@ -10,20 +10,17 @@ const MODEL_CONFIGS = {
   'gpt-image-2': {
     textToImage: 'gpt-image-2-text-to-image',
     imageToImage: 'gpt-image-2-image-to-image',
-    credits: 6, // 1K resolution
-    resolutions: { '1K': 6, '2K': 10, '4K': 16 },
+    resolutions: { '1K': 2, '2K': 3, '4K': 5 },
   },
   'nano-banana-pro': {
     textToImage: 'google/nano-banana-pro',
     imageToImage: 'google/nano-banana-edit',
-    credits: 8, // base cost
-    resolutions: { '1K': 8, '2K': 12, '4K': 16 },
+    resolutions: { '1K': 1, '2K': 2, '4K': 3 },
   },
   'nano-banana': {
     textToImage: 'google/nano-banana',
     imageToImage: 'google/nano-banana-edit',
-    credits: 4,
-    resolutions: { '1K': 4, '2K': 8, '4K': 12 },
+    resolutions: { '1K': 1, '2K': 1, '4K': 2 },
   },
 };
 
@@ -165,7 +162,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Calculate credit cost based on resolution
-    const creditCost = modelConfig.resolutions[resolution as keyof typeof modelConfig.resolutions] || modelConfig.credits;
+    const creditCost = modelConfig.resolutions[resolution as keyof typeof modelConfig.resolutions] || 2;
 
     if (user.credits < creditCost) {
       return NextResponse.json(
