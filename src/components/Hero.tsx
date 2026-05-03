@@ -45,7 +45,7 @@ const Icons = {
 
 export default function Hero() {
   return (
-    <section className="section-padded" style={{
+    <section style={{
       position: 'relative',
       minHeight: '100vh',
       display: 'flex',
@@ -54,6 +54,7 @@ export default function Hero() {
       justifyContent: 'center',
       background: 'var(--bg-primary)',
       overflow: 'hidden',
+      paddingTop: '4rem',
       paddingBottom: '0.5rem'
     }}>
       {/* Geometric Gradient Shapes - Orange Accent */}
