@@ -133,6 +133,14 @@ function getContainerStyle(aspectRatio: string, bgSrc?: string) {
   };
 }
 
+// ─── Shared: base container style used by both SimpleImage and ComparisonSlider ─
+function getBaseContainerStyle(aspectRatio: string): React.CSSProperties {
+  const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
+  return ratio.isPortrait
+    ? { aspectRatio: ratio.css, maxHeight: '680px', width: '100%', margin: '0 auto' }
+    : { aspectRatio: ratio.css, maxHeight: '680px', width: '100%' };
+}
+
 // ─── Comparison Slider — drag to reveal before/after ──────────────────────────
 function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overlay, aspectRatio = 'auto', bgSrc }: {
   beforeSrc: string; afterSrc: string; beforeLabel?: string; afterLabel?: string;
@@ -140,9 +148,8 @@ function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overla
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sliderX, setSliderX] = useState(50);
-  const containerStyle = getContainerStyle(aspectRatio, bgSrc);
 
-  useEffect(() => { setSliderX(50); }, [beforeSrc, afterSrc]);
+  useEffect(() => { setSliderX(50); }, [beforeSrc, afterSrc, aspectRatio]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -177,7 +184,12 @@ function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overla
         cursor: 'col-resize',
         userSelect: 'none',
         flexShrink: 0,
-        ...containerStyle,
+        width: '100%',
+        height: '100%',
+        minHeight: '320px',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        background: '#1a1614',
       }}
     >
       {bgSrc && (
@@ -202,7 +214,7 @@ function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overla
         style={{
           position: 'absolute', inset: 0,
           width: '100%', height: '100%',
-          objectFit: 'contain',
+          objectFit: 'cover',
           background: bgSrc ? 'transparent' : '#1a1614',
           zIndex: 2,
         }}
@@ -216,7 +228,7 @@ function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel, overla
           style={{
             position: 'absolute', inset: 0,
             width: `${100 / (sliderX / 100)}%`, height: '100%',
-            objectFit: 'contain',
+            objectFit: 'cover',
             background: bgSrc ? 'transparent' : '#1a1614',
           }}
         />
@@ -360,15 +372,144 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc, beforeLabel = 'Before', aft
   );
 }
 
+// ─── Shared Thumbnail Grid Component ──────────────────────────────────────────
+function ThumbnailGrid({
+  selectedIndex,
+  onSelect,
+  previewMode = 'gallery',
+}: {
+  selectedIndex: number;
+  onSelect: (index: number) => void;
+  previewMode?: 'gallery' | 'comparison';
+}) {
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(5, 1fr)',
+      gap: '0.5rem',
+    }}>
+      {DEMO_PAIR.imageUrls.map((pair, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'relative',
+            borderRadius: '8px',
+            overflow: 'visible',
+            border: selectedIndex === i
+              ? '2px solid var(--accent-primary)'
+              : '2px solid transparent',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          {/* Thumbnail image */}
+          <button
+            onClick={() => onSelect(i)}
+            style={{
+              display: 'block',
+              width: '100%',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              padding: 0,
+              background: 'var(--bg-secondary)',
+              aspectRatio: '1/1',
+              transition: 'all 0.2s ease',
+              position: 'relative',
+            }}
+          >
+            <img
+              src={pair.after}
+              alt={`Demo ${i + 1}`}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </button>
+
+          {/* Action buttons overlay — shown on hover */}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)',
+            padding: '1.5rem 0.25rem 0.25rem',
+            display: 'flex',
+            gap: '0.25rem',
+            opacity: 0,
+            transition: 'opacity 0.2s ease',
+            pointerEvents: 'none',
+            zIndex: 5,
+          }}
+            className="thumbnail-actions"
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); copyToClipboard(pair.prompt); }}
+              title="Copy prompt"
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.2rem',
+                padding: '0.3rem 0',
+                background: 'rgba(255,255,255,0.15)',
+                border: '1px solid rgba(255,255,255,0.25)',
+                borderRadius: '6px',
+                color: 'white',
+                fontSize: '0.625rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                backdropFilter: 'blur(8px)',
+                transition: 'background 0.2s ease',
+              }}
+            >
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <rect width="14" height="14" x="8" y="8" rx="2"/>
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+              </svg>
+              Copy
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                copyToClipboard(pair.prompt); // sets prompt in parent via onSelect logic
+              }}
+              title="Try this prompt"
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.2rem',
+                padding: '0.3rem 0',
+                background: 'var(--gradient-primary)',
+                border: 'none',
+                borderRadius: '6px',
+                color: 'white',
+                fontSize: '0.625rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
+                transition: 'background 0.2s ease',
+              }}
+            >
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Try It
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─── Simple Image Component — no slider, just a clean image ─────────────────
 function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
   src: string; label?: string; overlay?: React.ReactNode;
   aspectRatio?: string; bgSrc?: string;
 }) {
-  const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
-  const containerBase: React.CSSProperties = ratio.isPortrait
-    ? { aspectRatio: ratio.css, maxHeight: '680px', width: '100%', margin: '0 auto' }
-    : { aspectRatio: ratio.css, maxHeight: '680px', width: '100%' };
+  const containerBase = getBaseContainerStyle(aspectRatio);
 
   return (
     <div style={{
@@ -873,17 +1014,19 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                 }}>
                   {uploadedImages.length > 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem' }}>
+                      {/* Image cards grid + Add More card */}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
                         {uploadedImages.map((img, idx) => (
-                          <div key={idx} style={{ position: 'relative', aspectRatio: '1/1' }}>
+                          <div key={idx} style={{ position: 'relative', width: '72px', height: '72px' }}>
                             <img
                               src={img}
                               alt={`Uploaded ${idx + 1}`}
                               style={{
-                                width: '100%',
-                                height: '100%',
-                                borderRadius: '6px',
+                                width: '72px',
+                                height: '72px',
+                                borderRadius: '12px',
                                 objectFit: 'cover',
+                                border: '2px solid var(--border-subtle)',
                               }}
                             />
                             <button
@@ -893,70 +1036,72 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                               }}
                               style={{
                                 position: 'absolute',
-                                top: '-6px',
-                                right: '-6px',
-                                width: '18px',
-                                height: '18px',
+                                top: '-7px',
+                                right: '-7px',
+                                width: '20px',
+                                height: '20px',
                                 borderRadius: '50%',
                                 background: '#EF4444',
-                                border: '1px solid white',
+                                border: '2px solid var(--bg-primary)',
                                 color: 'white',
-                                fontSize: '10px',
-                                lineHeight: '18px',
+                                fontSize: '11px',
                                 cursor: 'pointer',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                padding: 0,
+                                boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
                               }}
-                            >
-                              ×
-                            </button>
+                            >×</button>
                           </div>
                         ))}
+                        {uploadedImages.length < 5 && (
+                          <label
+                            htmlFor="image-upload"
+                            style={{
+                              width: '72px',
+                              height: '72px',
+                              borderRadius: '12px',
+                              border: '2px dashed var(--border-default)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              color: 'var(--text-muted)',
+                              fontSize: '1.5rem',
+                              background: 'var(--bg-secondary)',
+                              transition: 'all 0.2s',
+                              fontWeight: 300,
+                            }}
+                          >
+                            +
+                          </label>
+                        )}
                       </div>
-                      {uploadedImages.length < 5 && (
-                        <label
-                          htmlFor="image-upload"
+                      {uploadedImages.length > 0 && (
+                        <button
+                          onClick={() => setUploadedImages([])}
                           style={{
-                            display: 'inline-block',
-                            padding: '0.4rem 0.875rem',
-                            background: 'var(--bg-card)',
-                            border: '1px solid var(--border-default)',
+                            alignSelf: 'flex-start',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.3rem',
+                            padding: '0.3rem 0.75rem',
                             borderRadius: '8px',
-                            color: 'var(--text-primary)',
+                            background: 'rgba(239,68,68,0.15)',
+                            border: '1px solid rgba(239,68,68,0.3)',
+                            color: '#EF4444',
                             fontSize: '0.75rem',
+                            fontWeight: 600,
                             cursor: 'pointer',
                           }}
                         >
-                          + Add More
-                        </label>
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                          </svg>
+                          Remove All
+                        </button>
                       )}
-                      <button
-                        onClick={() => {
-                          setUploadedImages([]);
-                        }}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.3rem',
-                          padding: '0.3rem 0.75rem',
-                          borderRadius: '8px',
-                          background: 'rgba(239,68,68,0.15)',
-                          border: '1px solid rgba(239,68,68,0.3)',
-                          color: '#EF4444',
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                        }}
-                      >
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <polyline points="3 6 5 6 21 6"/>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                        </svg>
-                        Remove All
-                      </button>
                     </div>
                   ) : (
                     <>
@@ -1438,39 +1583,157 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   />
                 )}
 
-                {/* I2I idle + uploaded (no generation yet): grid of uploaded images — no aspect-ratio forcing, object-fit cover */}
+                {/* I2I idle + uploaded (no generation yet): grid of uploaded images with hover actions */}
                 {activeTab === 'image-to-image' && previewMode === 'single' && uploadedImages.length > 0 && (
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
                     gap: '0.5rem',
                     width: '100%',
                   }}>
                     {uploadedImages.map((img, idx) => (
-                      <div key={idx} style={{
-                        position: 'relative',
-                        borderRadius: '10px',
-                        overflow: 'hidden',
-                        background: '#1a1614',
-                        aspectRatio: '1/1',
-                      }}>
-                        <img
-                          src={img}
-                          alt={`Your Image ${idx + 1}`}
-                          draggable={false}
+                      <div
+                        key={idx}
+                        className="i2i-thumb"
+                        onMouseOver={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.transform = 'translateY(-4px)';
+                          el.style.boxShadow = '0 12px 32px rgba(0,0,0,0.35)';
+                          const actions = el.querySelector('.i2i-actions') as HTMLElement | null;
+                          if (actions) actions.style.opacity = '1';
+                        }}
+                        onMouseOut={(e) => {
+                          const el = e.currentTarget as HTMLElement;
+                          el.style.transform = 'translateY(0)';
+                          el.style.boxShadow = 'none';
+                          const actions = el.querySelector('.i2i-actions') as HTMLElement | null;
+                          if (actions) actions.style.opacity = '0';
+                        }}
+                        style={{
+                          position: 'relative',
+                          borderRadius: '16px',
+                          overflow: 'visible',
+                          border: '2px solid var(--border-subtle)',
+                          transition: 'all 0.3s ease',
+                          cursor: 'pointer',
+                          background: 'var(--bg-card)',
+                          padding: 0,
+                        }}
+                      >
+                        <button
                           style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
                             display: 'block',
+                            width: '100%',
+                            borderRadius: '14px',
+                            overflow: 'hidden',
+                            cursor: 'pointer',
+                            padding: 0,
+                            background: 'var(--bg-secondary)',
+                            aspectRatio: '1/1',
+                            border: 'none',
                           }}
-                        />
-                        <div style={{
-                          position: 'absolute', bottom: '6px', left: '6px',
-                          padding: '2px 8px', background: 'rgba(0,0,0,0.55)', borderRadius: '4px',
-                          color: 'white', fontSize: '0.625rem', fontWeight: 600,
-                          letterSpacing: '0.04em', textTransform: 'uppercase', pointerEvents: 'none',
-                        }}>Image {idx + 1}</div>
+                        >
+                          <img
+                            src={img}
+                            alt={`Your Image ${idx + 1}`}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                          />
+                        </button>
+
+                        {/* Action buttons */}
+                        <div
+                          className="i2i-actions"
+                          style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
+                            padding: '2rem 0.25rem 0.375rem',
+                            display: 'flex',
+                            gap: '0.25rem',
+                            opacity: 0,
+                            transition: 'opacity 0.2s ease',
+                            pointerEvents: 'none',
+                            zIndex: 5,
+                          }}
+                        >
+                          <button
+                            onClick={(e) => { e.stopPropagation(); copyToClipboard(img); }}
+                            style={{
+                              flex: 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '0.2rem',
+                              padding: '0.3rem 0',
+                              background: 'rgba(255,255,255,0.15)',
+                              border: '1px solid rgba(255,255,255,0.25)',
+                              borderRadius: '6px',
+                              color: 'white',
+                              fontSize: '0.625rem',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              backdropFilter: 'blur(8px)',
+                            }}
+                          >
+                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <rect width="14" height="14" x="8" y="8" rx="2"/>
+                              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                            </svg>
+                            Copy
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setPrompt(''); }}
+                            style={{
+                              flex: 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '0.2rem',
+                              padding: '0.3rem 0',
+                              background: 'var(--gradient-primary)',
+                              border: 'none',
+                              borderRadius: '6px',
+                              color: 'white',
+                              fontSize: '0.625rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
+                            }}
+                          >
+                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                              <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            Try It
+                          </button>
+                        </div>
+
+                        {/* Remove button (top-right corner) */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setUploadedImages(prev => prev.filter((_, ni) => ni !== idx));
+                          }}
+                          style={{
+                            position: 'absolute',
+                            top: '-8px',
+                            right: '-8px',
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            background: '#EF4444',
+                            color: 'white',
+                            border: '2px solid var(--bg-primary)',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 10,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                          }}
+                        >×</button>
                       </div>
                     ))}
                   </div>
@@ -1487,14 +1750,32 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   {DEMO_PAIR.imageUrls.map((pair, i) => (
                     <div
                       key={i}
+                      className="t2i-thumb"
+                      onMouseOver={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transform = 'translateY(-4px)';
+                        el.style.boxShadow = '0 12px 32px rgba(0,0,0,0.35)';
+                        const actions = el.querySelector('.t2i-actions') as HTMLElement | null;
+                        if (actions) actions.style.opacity = '1';
+                      }}
+                      onMouseOut={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transform = 'translateY(0)';
+                        el.style.boxShadow = 'none';
+                        const actions = el.querySelector('.t2i-actions') as HTMLElement | null;
+                        if (actions) actions.style.opacity = '0';
+                      }}
                       style={{
                         position: 'relative',
-                        borderRadius: '8px',
+                        borderRadius: '16px',
                         overflow: 'visible',
                         border: (previewMode === 'gallery' ? galleryIndex === i : selectedIndex === i)
                           ? '2px solid var(--accent-primary)'
-                          : '2px solid transparent',
-                        transition: 'all 0.2s ease',
+                          : '2px solid var(--border-subtle)',
+                        transition: 'all 0.3s ease',
+                        cursor: 'pointer',
+                        background: 'var(--bg-card)',
+                        padding: 0,
                       }}
                     >
                       {/* Thumbnail image */}
@@ -1503,7 +1784,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           setSelectedIndex(i);
                           if (activeTab === 'text-to-image') {
                             setGalleryIndex(i);
-                            // Stay in gallery mode — don't force comparison
                           } else {
                             setPreviewMode('comparison');
                           }
@@ -1511,14 +1791,14 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                         style={{
                           display: 'block',
                           width: '100%',
-                          borderRadius: '8px',
+                          borderRadius: '14px',
                           overflow: 'hidden',
                           cursor: 'pointer',
                           padding: 0,
                           background: 'var(--bg-secondary)',
                           aspectRatio: '1/1',
                           transition: 'all 0.2s ease',
-                          position: 'relative',
+                          border: 'none',
                         }}
                       >
                         <img
@@ -1529,21 +1809,22 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       </button>
 
                       {/* Action buttons overlay — shown on hover */}
-                      <div style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)',
-                        padding: '1.5rem 0.25rem 0.25rem',
-                        display: 'flex',
-                        gap: '0.25rem',
-                        opacity: 0,
-                        transition: 'opacity 0.2s ease',
-                        pointerEvents: 'none',
-                        zIndex: 5,
-                      }}
-                        className="thumbnail-actions"
+                      <div
+                        className="t2i-actions"
+                        style={{
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
+                          padding: '2rem 0.25rem 0.375rem',
+                          display: 'flex',
+                          gap: '0.25rem',
+                          opacity: 0,
+                          transition: 'opacity 0.2s ease',
+                          pointerEvents: 'none',
+                          zIndex: 5,
+                        }}
                       >
                         <button
                           onClick={(e) => { e.stopPropagation(); copyToClipboard(pair.prompt); }}
@@ -1563,7 +1844,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                             fontWeight: 600,
                             cursor: 'pointer',
                             backdropFilter: 'blur(8px)',
-                            transition: 'background 0.2s ease',
                           }}
                         >
                           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -1573,14 +1853,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           Copy
                         </button>
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPrompt(pair.prompt);
-                            // Switch to text-to-image tab if not already
-                            if (activeTab !== 'text-to-image') {
-                              // just stay, user is already in t2i
-                            }
-                          }}
+                          onClick={(e) => { e.stopPropagation(); setPrompt(pair.prompt); }}
                           title="Try this prompt"
                           style={{
                             flex: 1,
@@ -1597,7 +1870,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                             fontWeight: 700,
                             cursor: 'pointer',
                             boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
-                            transition: 'background 0.2s ease',
                           }}
                         >
                           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -1609,11 +1881,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     </div>
                   ))}
                 </div>
-
-                <style>{`
-                  .thumbnail-actions { opacity: 0; pointer-events: none; }
-                  div:hover > .thumbnail-actions { opacity: 1; pointer-events: auto; }
-                `}</style>
 
                 {/* Hint text per mode */}
                 {activeTab === 'text-to-image' && previewMode === 'gallery' && (
@@ -1666,7 +1933,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                     src={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     label="Generated"
                     aspectRatio={aspectRatio}
-                    bgSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
                     overlay={
                       <>
                         <button
