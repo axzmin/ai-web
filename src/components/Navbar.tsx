@@ -23,12 +23,40 @@ const ICONS = {
       <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
     </svg>
   ),
+  star: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </svg>
+  ),
 };
+
+function CreditsBadge({ credits }: { credits: number }) {
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.3rem',
+      padding: '0.3rem 0.625rem',
+      background: 'rgba(255,140,66,0.12)',
+      border: '1px solid rgba(255,140,66,0.3)',
+      borderRadius: '20px',
+      color: '#FF8C42',
+      fontSize: '0.75rem',
+      fontWeight: 700,
+      letterSpacing: '0.01em',
+      userSelect: 'none',
+    }}>
+      {ICONS.star}
+      <span>{credits.toLocaleString()}</span>
+    </div>
+  );
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { isSignedIn, isLoaded } = useUser();
+  const [credits, setCredits] = useState<number | null>(null);
+  const { isSignedIn, isLoaded, user } = useUser();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -36,7 +64,17 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when clicking a link
+  useEffect(() => {
+    if (isSignedIn) {
+      fetch('/api/user')
+        .then(r => r.json())
+        .then(data => { if (data.credits !== undefined) setCredits(data.credits); })
+        .catch(() => {});
+    } else {
+      setCredits(null);
+    }
+  }, [isSignedIn]);
+
   const handleNavClick = () => setMobileOpen(false);
 
   return (
@@ -130,16 +168,19 @@ export default function Navbar() {
           {/* Desktop CTA */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }} className="hide-mobile">
             {isLoaded && isSignedIn ? (
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: {
-                      width: '36px',
-                      height: '36px',
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                {credits !== null && <CreditsBadge credits={credits} />}
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: {
+                        width: '36px',
+                        height: '36px',
+                      },
                     },
-                  },
-                }}
-              />
+                  }}
+                />
+              </div>
             ) : isLoaded ? (
               <>
                 <SignInButton mode="modal">
