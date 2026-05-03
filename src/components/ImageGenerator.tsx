@@ -498,7 +498,7 @@ function ThumbnailGrid({
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <polygon points="5 3 19 12 5 21 5 3"/>
                 </svg>
-                Try It
+                Try
               </button>
             </div>
           </div>
@@ -1702,32 +1702,23 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          gap: '0.25rem',
+                          gap: '0.2rem',
                           padding: '0.3rem 0',
-                          background: 'transparent',
-                          border: '1px solid var(--border-subtle)',
-                          borderRadius: '8px',
-                          color: 'var(--text-secondary)',
-                          fontSize: '0.6875rem',
-                          fontWeight: 600,
+                          background: 'var(--gradient-primary)',
+                          border: 'none',
+                          borderRadius: '6px',
+                          color: 'white',
+                          fontSize: '0.625rem',
+                          fontWeight: 700,
                           cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                        }}
-                        onMouseOver={(e) => {
-                          e.currentTarget.style.background = 'var(--bg-secondary)';
-                          e.currentTarget.style.borderColor = 'var(--accent-primary)';
-                          e.currentTarget.style.color = 'var(--accent-primary)';
-                        }}
-                        onMouseOut={(e) => {
-                          e.currentTarget.style.background = 'transparent';
-                          e.currentTarget.style.borderColor = 'var(--border-subtle)';
-                          e.currentTarget.style.color = 'var(--text-secondary)';
+                          boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
+                          transition: 'background 0.2s ease',
                         }}
                       >
                         <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <polygon points="5 3 19 12 5 21 5 3"/>
                         </svg>
-                        Try It
+                        Try
                       </button>
                     </div>
                   ))}
