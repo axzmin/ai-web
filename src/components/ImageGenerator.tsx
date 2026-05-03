@@ -70,7 +70,7 @@ const DEMO_PAIR = {
 };
 
 // ─── Comparison Slider Component ───────────────────────────────────────────
-function ComparisonSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc: string }) {
+function ComparisonSlider({ beforeSrc, afterSrc, beforeLabel, afterLabel }: { beforeSrc: string; afterSrc: string; beforeLabel?: string; afterLabel?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sliderX, setSliderX] = useState(50); // percentage 0–100
 
@@ -211,7 +211,7 @@ function ComparisonSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc
         textTransform: 'uppercase',
         pointerEvents: 'none',
       }}>
-        Original
+        {beforeLabel || 'Original'}
       </div>
       <div style={{
         position: 'absolute',
@@ -227,7 +227,7 @@ function ComparisonSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc
         textTransform: 'uppercase',
         pointerEvents: 'none',
       }}>
-        Enhanced
+        {afterLabel || 'Enhanced'}
       </div>
     </div>
   );
@@ -318,6 +318,53 @@ function ComparisonSliderDemo({ beforeSrc, afterSrc }: { beforeSrc: string; afte
 }
 
 
+// ─── Simple Image Component — no slider, just a clean image ─────────────────
+function SimpleImage({ src, label }: { src: string; label?: string }) {
+  return (
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      aspectRatio: '4/3',
+      borderRadius: '12px',
+      overflow: 'hidden',
+      background: 'var(--bg-secondary)',
+      flexShrink: 0,
+    }}>
+      <img
+        src={src}
+        alt={label || 'Image'}
+        draggable={false}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+        }}
+      />
+      {label && (
+        <div style={{
+          position: 'absolute',
+          bottom: '10px',
+          left: '10px',
+          padding: '3px 10px',
+          background: 'rgba(0,0,0,0.55)',
+          borderRadius: '6px',
+          color: 'white',
+          fontSize: '0.6875rem',
+          fontWeight: 600,
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          pointerEvents: 'none',
+        }}>
+          {label}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 interface GenState {
   status: 'idle' | 'generating' | 'complete' | 'error';
   progress: number;
@@ -344,6 +391,9 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
     status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  // previewMode: 'gallery' = click-to-browse single image, 'comparison' = before/after slider, 'single' = static single image
+  const [previewMode, setPreviewMode] = useState<'gallery' | 'comparison' | 'single'>('gallery');
+  const [galleryIndex, setGalleryIndex] = useState(0);
 
   const modelRef = useRef<HTMLDivElement>(null);
   const aspectRatioRef = useRef<HTMLDivElement>(null);
@@ -380,6 +430,21 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
         .catch(() => {});
     }
   }, [userId]);
+
+  // Sync previewMode when tab or uploaded image changes
+  useEffect(() => {
+    if (activeTab === 'text-to-image') {
+      setPreviewMode(state.status === 'idle' ? 'gallery' : 'single');
+    } else {
+      // image-to-image
+      if (state.status === 'idle') {
+        setPreviewMode(uploadedImage ? 'single' : 'comparison');
+      } else {
+        setPreviewMode('comparison');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, uploadedImage, state.status]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1403,17 +1468,32 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
               </div>
             )}
 
-            {/* Idle / Default Demo State — always show comparison slider as demo */}
-            {state.status === 'idle' && isDemo && (
+            {/* IDLE STATE — tab + upload-dependent preview */}
+            {state.status === 'idle' && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
-                {/* Default Comparison Slider Demo */}
-                <ComparisonSliderDemo
-                  beforeSrc={DEMO_PAIR.imageUrls[selectedIndex].before}
-                  afterSrc={DEMO_PAIR.imageUrls[selectedIndex].after}
-                />
+                {/* T2I idle: gallery — click thumbnail to browse full-size demo image */}
+                {activeTab === 'text-to-image' && previewMode === 'gallery' && (
+                  <SimpleImage
+                    src={DEMO_PAIR.imageUrls[galleryIndex].after}
+                    label="Gallery"
+                  />
+                )}
 
-                {/* 5 Demo Thumbnails */}
+                {/* I2I idle + no upload: comparison demo slider */}
+                {activeTab === 'image-to-image' && previewMode === 'comparison' && (
+                  <ComparisonSliderDemo
+                    beforeSrc={DEMO_PAIR.imageUrls[selectedIndex].before}
+                    afterSrc={DEMO_PAIR.imageUrls[selectedIndex].after}
+                  />
+                )}
+
+                {/* I2I idle + uploaded (no generation yet): single uploaded image */}
+                {activeTab === 'image-to-image' && previewMode === 'single' && uploadedImage && (
+                  <SimpleImage src={uploadedImage} label="Your Image" />
+                )}
+
+                {/* Fixed Demo Thumbnails — always shown in idle */}
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(5, 1fr)',
@@ -1424,12 +1504,17 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   {DEMO_PAIR.imageUrls.map((pair, i) => (
                     <button
                       key={i}
-                      onClick={() => setSelectedIndex(i)}
+                      onClick={() => {
+                        setSelectedIndex(i);
+                        if (previewMode === 'gallery') setGalleryIndex(i);
+                      }}
                       style={{
                         position: 'relative',
                         borderRadius: '8px',
                         overflow: 'hidden',
-                        border: selectedIndex === i ? '2px solid var(--accent-primary)' : '2px solid transparent',
+                        border: (previewMode === 'gallery' ? galleryIndex === i : selectedIndex === i)
+                          ? '2px solid var(--accent-primary)'
+                          : '2px solid transparent',
                         cursor: 'pointer',
                         padding: 0,
                         background: 'var(--bg-secondary)',
@@ -1440,21 +1525,28 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       <img
                         src={pair.after}
                         alt={`Demo ${i + 1}`}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          display: 'block',
-                        }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                       />
                     </button>
                   ))}
                 </div>
 
-                {/* Demo Hint */}
-                <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
-                  ← Drag to compare before &amp; after • Click thumbnails to switch →
-                </p>
+                {/* Hint text per mode */}
+                {activeTab === 'text-to-image' && previewMode === 'gallery' && (
+                  <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
+                    ← Click thumbnails to preview • Enter prompt to generate →
+                  </p>
+                )}
+                {activeTab === 'image-to-image' && previewMode === 'comparison' && (
+                  <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
+                    ← Drag to compare before &amp; after • Upload your image to start →
+                  </p>
+                )}
+                {activeTab === 'image-to-image' && previewMode === 'single' && (
+                  <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
+                    ← Add a prompt and click Generate to transform your image →
+                  </p>
+                )}
               </div>
             )}
 
@@ -1485,48 +1577,29 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
               </div>
             )}
 
-            {/* Error State */}
-            {state.status === 'error' && (
-              <div style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                padding: '2rem',
-                background: 'var(--bg-secondary)',
-                borderRadius: '12px',
-                border: '1px solid rgba(220, 69, 69, 0.2)',
-                textAlign: 'center',
-              }}>
-                <p style={{ color: '#ef4444', marginBottom: '1rem', fontSize: '0.9375rem' }}>
-                  {state.error}
-                </p>
-                <button
-                  onClick={() => setState({ status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null })}
-                  style={{
-                    padding: '0.625rem 1rem',
-                    background: 'var(--bg-tertiary)',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: '8px',
-                    color: 'var(--text-primary)',
-                    fontSize: '0.875rem',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Try Again
-                </button>
-              </div>
-            )}
-
-            {/* Complete — Comparison Slider */}
+            {/* COMPLETE STATE — T2I: single generated image | I2I: before/after comparison */}
             {state.status === 'complete' && (state.imageUrls.length > 0 || !!state.imageUrl) && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <ComparisonSlider
-                  beforeSrc={uploadedImage || (isDemo ? (state.imageUrl || '') : state.imageUrls[0])}
-                  afterSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
-                />
 
-                {/* Thumbnail Strip */}
+                {/* T2I complete: single generated image */}
+                {activeTab === 'text-to-image' && (
+                  <SimpleImage
+                    src={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
+                    label="Generated"
+                  />
+                )}
+
+                {/* I2I complete: comparison slider (uploaded vs generated) */}
+                {activeTab === 'image-to-image' && (
+                  <ComparisonSlider
+                    beforeSrc={uploadedImage || ''}
+                    afterSrc={isDemo ? (state.imageUrl || '') : state.imageUrls[selectedIndex]}
+                    beforeLabel="Original"
+                    afterLabel="Generated"
+                  />
+                )}
+
+                {/* Fixed Demo Thumbnails */}
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(5, 1fr)',
@@ -1534,16 +1607,16 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                   marginTop: '0.875rem',
                   marginBottom: '0.875rem',
                 }}>
-                  {(isDemo ? (state.imageUrl ? [state.imageUrl] : []) : state.imageUrls).map((url, i) => (
+                  {DEMO_PAIR.imageUrls.map((pair, i) => (
                     <button
                       key={i}
-                      onClick={() => isDemo ? null : setSelectedIndex(i)}
+                      onClick={() => setSelectedIndex(i)}
                       style={{
                         position: 'relative',
                         borderRadius: '8px',
                         overflow: 'hidden',
-                        border: (isDemo ? i === 0 : selectedIndex === i) ? '2px solid var(--accent-primary)' : '2px solid transparent',
-                        cursor: isDemo ? 'default' : 'pointer',
+                        border: selectedIndex === i ? '2px solid var(--accent-primary)' : '2px solid transparent',
+                        cursor: 'pointer',
                         padding: 0,
                         background: 'var(--bg-secondary)',
                         aspectRatio: '1/1',
@@ -1551,8 +1624,8 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       }}
                     >
                       <img
-                        src={url}
-                        alt={`Thumb ${i + 1}`}
+                        src={pair.after}
+                        alt={`Demo ${i + 1}`}
                         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                       />
                     </button>
