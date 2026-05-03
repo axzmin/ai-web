@@ -5,12 +5,13 @@ import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
 
 const ASPECT_RATIOS = [
-  { label: 'Square', value: '1:1' },
-  { label: 'Portrait', value: '3:4' },
-  { label: 'Landscape', value: '4:3' },
-  { label: 'Wide', value: '16:9' },
+  { label: 'Auto', value: 'auto' },
+  { label: '1:1', value: '1:1' },
+  { label: '4:3', value: '4:3' },
+  { label: '3:4', value: '3:4' },
+  { label: '9:16', value: '9:16' },
+  { label: '16:9', value: '16:9' },
 ];
-
 const QUALITY_OPTIONS = [
   { label: 'Standard', value: 'standard', description: 'Fast generation' },
   { label: 'HD', value: 'hd', description: 'Enhanced details' },
@@ -36,9 +37,9 @@ export default function RemixPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [strength, setStrength] = useState(0.7);
-  const [model, setModel] = useState('flux-schnell');
+  const [model, setModel] = useState('gpt-image-2');
   const [quality, setQuality] = useState('standard');
-  const [aspectRatio, setAspectRatio] = useState('1:1');
+  const [aspectRatio, setAspectRatio] = useState('auto');
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
   const [qualityDropdownOpen, setQualityDropdownOpen] = useState(false);
   const [aspectDropdownOpen, setAspectDropdownOpen] = useState(false);

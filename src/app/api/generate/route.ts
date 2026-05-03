@@ -28,10 +28,12 @@ const MODEL_CONFIGS = {
 };
 
 const ASPECT_RATIOS: Record<string, string> = {
+  'auto': 'auto',
   '1:1': '1:1',
-  '3:4': '3:4',
-  '4:3': '4:3',
+  '9:16': '9:16',
   '16:9': '16:9',
+  '4:3': '4:3',
+  '3:4': '3:4',
 };
 
 interface KieTaskResponse {

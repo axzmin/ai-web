@@ -7,9 +7,10 @@ import Link from 'next/link';
 type TabType = 'text-to-image' | 'image-to-image';
 
 const ASPECT_RATIOS = [
+  { label: 'Auto', value: 'auto' },
   { label: '1:1', value: '1:1' },
-  { label: '2:3', value: '2:3' },
-  { label: '3:2', value: '3:2' },
+  { label: '4:3', value: '4:3' },
+  { label: '3:4', value: '3:4' },
   { label: '9:16', value: '9:16' },
   { label: '16:9', value: '16:9' },
 ];
@@ -313,9 +314,9 @@ interface GenState {
 export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean }) {
   const [activeTab, setActiveTab] = useState<TabType>('text-to-image');
   const [prompt, setPrompt] = useState('');
-  const [aspectRatio, setAspectRatio] = useState('1:1');
+  const [aspectRatio, setAspectRatio] = useState('auto');
   const [quality, setQuality] = useState('standard');
-  const [model, setModel] = useState('flux-schnell');
+  const [model, setModel] = useState('gpt-image-2');
 
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
   const [aspectRatioDropdownOpen, setAspectRatioDropdownOpen] = useState(false);
