@@ -64,14 +64,12 @@ async function pollForResult(
     await new Promise((resolve) => setTimeout(resolve, intervalMs));
 
     const response = await fetch(
-      `https://api.kie.ai/api/v1/jobs/getTaskDetail`,
+      `https://api.kie.ai/api/v1/jobs/recordInfo?taskId=${encodeURIComponent(taskId)}`,
       {
-        method: 'POST',
         headers: {
           Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ taskId }),
       }
     );
 
