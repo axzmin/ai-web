@@ -12,12 +12,14 @@ datasource db {
 
 model User {
   id        String   @id @default(cuid())
+  clerkId   String   @unique  // Clerk User ID
   email     String   @unique
   name      String?
   image     String?
   credits   Int      @default(25)  // Free credits on registration
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  lastLoginAt DateTime?
   generations Generation[]
 }
 
