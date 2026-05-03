@@ -389,68 +389,92 @@ export default function MyImagesPage() {
             onClick={(e) => e.stopPropagation()}
             style={{
               display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              flexDirection: 'row',
+              alignItems: 'stretch',
               maxWidth: '90vw',
-              maxHeight: '95vh',
-              width: '100%',
+              maxHeight: '90vh',
+              width: '820px',
+              height: '520px',
               animation: 'scaleIn 0.3s ease',
-              gap: '1rem',
+              gap: '1.25rem',
+              background: 'rgba(20, 16, 14, 0.95)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255,255,255,0.08)',
+              padding: '1.5rem',
+              overflow: 'hidden',
             }}
           >
-            {/* Full image only */}
-            <img
-              src={selected.imageUrl}
-              alt={selected.prompt}
-              style={{
-                maxWidth: '100%',
-                maxHeight: '82vh',
-                width: 'auto',
-                height: 'auto',
-                borderRadius: '16px',
-                display: 'block',
-                objectFit: 'contain',
-                boxShadow: '0 40px 120px rgba(0,0,0,0.5)',
-              }}
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
-            />
+            {/* Left: image */}
+            <div style={{ flex: '0 0 55%', position: 'relative', borderRadius: '12px', overflow: 'hidden', background: '#1a1614' }}>
+              <img
+                src={selected.imageUrl}
+                alt={selected.prompt}
+                style={{
+                  width: '100%', height: '100%',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+            </div>
 
-            {/* Action buttons row */}
-            <div style={{
-              display: 'flex',
-              gap: '0.75rem',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}>
-              <button
-                onClick={() => { copyToClipboard(selected.prompt); const t = document.getElementById('lc-text'); if (t) { t.textContent = 'Copied!'; setTimeout(() => { if (t) t.textContent = 'Copy Prompt'; }, 2000); } }}
-                style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '10px', color: 'white', fontSize: '0.8125rem', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', backdropFilter: 'blur(8px)' }}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect width="14" height="14" x="8" y="8" rx="2"/>
-                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-                </svg>
-                <span id="lc-text">Copy Prompt</span>
-              </button>
-              <button
-                onClick={() => downloadImage(selected.imageUrl, `ai-image-${selected.id}.png`)}
-                style={{ padding: '0.5rem 1rem', background: 'var(--gradient-primary)', border: 'none', borderRadius: '10px', color: 'white', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.375rem', boxShadow: 'var(--shadow-glow-orange)' }}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" x2="12" y1="15" y2="3"/>
-                </svg>
-                Download
-              </button>
-              <button
-                onClick={() => setSelected(null)}
-                style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '10px', color: 'white', fontSize: '0.8125rem', fontWeight: 500, cursor: 'pointer', backdropFilter: 'blur(8px)' }}
-              >
-                Close
-              </button>
+            {/* Right: prompt info panel */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.875rem', overflow: 'hidden' }}>
+              {/* Model + quality badges */}
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ padding: '0.25rem 0.625rem', background: 'rgba(52,98,91,0.25)', border: '1px solid rgba(52,98,91,0.5)', borderRadius: '6px', color: 'rgba(52,98,91,1)', fontSize: '0.6875rem', fontWeight: 700 }}>
+                  {MODEL_LABELS[selected.model] || selected.model}
+                </span>
+                <span style={{ padding: '0.25rem 0.625rem', background: 'rgba(255,140,66,0.15)', border: '1px solid rgba(255,140,66,0.3)', borderRadius: '6px', color: 'var(--accent-primary)', fontSize: '0.6875rem', fontWeight: 700 }}>
+                  {QUALITY_LABELS[selected.quality] || selected.quality}
+                </span>
+                <span style={{ padding: '0.25rem 0.625rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: 'rgba(255,255,255,0.6)', fontSize: '0.6875rem', fontWeight: 600 }}>
+                  ⚡ {selected.creditsCost} credits
+                </span>
+              </div>
+
+              {/* Prompt label */}
+              <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Prompt
+              </div>
+
+              {/* Prompt text */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem', background: 'rgba(255,255,255,0.04)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <p style={{ margin: 0, fontSize: '0.8125rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.65, wordBreak: 'break-word' }}>
+                  {selected.prompt}
+                </p>
+              </div>
+
+              {/* Action buttons */}
+              <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
+                <button
+                  onClick={() => { copyToClipboard(selected.prompt); const t = document.getElementById('lc-text'); if (t) { t.textContent = 'Copied!'; setTimeout(() => { if (t) t.textContent = 'Copy'; }, 2000); } }}
+                  style={{ flex: 1, padding: '0.5rem 0', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', color: 'rgba(255,255,255,0.8)', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem', transition: 'background 0.2s' }}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect width="14" height="14" x="8" y="8" rx="2"/>
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                  </svg>
+                  <span id="lc-text">Copy</span>
+                </button>
+                <button
+                  onClick={() => downloadImage(selected.imageUrl, `ai-image-${selected.id}.png`)}
+                  style={{ flex: 1, padding: '0.5rem 0', background: 'var(--gradient-primary)', border: 'none', borderRadius: '8px', color: 'white', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem', boxShadow: '0 2px 8px rgba(255,140,66,0.35)', transition: 'background 0.2s' }}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" x2="12" y1="15" y2="3"/>
+                  </svg>
+                  Download
+                </button>
+                <button
+                  onClick={() => setSelected(null)}
+                  style={{ padding: '0.5rem 0.875rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', transition: 'background 0.2s' }}
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           </div>
         </div>

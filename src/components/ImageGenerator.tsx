@@ -1704,15 +1704,14 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           justifyContent: 'center',
                           gap: '0.2rem',
                           padding: '0.3rem 0',
-                          background: 'var(--gradient-primary)',
-                          border: 'none',
+                          background: 'rgba(255,255,255,0.06)',
+                          border: '1px solid rgba(255,255,255,0.12)',
                           borderRadius: '6px',
-                          color: 'white',
+                          color: 'var(--text-secondary)',
                           fontSize: '0.625rem',
-                          fontWeight: 700,
+                          fontWeight: 600,
                           cursor: 'pointer',
-                          boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
-                          transition: 'background 0.2s ease',
+                          transition: 'all 0.2s ease',
                         }}
                       >
                         <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
