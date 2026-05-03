@@ -71,8 +71,8 @@ export default function Hero() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            opacity: 0.35,
-            filter: 'blur(2px)',
+            objectPosition: 'center top',
+            opacity: 0.5,
           }}
         />
         {/* Frosted glass tint */}
