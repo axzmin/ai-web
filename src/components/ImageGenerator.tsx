@@ -402,101 +402,105 @@ function ThumbnailGrid({
           }}
         >
           {/* Thumbnail image */}
-          <button
-            onClick={() => onSelect(i)}
-            style={{
-              display: 'block',
-              width: '100%',
-              borderRadius: '8px',
-              overflow: 'hidden',
-              cursor: 'pointer',
-              padding: 0,
-              background: 'var(--bg-secondary)',
-              aspectRatio: '1/1',
-              transition: 'all 0.2s ease',
-              position: 'relative',
-            }}
-          >
-            <img
-              src={pair.after}
-              alt={`Demo ${i + 1}`}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          </button>
-
-          {/* Action buttons overlay — shown on hover */}
-          <div style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)',
-            padding: '1.5rem 0.25rem 0.25rem',
-            display: 'flex',
-            gap: '0.25rem',
-            opacity: 0,
-            transition: 'opacity 0.2s ease',
-            pointerEvents: 'none',
-            zIndex: 5,
-          }}
-            className="thumbnail-actions"
-          >
+          <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden' }}>
             <button
-              onClick={(e) => { e.stopPropagation(); copyToClipboard(pair.prompt); }}
-              title="Copy prompt"
+              onClick={() => onSelect(i)}
               style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.2rem',
-                padding: '0.3rem 0',
-                background: 'rgba(255,255,255,0.15)',
-                border: '1px solid rgba(255,255,255,0.25)',
-                borderRadius: '6px',
-                color: 'white',
-                fontSize: '0.625rem',
-                fontWeight: 600,
+                display: 'block',
+                width: '100%',
+                borderRadius: '8px',
+                overflow: 'hidden',
                 cursor: 'pointer',
-                backdropFilter: 'blur(8px)',
-                transition: 'background 0.2s ease',
-              }}
-            >
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <rect width="14" height="14" x="8" y="8" rx="2"/>
-                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-              </svg>
-              Copy
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                copyToClipboard(pair.prompt); // sets prompt in parent via onSelect logic
-              }}
-              title="Try this prompt"
-              style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.2rem',
-                padding: '0.3rem 0',
-                background: 'var(--gradient-primary)',
+                padding: 0,
+                background: 'var(--bg-secondary)',
+                aspectRatio: '1/1',
+                transition: 'all 0.2s ease',
                 border: 'none',
-                borderRadius: '6px',
-                color: 'white',
-                fontSize: '0.625rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
-                transition: 'background 0.2s ease',
               }}
             >
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polygon points="5 3 19 12 5 21 5 3"/>
-              </svg>
-              Try It
+              <img
+                src={pair.after}
+                alt={`Demo ${i + 1}`}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
             </button>
+
+            {/* Hover overlay with buttons */}
+            <div
+              className="t2i-actions"
+              onMouseOver={(e) => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
+              onMouseOut={(e) => { (e.currentTarget as HTMLElement).style.opacity = '0'; }}
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
+                padding: '2rem 0.25rem 0.375rem',
+                display: 'flex',
+                gap: '0.25rem',
+                opacity: 0,
+                transition: 'opacity 0.2s ease',
+                zIndex: 5,
+              }}
+            >
+              <button
+                onClick={(e) => { e.stopPropagation(); copyToClipboard(pair.prompt); }}
+                title="Copy prompt"
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.2rem',
+                  padding: '0.3rem 0',
+                  background: 'rgba(255,255,255,0.15)',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                  borderRadius: '6px',
+                  color: 'white',
+                  fontSize: '0.625rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  backdropFilter: 'blur(8px)',
+                  transition: 'background 0.2s ease',
+                }}
+              >
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <rect width="14" height="14" x="8" y="8" rx="2"/>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                </svg>
+                Copy
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  copyToClipboard(pair.prompt);
+                }}
+                title="Try this prompt"
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.2rem',
+                  padding: '0.3rem 0',
+                  background: 'var(--gradient-primary)',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: 'white',
+                  fontSize: '0.625rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(255,140,66,0.4)',
+                  transition: 'background 0.2s ease',
+                }}
+              >
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                Try It
+              </button>
+            </div>
           </div>
         </div>
       ))}
