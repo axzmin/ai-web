@@ -601,8 +601,7 @@ interface GenState {
 
 export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean }) {
   const [activeTab, setActiveTab] = useState<TabType>('text-to-image');
-  const DEFAULT_PROMPT = 'Ultra-realistic 8K full-body portrait of a stylish young man leaning casually against a clean light-gray wall. He is wearing a mustard yellow V-neck sweater with black-and-white striped trim, slim-fit black trousers, and black sneakers with white soles. Hands in pockets, relaxed confident pose. Modern, minimalistic, premium personal branding aesthetic.';
-  const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
+  const [prompt, setPrompt] = useState('');
   const [aspectRatio, setAspectRatio] = useState('auto');
   const [quality, setQuality] = useState('standard');
   const [model, setModel] = useState('gpt-image-2');
@@ -1720,7 +1719,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                               setGalleryIndex(i);
                               // Second rAF: set prompt AFTER tab has switched
                               requestAnimationFrame(() => {
-                                setPrompt(pair.prompt || DEFAULT_PROMPT);
+                                setPrompt(pair.prompt);
                               });
                             });
                           }}
