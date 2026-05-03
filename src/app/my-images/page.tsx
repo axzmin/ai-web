@@ -393,8 +393,8 @@ export default function MyImagesPage() {
               alignItems: 'stretch',
               maxWidth: '95vw',
               maxHeight: '92vh',
-              width: '920px',
-              height: '560px',
+              width: '1100px',
+              height: '680px',
               animation: 'scaleIn 0.3s ease',
               gap: '1.25rem',
               background: 'rgba(20, 16, 14, 0.95)',
@@ -404,8 +404,8 @@ export default function MyImagesPage() {
               overflow: 'hidden',
             }}
           >
-            {/* Left: image — larger (65%) */}
-            <div style={{ flex: '0 0 65%', position: 'relative', borderRadius: '12px', overflow: 'hidden', background: '#1a1614' }}>
+            {/* Left: image — larger (70%) */}
+            <div style={{ flex: '0 0 70%', position: 'relative', borderRadius: '12px', overflow: 'hidden', background: '#1a1614' }}>
               <img
                 src={selected.imageUrl}
                 alt={selected.prompt}
