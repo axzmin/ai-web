@@ -347,8 +347,8 @@ function SimpleImage({ src, label, overlay, aspectRatio = 'auto', bgSrc }: {
 }) {
   const ratio = RATIO_MAP[aspectRatio] || RATIO_MAP['auto'];
   const containerBase: React.CSSProperties = ratio.isPortrait
-    ? { aspectRatio: ratio.css, maxHeight: '600px', width: 'auto', margin: '0 auto' }
-    : { aspectRatio: ratio.css, maxHeight: '600px', width: '100%' };
+    ? { aspectRatio: ratio.css, maxHeight: '680px', width: 'auto', margin: '0 auto' }
+    : { aspectRatio: ratio.css, maxHeight: '680px', width: '100%' };
 
   return (
     <div style={{

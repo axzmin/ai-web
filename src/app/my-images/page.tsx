@@ -151,10 +151,10 @@ export default function MyImagesPage() {
               </div>
             </div>
 
-            {/* Masonry grid */}
+            {/* Masonry grid — 5 columns */}
             <div style={{
-              columns: '3 280px',
-              columnGap: '1rem',
+              columns: '5 200px',
+              columnGap: '0.75rem',
             }}>
               {generations.map((gen, index) => (
                 <div
@@ -403,7 +403,7 @@ export default function MyImagesPage() {
               alt={selected.prompt}
               style={{
                 maxWidth: '100%',
-                maxHeight: '75vh',
+                maxHeight: '82vh',
                 width: 'auto',
                 height: 'auto',
                 borderRadius: '16px',
@@ -424,32 +424,49 @@ export default function MyImagesPage() {
               padding: '1.25rem',
               border: '1px solid var(--border-subtle)',
               width: '100%',
-              maxWidth: '800px',
+              maxWidth: '900px',
+              maxHeight: '30vh',
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.875rem',
             }}>
               {/* Prompt */}
               <div style={{
                 padding: '0.875rem 1rem',
                 background: 'var(--bg-secondary)',
                 borderRadius: '10px',
-                marginBottom: '1rem',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '0.75rem',
+                flexShrink: 0,
               }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" style={{ flexShrink: 0, marginTop: '2px' }}>
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>
-                <p style={{
+                <p id="prompt-text" style={{
                   fontWeight: 500,
                   color: 'var(--text-primary)',
                   fontSize: '0.875rem',
                   lineHeight: 1.6,
                   flex: 1,
+                  wordBreak: 'break-word',
                 }}>
                   {selected.prompt}
                 </p>
                 <button
-                  onClick={() => { copyToClipboard(selected.prompt); }}
+                  id="copy-btn"
+                  onClick={() => {
+                    copyToClipboard(selected.prompt);
+                    const btn = document.getElementById('copy-btn');
+                    const text = document.getElementById('copy-text');
+                    if (btn) { btn.style.background = 'var(--accent-primary)'; btn.style.color = 'white'; btn.style.borderColor = 'var(--accent-primary)'; }
+                    if (text) text.textContent = 'Copied!';
+                    setTimeout(() => {
+                      if (btn) { btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; }
+                      if (text) text.textContent = 'Copy';
+                    }, 2000);
+                  }}
                   title="Copy prompt"
                   style={{
                     flexShrink: 0,
@@ -464,13 +481,14 @@ export default function MyImagesPage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.3rem',
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg id="copy-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect width="14" height="14" x="8" y="8" rx="2"/>
                     <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
                   </svg>
-                  Copy
+                  <span id="copy-text">Copy</span>
                 </button>
               </div>
 
