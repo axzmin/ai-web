@@ -237,59 +237,9 @@ export async function POST(req: NextRequest) {
     console.log(`[Generate] Task created: ${taskId}`);
 
     // Poll for result
+    let imageUrl: string;
     try {
-      const imageUrl = await pollForResult(taskId, apiKey);
-      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-      console.log(`[Generate] Task ${taskId} completed in ${elapsed}s - ${imageUrl}`);
-
-      // Deduct credits + save generation + write credit log — all in one transaction
-      const txResult = await prisma.$transaction(async (tx) => {
-        // Atomic credit deduction
-        const updatedUser = await tx.user.update({
-          where: { clerkId: userId },
-          data: { credits: { decrement: creditCost } },
-        });
-
-        // Create generation record
-        const gen = await tx.generation.create({
-          data: {
-            userId: user.id,
-            prompt: prompt.trim(),
-            imageUrl,
-            model,
-            aspectRatio,
-            quality: resolution,
-            creditsCost: creditCost,
-            status: 'completed',
-            type: isImageToImage ? 'image-to-image' : 'text-to-image',
-            inputImageUrl: isImageToImage ? (inputImageUrl || null) : null,
-          },
-        });
-
-        // Write credit log
-        await tx.creditLog.create({
-          data: {
-            userId: user.id,
-            type: 'spend',
-            amount: -creditCost,
-            balanceAfter: updatedUser.credits,
-            description: `生成图片: ${model} ${resolution}`,
-            generationId: gen.id,
-          },
-        });
-
-        return { gen, updatedCredits: updatedUser.credits };
-      });
-
-      return NextResponse.json({
-        imageUrl,
-        taskId,
-        model,
-        aspectRatio,
-        resolution,
-        creditsUsed: creditCost,
-        creditsRemaining: txResult.updatedCredits,
-      });
+      imageUrl = await pollForResult(taskId, apiKey);
     } catch (pollError) {
       console.error(`[Generate] Polling failed for task ${taskId}:`, pollError);
       return NextResponse.json(
@@ -297,6 +247,62 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    console.log(`[Generate] Task ${taskId} completed in ${elapsed}s - ${imageUrl}`);
+
+    // Immediately return success to client — don't wait for DB
+    const responseJson = {
+      imageUrl,
+      taskId,
+      model,
+      aspectRatio,
+      resolution,
+      creditsUsed: creditCost,
+    };
+
+    // Async: deduct credits + save generation AFTER response is sent
+    // This ensures the user always gets their result even if DB write is slow
+    prisma.$transaction(async (tx) => {
+      const updatedUser = await tx.user.update({
+        where: { clerkId: userId },
+        data: { credits: { decrement: creditCost } },
+      });
+
+      await tx.generation.create({
+        data: {
+          userId: user.id,
+          prompt: prompt.trim(),
+          imageUrl,
+          model,
+          aspectRatio,
+          quality: resolution,
+          creditsCost: creditCost,
+          status: 'completed',
+          type: isImageToImage ? 'image-to-image' : 'text-to-image',
+          inputImageUrl: isImageToImage ? (inputImageUrl || null) : null,
+        },
+      });
+
+      await tx.creditLog.create({
+        data: {
+          userId: user.id,
+          type: 'spend',
+          amount: -creditCost,
+          balanceAfter: updatedUser.credits,
+          description: `生成图片: ${model} ${resolution}`,
+        },
+      });
+
+      console.log(`[Generate] Credits deducted: ${creditCost}, remaining: ${updatedUser.credits}`);
+    }).catch((err) => {
+      // Transaction failed — log for manual reconciliation
+      // User already has their image, but credits weren't deducted
+      // TODO: send alert to admin
+      console.error(`[Generate] CRITICAL: Transaction failed for task ${taskId} — user may not have been charged:`, err);
+    });
+
+    return NextResponse.json(responseJson);
   } catch (error) {
     console.error('[Generate] Unexpected error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
