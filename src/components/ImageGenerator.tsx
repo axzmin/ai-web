@@ -718,12 +718,18 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
       fd.append('file', file);
       try {
         const res = await fetch('/api/upload', { method: 'POST', body: fd });
-        const data = await res.json();
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          setUploadError(`Upload failed (HTTP ${res.status}). Please try again.`);
+          return;
+        }
         if (data.url) {
           setUploadedImages(prev => [...prev, data.url].slice(0, 5));
           setUploadError(null);
         } else {
-          setUploadError(data.error || 'Upload failed. Please try again.');
+          setUploadError(data.error || `Upload failed (HTTP ${res.status}). Please try again.`);
         }
       } catch (err) {
         console.error('Upload failed:', err);
