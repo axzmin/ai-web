@@ -51,10 +51,10 @@ export default function Hero() {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       background: 'var(--bg-primary)',
       overflow: 'hidden',
-      paddingTop: '4.5rem',
+      paddingTop: '6rem',
       paddingBottom: '0.5rem'
     }}>
       {/* Background Image - frosted glass overlay */}
