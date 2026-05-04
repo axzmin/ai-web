@@ -705,21 +705,26 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
     }
   }, [activeTab]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
     const remaining = 5 - uploadedImages.length;
     const toProcess = files.slice(0, remaining);
-    const newImages: string[] = [];
-    toProcess.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const result = ev.target?.result as string;
-        setUploadedImages(prev => [...prev, result].slice(0, 5));
-      };
-      reader.readAsDataURL(file);
-      newImages.push(''); // placeholder
-    });
+
+    // Upload each file to Cloudflare Images
+    for (const file of toProcess) {
+      const fd = new FormData();
+      fd.append('file', file);
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.url) {
+          setUploadedImages(prev => [...prev, data.url].slice(0, 5));
+        }
+      } catch (err) {
+        console.error('Upload failed:', err);
+      }
+    }
   };
 
   const handleGenerate = async () => {
