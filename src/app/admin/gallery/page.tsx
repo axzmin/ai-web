@@ -82,7 +82,7 @@ export default function AdminGalleryPage() {
   }
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1.5rem' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1.5rem 2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>🖼️ Gallery</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>

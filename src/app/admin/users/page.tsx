@@ -154,7 +154,7 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1.5rem' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1.5rem 2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>👥 Users</h1>
         <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{total} total users</span>
