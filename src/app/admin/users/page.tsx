@@ -58,6 +58,7 @@ export default function AdminUsersPage() {
   const [adjusting, setAdjusting] = useState(false);
   const [adjustMsg, setAdjustMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
+  const [logModalOpen, setLogModalOpen] = useState(false);
 
   // Debounce search
   useEffect(() => {
@@ -357,7 +358,7 @@ export default function AdminUsersPage() {
             {/* Credit History button */}
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem' }}>
               <button
-                onClick={() => setExpandedLogId('modal')}
+                onClick={() => setLogModalOpen(true)}
                 style={{
                   width: '100%',
                   display: 'flex',
@@ -381,7 +382,7 @@ export default function AdminUsersPage() {
         )}
 
         {/* Credit History Modal */}
-        {selectedUser && expandedLogId === 'modal' && (
+        {selectedUser && logModalOpen && (
           <div
             style={{
               position: 'fixed', inset: 0,
@@ -390,9 +391,9 @@ export default function AdminUsersPage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               padding: '1rem',
             }}
-            onClick={e => { if (e.target === e.currentTarget) setExpandedLogId(null); }}
+            onClick={e => { if (e.target === e.currentTarget) setLogModalOpen(false); }}
           >
-            <div style={{ background: 'var(--bg-card)', borderRadius: '16px', width: '100%', maxWidth: 560, maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div style={{ background: 'var(--bg-card)', borderRadius: '16px', width: '100%', maxWidth: 680, maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
               {/* Modal header */}
               <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
@@ -402,7 +403,7 @@ export default function AdminUsersPage() {
                   </p>
                 </div>
                 <button
-                  onClick={() => setExpandedLogId(null)}
+                  onClick={() => setLogModalOpen(false)}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '1.25rem', padding: '0.25rem' }}
                 >
                   ✕
