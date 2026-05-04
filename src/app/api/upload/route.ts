@@ -64,17 +64,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid response from Cloudflare', details: cfResponseText.substring(0, 200) }, { status: 500 });
     }
 
-    console.log('[Upload] Cloudflare response success:', !!cfData.success, cfData.result?.url, 'errors:', cfData.errors);
-
-    // Cloudflare returns: { result: { id, url, ... }, success, errors, messages }
+    // Cloudflare returns: { result: { id, url, variants, ... }, success, errors, messages }
     if (!cfData.success) {
       console.error('[Upload] Cloudflare upload failed:', cfData.errors);
       const errorMsg = cfData.errors?.[0]?.message || cfData.errors?.[0]?.code || 'Cloudflare upload failed';
       return NextResponse.json({ error: errorMsg }, { status: 500 });
     }
 
-    const imageUrl = cfData.result.url;
-    const imageId = cfData.result.id;
+    // Prefer result.url, fall back to variants[0]
+    const imageUrl = cfData.result?.url || (cfData.result?.variants?.[0] ? cfData.result.variants[0].split('/public')[0] + '/public' : cfData.result?.variants?.[0]);
+    const imageId = cfData.result?.id;
+    console.log('[Upload] Image URL:', imageUrl, 'ID:', imageId);
 
     return NextResponse.json({
       url: imageUrl,
