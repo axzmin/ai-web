@@ -72,7 +72,7 @@ export default function Hero() {
             height: '100%',
             objectFit: 'cover',
             objectPosition: 'center top',
-            opacity: 0.25,
+            opacity: 0.2,
           }}
         />
         {/* Frosted glass tint */}
@@ -80,8 +80,8 @@ export default function Hero() {
           position: 'absolute',
           inset: 0,
           background: 'rgba(245, 241, 230, 0.2)',
-          backdropFilter: 'blur(2px)',
-          WebkitBackdropFilter: 'blur(2px)',
+          backdropFilter: 'blur(3px)',
+          WebkitBackdropFilter: 'blur(3px)',
         }} />
       </div>
 
