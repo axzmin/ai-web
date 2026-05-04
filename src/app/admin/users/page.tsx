@@ -356,14 +356,34 @@ export default function AdminUsersPage() {
 
             {/* Credit logs */}
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem' }}>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
-                Credit History {loadingLogs && '(loading...)'}
-              </h3>
-              {!loadingLogs && userLogs.length === 0 && (
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>No transactions</p>
-              )}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '320px', overflowY: 'auto' }}>
-                {userLogs.map(log => {
+              <button
+                onClick={() => setExpandedLogId(expandedLogId === 'section' ? null : 'section')}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  padding: 0,
+                  marginBottom: expandedLogId === 'section' ? '0.75rem' : 0,
+                }}
+              >
+                <span>Credit History {loadingLogs ? '(loading...)' : `(${userLogs.length})`}</span>
+                <span style={{ transition: 'transform 0.2s', transform: expandedLogId === 'section' ? 'rotate(180deg)' : 'none' }}>▼</span>
+              </button>
+
+              {expandedLogId === 'section' && (
+                <>
+                  {userLogs.length === 0 && (
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>No transactions</p>
+                  )}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '320px', overflowY: 'auto' }}>
+                    {userLogs.map(log => {
                   const cfg = TYPE_CONFIG[log.type] || TYPE_CONFIG.spend;
                   const isExpanded = expandedLogId === log.id;
                   return (
@@ -402,7 +422,9 @@ export default function AdminUsersPage() {
                     </div>
                   );
                 })}
-              </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
