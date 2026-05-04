@@ -48,19 +48,29 @@ export async function POST(req: NextRequest) {
       body: cfFormData,
     });
 
+    const cfResponseText = await cfResponse.text();
+    console.log('[Upload] Cloudflare raw response:', cfResponse.status, cfResponseText.substring(0, 500));
+
     if (!cfResponse.ok) {
-      const errorText = await cfResponse.text();
-      console.error('[Upload] Cloudflare API error:', cfResponse.status, errorText);
-      return NextResponse.json({ error: 'Failed to upload image to Cloudflare', details: errorText }, { status: 500 });
+      console.error('[Upload] Cloudflare API error:', cfResponse.status, cfResponseText);
+      return NextResponse.json({ error: 'Failed to upload image to Cloudflare', details: cfResponseText }, { status: 500 });
     }
 
-    const cfData = await cfResponse.json();
-    console.log('[Upload] Cloudflare response success:', !!cfData.success, cfData.result?.url);
+    let cfData;
+    try {
+      cfData = JSON.parse(cfResponseText);
+    } catch {
+      console.error('[Upload] Failed to parse CF response as JSON:', cfResponseText.substring(0, 200));
+      return NextResponse.json({ error: 'Invalid response from Cloudflare', details: cfResponseText.substring(0, 200) }, { status: 500 });
+    }
+
+    console.log('[Upload] Cloudflare response success:', !!cfData.success, cfData.result?.url, 'errors:', cfData.errors);
 
     // Cloudflare returns: { result: { id, url, ... }, success, errors, messages }
     if (!cfData.success) {
       console.error('[Upload] Cloudflare upload failed:', cfData.errors);
-      return NextResponse.json({ error: 'Cloudflare upload failed' }, { status: 500 });
+      const errorMsg = cfData.errors?.[0]?.message || cfData.errors?.[0]?.code || 'Cloudflare upload failed';
+      return NextResponse.json({ error: errorMsg }, { status: 500 });
     }
 
     const imageUrl = cfData.result.url;
