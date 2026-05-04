@@ -72,7 +72,7 @@ export default function Hero() {
             height: '100%',
             objectFit: 'cover',
             objectPosition: 'center top',
-            opacity: 0.35,
+            opacity: 0.15,
           }}
         />
         {/* Tint - lighter, no blur */}
