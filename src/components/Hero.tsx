@@ -72,10 +72,17 @@ export default function Hero() {
             height: '100%',
             objectFit: 'cover',
             objectPosition: 'center top',
-            opacity: 0.15,
+            opacity: 0.25,
           }}
         />
-        {/* Tint - lighter, no blur */}
+        {/* Frosted glass tint */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'rgba(245, 241, 230, 0.2)',
+          backdropFilter: 'blur(2px)',
+          WebkitBackdropFilter: 'blur(2px)',
+        }} />
       </div>
 
       {/* Geometric Gradient Shapes - Orange Accent */}
