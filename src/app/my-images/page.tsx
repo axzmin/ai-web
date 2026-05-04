@@ -363,6 +363,11 @@ export default function MyImagesPage() {
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700, letterSpacing: '-0.03em', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>My Images</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.0625rem' }}>{total > 0 ? `${total} image${total !== 1 ? 's' : ''} generated` : 'Your creation history'}</p>
+          <Link href="/my-images/credits" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', marginTop: '0.75rem', padding: '0.4rem 0.875rem', background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '8px', color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.8125rem', cursor: 'pointer', transition: 'all 0.2s' }}
+            onMouseOver={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.borderColor = 'var(--accent-primary)'; }}
+            onMouseOut={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; }}>
+            💳 View Credit History
+          </Link>
         </div>
 
         {generations.length === 0 && !loading ? (
@@ -479,8 +484,8 @@ export default function MyImagesPage() {
                           <ComparisonSlider
                             beforeSrc={gen.inputImageUrl!}
                             afterSrc={gen.thumbnailUrl || gen.imageUrl}
-                            beforeLabel="Original"
-                            afterLabel="Generated"
+                            beforeLabel="Generated"
+                            afterLabel="Original"
                           />
                         </div>
                         {/* Action buttons */}
@@ -832,8 +837,8 @@ export default function MyImagesPage() {
                 <ComparisonSlider
                   beforeSrc={selected.inputImageUrl}
                   afterSrc={selected.imageUrl}
-                  beforeLabel="Original"
-                  afterLabel="Generated"
+                  beforeLabel="Generated"
+                  afterLabel="Original"
                 />
               ) : (
                 <img
