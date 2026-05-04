@@ -651,6 +651,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
   const modelRef = useRef<HTMLDivElement>(null);
   const aspectRatioRef = useRef<HTMLDivElement>(null);
   const qualityRef = useRef<HTMLDivElement>(null);
+  const isGeneratingRef = useRef(false);
   const { isSignedIn, userId } = useAuth();
 
   // Close dropdowns when clicking outside
@@ -747,9 +748,12 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
   const handleGenerate = async () => {
     const currentPrompt = activeTab === 'text-to-image' ? prompt : i2iPrompt;
     if (activeTab === 'text-to-image' && !prompt.trim()) return;
+    if (isGeneratingRef.current) return;
+    isGeneratingRef.current = true;
 
     if (credits !== null && credits <= 0) {
       setInsufficientCredits(true);
+      isGeneratingRef.current = false;
       return;
     }
 
@@ -799,6 +803,8 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
     } catch {
       clearInterval(interval);
       setState({ status: 'error', progress: 0, imageUrls: [], imageUrl: null, error: 'Network error' });
+    } finally {
+      isGeneratingRef.current = false;
     }
   };
 
