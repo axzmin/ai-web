@@ -354,77 +354,116 @@ export default function AdminUsersPage() {
               )}
             </div>
 
-            {/* Credit logs */}
+            {/* Credit History button */}
             <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem' }}>
               <button
-                onClick={() => setExpandedLogId(expandedLogId === 'section' ? null : 'section')}
+                onClick={() => setExpandedLogId('modal')}
                 style={{
                   width: '100%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  background: 'none',
-                  border: 'none',
+                  background: 'var(--bg-secondary)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   color: 'var(--text-primary)',
                   fontSize: '0.875rem',
                   fontWeight: 600,
-                  padding: 0,
-                  marginBottom: expandedLogId === 'section' ? '0.75rem' : 0,
+                  padding: '0.625rem 0.875rem',
                 }}
               >
-                <span>Credit History {loadingLogs ? '(loading...)' : `(${userLogs.length})`}</span>
-                <span style={{ transition: 'transform 0.2s', transform: expandedLogId === 'section' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                <span>Credit History</span>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>View →</span>
               </button>
+            </div>
+          </div>
+        )}
 
-              {expandedLogId === 'section' && (
-                <>
-                  {userLogs.length === 0 && (
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>No transactions</p>
-                  )}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '320px', overflowY: 'auto' }}>
+        {/* Credit History Modal */}
+        {selectedUser && expandedLogId === 'modal' && (
+          <div
+            style={{
+              position: 'fixed', inset: 0,
+              background: 'rgba(0,0,0,0.6)',
+              zIndex: 100,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '1rem',
+            }}
+            onClick={e => { if (e.target === e.currentTarget) setExpandedLogId(null); }}
+          >
+            <div style={{ background: 'var(--bg-card)', borderRadius: '16px', width: '100%', maxWidth: 560, maxHeight: '80vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              {/* Modal header */}
+              <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Credit History</h2>
+                  <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: '0.25rem 0 0' }}>
+                    {selectedUser.name || selectedUser.email}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setExpandedLogId(null)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '1.25rem', padding: '0.25rem' }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Modal body */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 1.5rem' }}>
+                {loadingLogs ? (
+                  <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '2rem' }}>Loading...</p>
+                ) : userLogs.length === 0 ? (
+                  <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '2rem' }}>No transactions</p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                     {userLogs.map(log => {
-                  const cfg = TYPE_CONFIG[log.type] || TYPE_CONFIG.spend;
-                  const isExpanded = expandedLogId === log.id;
-                  return (
-                    <div key={log.id} style={{ background: 'var(--bg-secondary)', borderRadius: '8px', overflow: 'hidden' }}>
-                      <div
-                        onClick={() => setExpandedLogId(isExpanded ? null : log.id)}
-                        style={{ padding: '0.5rem 0.625rem', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
-                      >
-                        <span style={{ fontWeight: 700, color: cfg.color, fontSize: '0.875rem', width: 16, textAlign: 'center' }}>{cfg.icon}</span>
-                        <span style={{ flex: 1, fontSize: '0.75rem', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {log.description || cfg.label}
-                        </span>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: cfg.color }}>
-                          {log.amount > 0 ? `+${log.amount}` : log.amount}
-                        </span>
-                        <span style={{ fontSize: '0.6875rem', color: 'var(--text-secondary)' }}>▼</span>
-                      </div>
-                      {isExpanded && log.generation && (
-                        <div style={{ padding: '0.375rem 0.625rem 0.5rem', borderTop: '1px solid var(--border-subtle)' }}>
-                          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                            {log.generation.thumbnailUrl && (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={log.generation.thumbnailUrl} alt="" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
-                            )}
-                            <div>
-                              <p style={{ margin: 0, fontSize: '0.6875rem', color: 'var(--text-secondary)' }}>
-                                {log.generation.type === 'image-to-image' ? 'I2I' : 'T2I'} · {MODEL_LABELS[log.generation.model] || log.generation.model}
-                              </p>
-                              <p style={{ margin: '0.125rem 0 0', fontSize: '0.6875rem', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>
-                                {log.generation.prompt}
-                              </p>
+                      const cfg = TYPE_CONFIG[log.type] || TYPE_CONFIG.spend;
+                      const isExpanded = expandedLogId === log.id;
+                      return (
+                        <div key={log.id} style={{ background: 'var(--bg-secondary)', borderRadius: '10px', overflow: 'hidden' }}>
+                          <div
+                            onClick={() => setExpandedLogId(isExpanded ? null : log.id)}
+                            style={{ padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}
+                          >
+                            <span style={{ width: 36, height: 36, borderRadius: '8px', background: cfg.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: cfg.color, fontSize: '1rem', flexShrink: 0 }}>{cfg.icon}</span>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>{cfg.label}</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{log.description || '—'}</div>
                             </div>
+                            <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                              <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: cfg.color }}>{log.amount > 0 ? `+${log.amount}` : log.amount}</div>
+                              <div style={{ fontSize: '0.6875rem', color: 'var(--text-secondary)' }}>{new Date(log.createdAt).toLocaleDateString()}</div>
+                            </div>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', flexShrink: 0 }}>{isExpanded ? '▲' : '▼'}</span>
                           </div>
+                          {isExpanded && log.generation && (
+                            <div style={{ padding: '0.75rem 1rem', borderTop: '1px solid var(--border-subtle)' }}>
+                              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                                {log.generation.thumbnailUrl && (
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img src={log.generation.thumbnailUrl} alt="" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }} />
+                                )}
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                                    {log.generation.type === 'image-to-image' ? 'I2I' : 'T2I'} · {MODEL_LABELS[log.generation.model] || log.generation.model}
+                                  </p>
+                                  <p style={{ margin: '0.25rem 0 0', fontSize: '0.8125rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>{log.generation.prompt}</p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {isExpanded && !log.generation && (
+                            <div style={{ padding: '0.5rem 1rem', borderTop: '1px solid var(--border-subtle)' }}>
+                              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Balance after: {log.balanceAfter} credits</p>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
+                      );
+                    })}
                   </div>
-                </>
-              )}
+                )}
+              </div>
             </div>
           </div>
         )}
