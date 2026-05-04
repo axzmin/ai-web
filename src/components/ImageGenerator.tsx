@@ -639,6 +639,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [state, setState] = useState<GenState>({
     status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null
   });
@@ -712,6 +713,9 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
     const remaining = 5 - uploadedImages.length;
     const toProcess = files.slice(0, remaining);
 
+    setIsUploading(true);
+    setUploadError(null);
+
     // Upload each file to Cloudflare Images
     for (const file of toProcess) {
       const fd = new FormData();
@@ -723,6 +727,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
           data = await res.json();
         } catch {
           setUploadError(`Upload failed (HTTP ${res.status}). Please try again.`);
+          setIsUploading(false);
           return;
         }
         if (data.url) {
@@ -736,6 +741,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
         setUploadError('Upload failed. Please try again.');
       }
     }
+    setIsUploading(false);
   };
 
   const handleGenerate = async () => {
@@ -1135,8 +1141,11 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           </label>
                         )}
                       </div>
+                      {isUploading && (
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', marginTop: '0.5rem' }}>Uploading...</p>
+                      )}
                       {uploadError && (
-                        <p style={{ color: '#EF4444', fontSize: '0.75rem', marginTop: '0.5rem' }}>{uploadError}</p>
+                        <p style={{ color: '#EF4444', fontSize: '0.75rem', marginTop: '0.5rem', fontWeight: 600, background: 'rgba(239,68,68,0.1)', padding: '0.5rem', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)' }}>{uploadError}</p>
                       )}
                       {uploadedImages.length > 0 && (
                         <button
