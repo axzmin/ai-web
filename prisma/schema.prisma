@@ -80,3 +80,19 @@ model GalleryItem {
   @@index([tags])
   @@index([createdAt])
 }
+
+// Admin alert log — records failed async credit transactions for reconciliation
+model AlertLog {
+  id          String   @id @default(cuid())
+  level       String   // 'critical' | 'error' | 'warning'
+  source      String   // e.g. 'generate-async-tx'
+  message     String
+  details     String?  // JSON string with extra context
+  taskId      String?  // kie.ai task ID if relevant
+  userId      String?  // Clerk user ID
+  resolved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  @@index([level])
+  @@index([resolved])
+  @@index([createdAt])
+}

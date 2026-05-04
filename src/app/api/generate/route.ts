@@ -252,6 +252,7 @@ export async function POST(req: NextRequest) {
     console.log(`[Generate] Task ${taskId} completed in ${elapsed}s - ${imageUrl}`);
 
     // Immediately return success to client — don't wait for DB
+    // This prevents Vercel timeout issues when the user closes the browser
     const responseJson = {
       imageUrl,
       taskId,
@@ -262,7 +263,7 @@ export async function POST(req: NextRequest) {
     };
 
     // Async: deduct credits + save generation AFTER response is sent
-    // This ensures the user always gets their result even if DB write is slow
+    // This is fire-and-forget; failures are logged to AlertLog for admin review
     prisma.$transaction(async (tx) => {
       const updatedUser = await tx.user.update({
         where: { clerkId: userId },
@@ -295,11 +296,32 @@ export async function POST(req: NextRequest) {
       });
 
       console.log(`[Generate] Credits deducted: ${creditCost}, remaining: ${updatedUser.credits}`);
-    }).catch((err) => {
-      // Transaction failed — log for manual reconciliation
-      // User already has their image, but credits weren't deducted
-      // TODO: send alert to admin
-      console.error(`[Generate] CRITICAL: Transaction failed for task ${taskId} — user may not have been charged:`, err);
+    }).catch(async (err) => {
+      // Transaction failed — user already has their image but wasn't charged
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error(`[Generate] CRITICAL: Transaction failed for task ${taskId}:`, errorMsg);
+
+      // Write to AlertLog for admin reconciliation
+      try {
+        await prisma.alertLog.create({
+          data: {
+            level: 'critical',
+            source: 'generate-async-tx',
+            message: `Generation task succeeded but credit deduction failed: ${errorMsg}`,
+            details: JSON.stringify({
+              taskId,
+              userId,
+              model,
+              resolution,
+              creditCost,
+              imageUrl,
+              prompt: prompt.trim(),
+            }),
+          },
+        });
+      } catch (alertErr) {
+        console.error('[Generate] Failed to write AlertLog:', alertErr);
+      }
     });
 
     return NextResponse.json(responseJson);
