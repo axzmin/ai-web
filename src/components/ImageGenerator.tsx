@@ -790,13 +790,10 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
         } else {
           setState({ status: 'complete', progress: 100, imageUrls: [data.imageUrl], imageUrl: data.imageUrl, error: null });
           setImageUrl(data.imageUrl);
-        }
-        const selectedModel = MODEL_OPTIONS.find(m => m.value === model);
-        const resolutionMap: Record<string, string> = { standard: '1K', hd: '2K', ultra: '4K' };
-        const res = resolutionMap[quality] || '1K';
-        const cost = selectedModel?.costByResolution[res as keyof typeof selectedModel.costByResolution] || 1;
-        if (credits !== null) {
-          setCredits(prev => prev !== null ? prev - cost : null);
+          // Sync credits from server — server already deducted in transaction, don't deduct again on client
+          if (typeof data.creditsRemaining === 'number') {
+            setCredits(data.creditsRemaining);
+          }
         }
       }
     } catch {

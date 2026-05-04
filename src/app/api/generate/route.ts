@@ -243,14 +243,14 @@ export async function POST(req: NextRequest) {
       console.log(`[Generate] Task ${taskId} completed in ${elapsed}s - ${imageUrl}`);
 
       // Deduct credits + save generation + write credit log — all in one transaction
-      const generation = await prisma.$transaction(async (tx) => {
+      const txResult = await prisma.$transaction(async (tx) => {
         // Atomic credit deduction
         const updatedUser = await tx.user.update({
           where: { clerkId: userId },
           data: { credits: { decrement: creditCost } },
         });
 
-        // Create generation record with creditsCost
+        // Create generation record
         const gen = await tx.generation.create({
           data: {
             userId: user.id,
@@ -278,7 +278,7 @@ export async function POST(req: NextRequest) {
           },
         });
 
-        return gen;
+        return { gen, updatedCredits: updatedUser.credits };
       });
 
       return NextResponse.json({
@@ -288,10 +288,10 @@ export async function POST(req: NextRequest) {
         aspectRatio,
         resolution,
         creditsUsed: creditCost,
+        creditsRemaining: txResult.updatedCredits,
       });
     } catch (pollError) {
       console.error(`[Generate] Polling failed for task ${taskId}:`, pollError);
-      // Credits already deducted, but we should mark this somehow
       return NextResponse.json(
         { error: pollError instanceof Error ? pollError.message : 'Generation timed out' },
         { status: 500 }
