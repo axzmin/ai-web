@@ -108,7 +108,7 @@ export default function Navbar() {
         right: 0,
         zIndex: 100,
         padding: '0.75rem 1.5rem',
-        background: 'rgba(245, 241, 230, 0.85)',
+        background: 'rgba(245, 241, 230, 0.5)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         borderBottom: '1px solid rgba(26, 22, 20, 0.06)',
