@@ -51,10 +51,11 @@ export async function POST(req: NextRequest) {
     if (!cfResponse.ok) {
       const errorText = await cfResponse.text();
       console.error('[Upload] Cloudflare API error:', cfResponse.status, errorText);
-      return NextResponse.json({ error: 'Failed to upload image to Cloudflare' }, { status: 500 });
+      return NextResponse.json({ error: 'Failed to upload image to Cloudflare', details: errorText }, { status: 500 });
     }
 
     const cfData = await cfResponse.json();
+    console.log('[Upload] Cloudflare response success:', !!cfData.success, cfData.result?.url);
 
     // Cloudflare returns: { result: { id, url, ... }, success, errors, messages }
     if (!cfData.success) {
