@@ -638,6 +638,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
   const [insufficientCredits, setInsufficientCredits] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [state, setState] = useState<GenState>({
     status: 'idle', progress: 0, imageUrls: [], imageUrl: null, error: null
   });
@@ -720,9 +721,13 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
         const data = await res.json();
         if (data.url) {
           setUploadedImages(prev => [...prev, data.url].slice(0, 5));
+          setUploadError(null);
+        } else {
+          setUploadError(data.error || 'Upload failed. Please try again.');
         }
       } catch (err) {
         console.error('Upload failed:', err);
+        setUploadError('Upload failed. Please try again.');
       }
     }
   };
@@ -1124,6 +1129,9 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           </label>
                         )}
                       </div>
+                      {uploadError && (
+                        <p style={{ color: '#EF4444', fontSize: '0.75rem', marginTop: '0.5rem' }}>{uploadError}</p>
+                      )}
                       {uploadedImages.length > 0 && (
                         <button
                           onClick={() => setUploadedImages([])}
