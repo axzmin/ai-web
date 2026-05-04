@@ -32,10 +32,12 @@ model Generation {
   model        String   @default("gpt-image-2")
   aspectRatio  String   @default("auto")
   quality      String   @default("1K")
-  creditsCost  Int      @default(2)   // Credits spent on this generation
+  creditsCost  Int      @default(2)
   seed         Int?
   steps        Int?
   status       String   @default("completed")
+  type         String   @default("text-to-image") // "text-to-image" | "image-to-image"
+  inputImageUrl String? // For I2I: user's uploaded input image (first one only)
   userId       String?
   user         User?    @relation(fields: [userId], references: [id])
   createdAt    DateTime @default(now())
@@ -45,6 +47,7 @@ model Generation {
   creditLog    CreditLog?
   @@index([userId])
   @@index([createdAt])
+  @@index([type])
 }
 
 // Credits流水日志 / Credit transaction ledger

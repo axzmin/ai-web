@@ -42,6 +42,8 @@ export async function GET(req: NextRequest) {
           creditsCost: true,
           status: true,
           isPublic: true,
+          type: true,
+          inputImageUrl: true,
           createdAt: true,
         },
       }),

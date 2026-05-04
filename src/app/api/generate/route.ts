@@ -261,6 +261,8 @@ export async function POST(req: NextRequest) {
             quality: resolution,
             creditsCost: creditCost,
             status: 'completed',
+            type: isImageToImage ? 'image-to-image' : 'text-to-image',
+            inputImageUrl: isImageToImage ? (inputImageUrl || null) : null,
           },
         });
 
