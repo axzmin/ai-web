@@ -54,7 +54,7 @@ export default function Hero() {
       justifyContent: 'flex-start',
       background: 'var(--bg-primary)',
       overflow: 'hidden',
-      paddingTop: '6rem',
+      paddingTop: '8rem',
       paddingBottom: '0.5rem'
     }}>
       {/* Background Image - frosted glass overlay */}
