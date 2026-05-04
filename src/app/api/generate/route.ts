@@ -291,7 +291,7 @@ export async function POST(req: NextRequest) {
           type: 'spend',
           amount: -creditCost,
           balanceAfter: updatedUser.credits,
-          description: `生成图片: ${model} ${resolution}`,
+          description: `Image generation: ${model} ${resolution}`,
         },
       });
 
