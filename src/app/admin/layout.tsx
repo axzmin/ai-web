@@ -50,7 +50,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
 
       {/* Page content */}
-      <div style={{ paddingTop: '2.5rem' }}>
+      <div style={{ paddingTop: '3.5rem' }}>
         {children}
       </div>
     </div>

@@ -393,9 +393,9 @@ export default function AdminUsersPage() {
             }}
             onClick={e => { if (e.target === e.currentTarget) setLogModalOpen(false); }}
           >
-            <div style={{ background: 'var(--bg-card)', borderRadius: '16px', width: '100%', maxWidth: 680, maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <div style={{ background: 'var(--bg-card)', borderRadius: '16px', width: '100%', maxWidth: 900, maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
               {/* Modal header */}
-              <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ padding: '1.25rem 2rem', borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
                   <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Credit History</h2>
                   <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', margin: '0.25rem 0 0' }}>
@@ -411,7 +411,7 @@ export default function AdminUsersPage() {
               </div>
 
               {/* Modal body */}
-              <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 1.5rem' }}>
+              <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 2rem' }}>
                 {loadingLogs ? (
                   <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '2rem' }}>Loading...</p>
                 ) : userLogs.length === 0 ? (
@@ -425,38 +425,47 @@ export default function AdminUsersPage() {
                         <div key={log.id} style={{ background: 'var(--bg-secondary)', borderRadius: '10px', overflow: 'hidden' }}>
                           <div
                             onClick={() => setExpandedLogId(isExpanded ? null : log.id)}
-                            style={{ padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}
+                            style={{ padding: '0.875rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}
                           >
-                            <span style={{ width: 36, height: 36, borderRadius: '8px', background: cfg.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: cfg.color, fontSize: '1rem', flexShrink: 0 }}>{cfg.icon}</span>
+                            <span style={{ width: 40, height: 40, borderRadius: '10px', background: cfg.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: cfg.color, fontSize: '1.125rem', flexShrink: 0 }}>{cfg.icon}</span>
                             <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>{cfg.label}</div>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{log.description || '—'}</div>
+                              <div style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--text-primary)' }}>{cfg.label}</div>
+                              <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{log.description || '—'}</div>
                             </div>
                             <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                              <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: cfg.color }}>{log.amount > 0 ? `+${log.amount}` : log.amount}</div>
-                              <div style={{ fontSize: '0.6875rem', color: 'var(--text-secondary)' }}>{new Date(log.createdAt).toLocaleDateString()}</div>
+                              <div style={{ fontSize: '1rem', fontWeight: 700, color: cfg.color }}>{log.amount > 0 ? `+${log.amount}` : log.amount}</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{new Date(log.createdAt).toLocaleDateString()}</div>
                             </div>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', flexShrink: 0 }}>{isExpanded ? '▲' : '▼'}</span>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', flexShrink: 0, transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'none' }}>▼</span>
                           </div>
                           {isExpanded && log.generation && (
-                            <div style={{ padding: '0.75rem 1rem', borderTop: '1px solid var(--border-subtle)' }}>
-                              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                                {log.generation.thumbnailUrl && (
+                            <div style={{ padding: '0.875rem 1.25rem', borderTop: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)' }}>
+                              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                                {/* Thumbnail - larger for visibility */}
+                                {log.generation.thumbnailUrl ? (
                                   // eslint-disable-next-line @next/next/no-img-element
-                                  <img src={log.generation.thumbnailUrl} alt="" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }} />
+                                  <img
+                                    src={log.generation.thumbnailUrl}
+                                    alt=""
+                                    style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 10, flexShrink: 0, border: '1px solid var(--border-subtle)' }}
+                                  />
+                                ) : (
+                                  <div style={{ width: 100, height: 100, borderRadius: 10, background: 'var(--bg-secondary)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', border: '1px solid var(--border-subtle)' }}>
+                                    🖼️
+                                  </div>
                                 )}
                                 <div style={{ flex: 1, minWidth: 0 }}>
-                                  <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                                    {log.generation.type === 'image-to-image' ? 'I2I' : 'T2I'} · {MODEL_LABELS[log.generation.model] || log.generation.model}
+                                  <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                                    {log.generation.type === 'image-to-image' ? 'I2I' : 'T2I'} · {MODEL_LABELS[log.generation.model] || log.generation.model} · Balance after: {log.balanceAfter}
                                   </p>
-                                  <p style={{ margin: '0.25rem 0 0', fontSize: '0.8125rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>{log.generation.prompt}</p>
+                                  <p style={{ margin: '0.375rem 0 0', fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: 1.6 }}>{log.generation.prompt}</p>
                                 </div>
                               </div>
                             </div>
                           )}
                           {isExpanded && !log.generation && (
-                            <div style={{ padding: '0.5rem 1rem', borderTop: '1px solid var(--border-subtle)' }}>
-                              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Balance after: {log.balanceAfter} credits</p>
+                            <div style={{ padding: '0.625rem 1.25rem', borderTop: '1px solid var(--border-subtle)', background: 'var(--bg-tertiary)' }}>
+                              <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Balance after: {log.balanceAfter} credits</p>
                             </div>
                           )}
                         </div>

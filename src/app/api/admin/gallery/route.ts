@@ -52,3 +52,30 @@ export async function DELETE(req: NextRequest) {
 
   return NextResponse.json({ success: true });
 }
+
+// ─── POST /api/admin/gallery ───────────────────────────────────────────────
+export async function POST(req: NextRequest) {
+  const adminId = await adminAuth();
+  if (!adminId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+  const body = await req.json().catch(() => null);
+  const { imageUrl, inputImageUrl, prompt, title, description, tags, seed } = body || {};
+
+  if (!imageUrl || !prompt) {
+    return NextResponse.json({ error: 'imageUrl and prompt are required' }, { status: 400 });
+  }
+
+  const item = await prisma.galleryItem.create({
+    data: {
+      imageUrl,
+      inputImageUrl: inputImageUrl || null,
+      prompt,
+      title: title || null,
+      description: description || null,
+      tags: Array.isArray(tags) ? tags : [],
+      seed: seed ? parseInt(seed) : null,
+    },
+  });
+
+  return NextResponse.json({ item }, { status: 201 });
+}

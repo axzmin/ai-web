@@ -71,6 +71,7 @@ model GalleryItem {
   title       String?
   description String?
   imageUrl    String
+  inputImageUrl String? // For I2I: original/input image shown alongside
   prompt      String
   seed        Int?
   tags        String[]
