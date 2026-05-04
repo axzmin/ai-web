@@ -1141,12 +1141,6 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                           </label>
                         )}
                       </div>
-                      {isUploading && (
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', marginTop: '0.5rem' }}>Uploading...</p>
-                      )}
-                      {uploadError && (
-                        <p style={{ color: '#EF4444', fontSize: '0.75rem', marginTop: '0.5rem', fontWeight: 600, background: 'rgba(239,68,68,0.1)', padding: '0.5rem', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)' }}>{uploadError}</p>
-                      )}
                       {uploadedImages.length > 0 && (
                         <button
                           onClick={() => setUploadedImages([])}
@@ -1174,7 +1168,7 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       )}
                     </div>
                   ) : (
-                    <>
+                    <div>
                       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5" style={{ marginBottom: '0.75rem' }}>
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                         <circle cx="9" cy="9" r="2"/>
@@ -1206,7 +1200,13 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                       >
                         Choose Files
                       </label>
-                    </>
+                    </div>
+                  )}
+                  {isUploading && (
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', marginTop: '0.5rem' }}>Uploading...</p>
+                  )}
+                  {uploadError && (
+                    <p style={{ color: '#EF4444', fontSize: '0.75rem', marginTop: '0.5rem', fontWeight: 600, background: 'rgba(239,68,68,0.1)', padding: '0.5rem', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)' }}>{uploadError}</p>
                   )}
                 </div>
               </div>
