@@ -1435,14 +1435,14 @@ export default function ImageGenerator({ isDemo = false }: { isDemo?: boolean })
                 disabled={
                   state.status === 'generating' ||
                   (activeTab === 'text-to-image' && !prompt.trim()) ||
-                  (activeTab === 'image-to-image' && (uploadedImages.length === 0 || !prompt.trim()))
+                  (activeTab === 'image-to-image' && (uploadedImages.length === 0 || !i2iPrompt.trim()))
                 }
                 style={{
                   width: '100%',
                   padding: '0.875rem',
                   background: state.status === 'generating' ||
                     (activeTab === 'text-to-image' && !prompt.trim()) ||
-                    (activeTab === 'image-to-image' && (uploadedImages.length === 0 || !prompt.trim()))
+                    (activeTab === 'image-to-image' && (uploadedImages.length === 0 || !i2iPrompt.trim()))
                     ? 'var(--bg-tertiary)'
                     : 'var(--gradient-primary)',
                   border: 'none',
