@@ -34,21 +34,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Cloudflare not configured' }, { status: 500 });
     }
 
-    // Read file as array buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Upload to Cloudflare Images
-    // Using Cloudflare Images API v2: direct upload
+    // Upload to Cloudflare Images using multipart/form-data
     const uploadUrl = `https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v1`;
+
+    const cfFormData = new FormData();
+    cfFormData.append('file', file);
 
     const cfResponse = await fetch(uploadUrl, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiToken}`,
-        'Content-Type': file.type,
       },
-      body: buffer,
+      body: cfFormData,
     });
 
     if (!cfResponse.ok) {
